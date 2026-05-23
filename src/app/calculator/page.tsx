@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
 export default function CalculatorPage() {
   return (
     <main>
       <h1>Calculator</h1>
     </main>
-  )
+  );
 }
