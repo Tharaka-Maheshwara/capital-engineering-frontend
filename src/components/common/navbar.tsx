@@ -29,7 +29,10 @@ export default function Navbar() {
     <header className="relative z-10">
       <div className="border-b border-white/10 bg-slate-950/95">
         <div className="mx-auto flex min-h-[58px] w-[min(1280px,calc(100%-48px))] flex-wrap items-center justify-center gap-3 py-2 text-[0.82rem] text-slate-100 md:justify-between md:gap-7 md:py-0 md:text-[0.95rem]">
-          <a href="tel:+94777434403" className="inline-flex items-center gap-2 whitespace-nowrap">
+          <a
+            href="tel:+94777434403"
+            className="inline-flex items-center gap-2 whitespace-nowrap"
+          >
             +94 777 434 403
           </a>
           <a
@@ -38,7 +41,10 @@ export default function Navbar() {
           >
             info.lankacapital@gmail.com
           </a>
-          <a href="tel:+944981500" className="ml-auto inline-flex items-center gap-2 whitespace-nowrap">
+          <a
+            href="tel:+944981500"
+            className="ml-auto inline-flex items-center gap-2 whitespace-nowrap"
+          >
             Hot Line: +94 4 981 500
           </a>
         </div>
@@ -47,7 +53,10 @@ export default function Navbar() {
       <div className="relative overflow-hidden border-b border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,37,58,0.9),rgba(18,37,58,0.64)),linear-gradient(135deg,transparent_0_76%,rgba(255,255,255,0.05)_76%_78%,transparent_78%_100%),radial-gradient(circle_at_72%_26%,rgba(255,255,255,0.05),transparent_18%)] backdrop-blur-md" />
         <div className="relative mx-auto flex min-h-[92px] w-[min(1280px,calc(100%-48px))] flex-col items-center gap-4 py-4 lg:flex-row lg:gap-6">
-          <Link href="/" className="inline-flex min-w-[300px] items-center gap-3">
+          <Link
+            href="/"
+            className="inline-flex min-w-[300px] items-center gap-3"
+          >
             <BrandMark />
             <span className="flex flex-col leading-none">
               <span className="inline-flex items-baseline gap-2">
@@ -62,7 +71,10 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <nav aria-label="Primary" className="flex flex-1 flex-wrap items-center justify-center gap-1">
+          <nav
+            aria-label="Primary"
+            className="flex flex-1 flex-wrap items-center justify-center gap-1"
+          >
             {links.map((link) => {
               return (
                 <Link
