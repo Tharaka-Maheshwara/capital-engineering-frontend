@@ -2,9 +2,9 @@ import Image from "next/image";
 
 export default function Footer(): JSX.Element {
   return (
-    <footer className="mt-8 w-full bg-[#162840] text-slate-300">
+    <footer className="mt-0 w-full bg-linear-to-b from-[#24384f] to-[#131d28] text-slate-300">
       <div className="w-full">
-        <div className="mx-auto max-w-400 px-4 sm:px-6 lg:px-12 xl:px-20 py-8">
+        <div className="mx-auto max-w-400 px-4 sm:px-6 lg:px-12 xl:px-20 pt-12 pb-8">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-4 lg:gap-16 xl:gap-24">
             <div className="space-y-4">
               <div className="flex items-center gap-3">

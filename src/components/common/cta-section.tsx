@@ -1,6 +1,6 @@
 export default function CtaSection() {
   return (
-    <section className="relative overflow-hidden bg-linear-to-b from-[#163b63] to-[#0f2a47] py-20 md:py-28">
+    <section className="relative overflow-hidden bg-linear-to-b from-[#1b3556] to-[#162840] pt-20 pb-10 md:pt-28 md:pb-12">
       <div
         className="absolute inset-0 opacity-10"
         style={{
