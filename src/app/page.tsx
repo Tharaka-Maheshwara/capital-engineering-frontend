@@ -5,6 +5,7 @@ import CompanyOverviewSection from "@/components/common/company-overview-section
 import AdvantagesSection from "@/components/common/advantages-section";
 import FeaturedProjectSection from "@/components/common/featured-project-section";
 import TestimonialsSection from "@/components/common/testimonials-section";
+import CtaSection from "@/components/common/cta-section";
 
 export default function Home() {
   return (
@@ -28,6 +29,9 @@ export default function Home() {
 
       {/* Testimonials section */}
       <TestimonialsSection />
+
+      {/* Call to action (Contact) */}
+      <CtaSection />
     </main>
   );
 }
