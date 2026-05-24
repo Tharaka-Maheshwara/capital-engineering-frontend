@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const links = [
   { label: "Home", href: "/" },
@@ -88,9 +89,36 @@ function CloseIcon() {
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeHash, setActiveHash] = useState("");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const updateHash = () => {
+      setActiveHash(window.location.hash);
+    };
+
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+
+    return () => window.removeEventListener("hashchange", updateHash);
+  }, []);
+
+  const isActiveLink = (href: string) => {
+    const [cleanHref, hash] = href.split("#");
+
+    if (hash) {
+      return pathname === cleanHref && activeHash === `#${hash}`;
+    }
+
+    if (cleanHref === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === cleanHref || pathname.startsWith(`${cleanHref}/`);
+  };
 
   return (
-    <header className="relative z-10">
+    <header className="fixed inset-x-0 top-0 z-50">
       <div className="border-b border-white/10 bg-slate-950/95">
         <div className="grid w-full grid-cols-1 gap-2 px-4 py-4 text-center text-[1rem] text-slate-100 sm:min-h-20 sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[1.08rem] md:text-[1.18rem] lg:px-8">
           <a
@@ -139,11 +167,14 @@ export default function Navbar() {
               className="hidden flex-1 flex-wrap items-center justify-center gap-1 lg:flex"
             >
               {links.map((link) => {
+                const isActive = isActiveLink(link.href);
+
                 return (
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="relative px-3.5 py-3 text-[1.02rem] font-medium text-slate-200/70 transition-colors duration-150 hover:text-slate-50 md:px-4 md:py-4 md:text-[1.04rem]"
+                    aria-current={isActive ? "page" : undefined}
+                    className={`relative px-3.5 py-3 text-[1.02rem] font-medium transition-colors duration-150 md:px-4 md:py-4 md:text-[1.04rem] ${isActive ? "text-slate-50" : "text-slate-200/70 hover:text-slate-50"} after:absolute after:bottom-1.5 after:left-3.5 after:h-0.5 after:w-[calc(100%-1.75rem)] after:origin-center after:rounded-full after:bg-slate-50 after:transition-transform after:duration-200 after:content-[''] md:after:left-4 md:after:w-[calc(100%-2rem)] ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
                   >
                     {link.label}
                   </Link>
@@ -182,12 +213,15 @@ export default function Navbar() {
           >
             <nav aria-label="Mobile Primary" className="flex flex-col gap-1">
               {links.map((link) => {
+                const isActive = isActiveLink(link.href);
+
                 return (
                   <Link
                     key={link.label}
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="rounded-[14px] px-3 py-3 text-[1rem] font-medium text-slate-200/80 transition-colors duration-150 hover:bg-white/5 hover:text-slate-50"
+                    aria-current={isActive ? "page" : undefined}
+                    className={`rounded-[14px] px-3 py-3 text-[1rem] font-medium transition-colors duration-150 ${isActive ? "bg-white/8 text-slate-50 underline decoration-2 underline-offset-8" : "text-slate-200/80 hover:bg-white/5 hover:text-slate-50"}`}
                   >
                     {link.label}
                   </Link>
