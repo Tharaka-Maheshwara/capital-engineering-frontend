@@ -117,7 +117,7 @@ export default function Navbar() {
       <div className="relative overflow-hidden border-b border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,37,58,0.9),rgba(18,37,58,0.64)),linear-gradient(135deg,transparent_0_76%,rgba(255,255,255,0.05)_76%_78%,transparent_78%_100%),radial-gradient(circle_at_72%_26%,rgba(255,255,255,0.05),transparent_18%)] backdrop-blur-md" />
         <div className="relative w-full px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex min-h-23 w-full items-center justify-between gap-3">
+          <div className="flex min-h-23 w-full items-center justify-between gap-3 lg:gap-8">
             <Link href="/" className="inline-flex min-w-0 items-center gap-3">
               <Image
                 src="/images/logo.png"
@@ -134,36 +134,33 @@ export default function Navbar() {
               </span>
             </Link>
 
-            <div className="hidden items-center gap-2 lg:flex">
-              <nav
-                aria-label="Primary"
-                className="flex flex-wrap items-center justify-center gap-1"
-              >
-                {links.map((link) => {
-                  return (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="relative px-3.5 py-3 text-[1.02rem] font-medium text-slate-200/70 transition-colors duration-150 hover:text-slate-50 md:px-4 md:py-4 md:text-[1.04rem]"
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+            <nav
+              aria-label="Primary"
+              className="hidden flex-1 flex-wrap items-center justify-center gap-1 lg:flex"
+            >
+              {links.map((link) => {
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="relative px-3.5 py-3 text-[1.02rem] font-medium text-slate-200/70 transition-colors duration-150 hover:text-slate-50 md:px-4 md:py-4 md:text-[1.04rem]"
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
 
-              <Link
-                href="/login"
-                aria-label="Login"
-                className="inline-flex flex-none items-center gap-2 rounded-[14px] bg-slate-400/95 px-5 py-3 text-sm font-bold text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 md:px-6 md:py-4 md:text-base"
-              >
-                <span className="sr-only">Login</span>
-                <span className="h-5 w-5 shrink-0">
-                  <LoginIcon />
-                </span>
-                <span>Login</span>
-              </Link>
-            </div>
+            <Link
+              href="/login"
+              aria-label="Login"
+              className="hidden ml-auto h-11 w-11 flex-none items-center justify-center rounded-[14px] bg-slate-400/95 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:flex"
+            >
+              <span className="sr-only">Login</span>
+              <span className="h-5 w-5 shrink-0">
+                <LoginIcon />
+              </span>
+            </Link>
 
             <button
               type="button"
