@@ -13,7 +13,14 @@ interface ServiceCardProps {
   delayMs: number;
 }
 
-function ServiceCard({ tag, image, title, description, href, delayMs }: ServiceCardProps) {
+function ServiceCard({
+  tag,
+  image,
+  title,
+  description,
+  href,
+  delayMs,
+}: ServiceCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -26,7 +33,7 @@ function ServiceCard({ tag, image, title, description, href, delayMs }: ServiceC
           }, delayMs);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (cardRef.current) {
@@ -67,7 +74,7 @@ function ServiceCard({ tag, image, title, description, href, delayMs }: ServiceC
         <h3 className="text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-blue-600">
           {title}
         </h3>
-        
+
         <p className="mt-3 text-sm leading-relaxed text-slate-500">
           {description}
         </p>
@@ -109,7 +116,7 @@ export default function ServicesSection() {
           setTitleVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (titleRef.current) {
@@ -125,7 +132,8 @@ export default function ServicesSection() {
       tag: "Commercial",
       image: "/images/service-1.png",
       title: "Commercial Construction",
-      description: "Building state-of-the-art commercial spaces that drive business success and inspire growth.",
+      description:
+        "Building state-of-the-art commercial spaces that drive business success and inspire growth.",
       href: "/projects?category=commercial",
       delayMs: 0,
     },
@@ -134,7 +142,8 @@ export default function ServicesSection() {
       tag: "Residential",
       image: "/images/service-2.png",
       title: "Residential Projects",
-      description: "Creating dream homes with precision, quality, and meticulous attention to every detail.",
+      description:
+        "Creating dream homes with precision, quality, and meticulous attention to every detail.",
       href: "/projects?category=residential",
       delayMs: 150,
     },
@@ -143,7 +152,8 @@ export default function ServicesSection() {
       tag: "Industrial",
       image: "/images/slider-4.png", // fallback structure image
       title: "Industrial Development",
-      description: "Large-scale industrial facilities engineered to the highest modern standards of performance.",
+      description:
+        "Large-scale industrial facilities engineered to the highest modern standards of performance.",
       href: "/projects?category=industrial",
       delayMs: 300,
     },
@@ -155,12 +165,13 @@ export default function ServicesSection() {
       <div className="absolute top-1/2 left-1/2 h-112.5 w-150 -translate-y-1/2 -translate-x-1/2 rounded-full bg-blue-100/30 blur-[120px] pointer-events-none" />
 
       <div className="relative mx-auto w-[min(1280px,calc(100%-48px))]">
-        
         {/* Title Block */}
         <div
           ref={titleRef}
           className={`mx-auto max-w-162.5 text-center transition-all duration-700 ease-out ${
-            titleVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            titleVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-8"
           }`}
         >
           {/* Category Tag Pill */}
@@ -173,7 +184,8 @@ export default function ServicesSection() {
           </h2>
 
           <p className="mt-4 text-base leading-relaxed text-slate-500">
-            Comprehensive construction solutions tailored to your exact vision and requirements
+            Comprehensive construction solutions tailored to your exact vision
+            and requirements
           </p>
         </div>
 
@@ -191,7 +203,6 @@ export default function ServicesSection() {
             />
           ))}
         </div>
-
       </div>
     </section>
   );
