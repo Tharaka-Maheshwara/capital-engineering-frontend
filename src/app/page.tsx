@@ -3,6 +3,7 @@ import StatsSection from "@/components/common/stats-section";
 import ServicesSection from "@/components/common/services-section";
 import CompanyOverviewSection from "@/components/common/company-overview-section";
 import AdvantagesSection from "@/components/common/advantages-section";
+import FeaturedProjectSection from "@/components/common/featured-project-section";
 
 export default function Home() {
   return (
@@ -20,6 +21,9 @@ export default function Home() {
 
       {/* Advantages section */}
       <AdvantagesSection />
+
+      {/* Featured project section */}
+      <FeaturedProjectSection />
     </main>
   );
 }
