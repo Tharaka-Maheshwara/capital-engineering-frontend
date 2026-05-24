@@ -1,6 +1,7 @@
 import HeroSlider from "@/components/common/hero-slider";
 import StatsSection from "@/components/common/stats-section";
 import ServicesSection from "@/components/common/services-section";
+import CompanyOverviewSection from "@/components/common/company-overview-section";
 
 export default function Home() {
   return (
@@ -12,6 +13,9 @@ export default function Home() {
 
       {/* Services section */}
       <ServicesSection />
+
+      {/* Company overview section */}
+      <CompanyOverviewSection />
     </main>
   );
 }
