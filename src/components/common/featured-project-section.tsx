@@ -26,7 +26,10 @@ export default function FeaturedProjectSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-slate-50 py-8 pb-20 md:py-12 md:pb-28">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-slate-50 py-8 pb-20 md:py-12 md:pb-28"
+    >
       <div
         className={`w-full transition-all duration-700 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
@@ -57,8 +60,8 @@ export default function FeaturedProjectSection() {
                 </h2>
 
                 <p className="mt-6 max-w-[28ch] text-[1rem] leading-8 text-slate-100/85 sm:text-[1.08rem]">
-                  A $22M mixed-use masterpiece spanning 12 floors of office space,
-                  retail, and luxury residential units.
+                  A $22M mixed-use masterpiece spanning 12 floors of office
+                  space, retail, and luxury residential units.
                 </p>
 
                 <div className="mt-8">
