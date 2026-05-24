@@ -23,6 +23,15 @@ const coreValues = [
   },
 ];
 
+const clientAdvantages = [
+  "Licensed and insured professionals",
+  "On-time project delivery",
+  "Competitive, transparent pricing",
+  "Advanced construction techniques",
+  "Eco-friendly building practices",
+  "24/7 dedicated client support",
+];
+
 export default function AboutPage() {
   return (
     <main>
@@ -160,6 +169,75 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <section className="bg-white px-4 py-20 text-slate-900 sm:px-6 lg:px-8 lg:py-24">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-14 lg:grid-cols-[1fr_0.95fr] lg:gap-16">
+          <div className="max-w-2xl">
+            <span className="inline-flex rounded-full bg-slate-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-slate-600">
+              The Capital Engineering Ceylon Edge
+            </span>
+
+            <h2 className="mt-6 text-4xl font-extrabold tracking-[-0.04em] text-slate-900 sm:text-5xl lg:text-6xl">
+              Why Our Clients Keep Coming Back
+            </h2>
+
+            <p className="mt-6 max-w-2xl text-[1rem] leading-8 text-slate-600">
+              We don&apos;t just build structures - we build trust. Our
+              commitment to excellence goes beyond the final handover; we aim
+              for relationships that last a lifetime.
+            </p>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              {clientAdvantages.map((advantage) => (
+                <div
+                  key={advantage}
+                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
+                >
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-300 text-slate-500">
+                    <CheckIcon />
+                  </span>
+                  <span className="text-[0.98rem] leading-6 text-slate-700">
+                    {advantage}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-136 lg:mx-0 lg:justify-self-end">
+            <div className="relative overflow-hidden rounded-[28px] bg-slate-100 shadow-[0_24px_70px_rgba(15,23,42,0.14)]">
+              <div className="relative aspect-[0.95/1] min-h-124">
+                <Image
+                  src="/images/slider-4.png"
+                  alt="Capital Engineering flagship commercial project"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  className="object-cover object-center"
+                />
+              </div>
+
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,15,29,0.08)_0%,rgba(6,15,29,0.25)_100%)]" />
+
+              <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-[#2f4a77]/95 px-5 py-4 text-white shadow-[0_20px_45px_rgba(15,23,42,0.22)] backdrop-blur-sm sm:inset-x-5 sm:bottom-5 sm:px-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-[1.02rem] font-semibold leading-6">
+                      Skyline Tower — 2025
+                    </div>
+                    <div className="mt-1 text-sm text-white/70">
+                      Flagship Commercial Project
+                    </div>
+                  </div>
+
+                  <span className="rounded-full border border-white/10 bg-white/8 px-4 py-1.5 text-xs font-medium text-white/55">
+                    Completed
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
@@ -222,6 +300,20 @@ function HeartIcon() {
         d="M12 20s-7-4.4-9.5-9C.5 7.5 3 4.5 6.5 4.5c1.9 0 3.5 1 4.5 2.4 1-1.4 2.6-2.4 4.5-2.4 3.5 0 6 3 4 6.5-2.5 4.6-9.5 9-9.5 9Z"
         stroke="currentColor"
         strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="m6.5 12.5 3.4 3.4 7.6-7.6"
+        stroke="currentColor"
+        strokeWidth="1.9"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
