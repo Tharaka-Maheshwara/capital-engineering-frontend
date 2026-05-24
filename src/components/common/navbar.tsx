@@ -92,22 +92,22 @@ export default function Navbar() {
   return (
     <header className="relative z-10">
       <div className="border-b border-white/10 bg-slate-950/95">
-        <div className="flex min-h-14.5 w-full flex-col gap-2 px-4 py-2 text-[0.78rem] text-slate-100 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-6 sm:text-[0.85rem] md:gap-7 md:py-0 md:text-[0.95rem] lg:px-8">
+        <div className="grid w-full grid-cols-1 gap-2 px-4 py-2 text-center text-[0.75rem] text-slate-100 sm:min-h-14.5 sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[0.85rem] md:text-[0.95rem] lg:px-8">
           <a
             href="tel:+94777434403"
-            className="inline-flex items-center gap-2 whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-start sm:text-left"
           >
             +94 777 434 403
           </a>
           <a
             href="mailto:info.lankacapital@gmail.com"
-            className="inline-flex items-center gap-2 whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-center"
           >
             info.lankacapital@gmail.com
           </a>
           <a
             href="tel:+944981500"
-            className="ml-auto inline-flex items-center gap-2 whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-end sm:text-right"
           >
             Hot Line: +94 4 981 500
           </a>
