@@ -135,7 +135,10 @@ export default function Navbar() {
             </Link>
 
             <div className="hidden items-center gap-2 lg:flex">
-              <nav aria-label="Primary" className="flex flex-wrap items-center justify-center gap-1">
+              <nav
+                aria-label="Primary"
+                className="flex flex-wrap items-center justify-center gap-1"
+              >
                 {links.map((link) => {
                   return (
                     <Link
