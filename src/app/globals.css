@@ -63,6 +63,22 @@ body {
   animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+.hero-slide-exit {
+  z-index: 1;
+  opacity: 1;
+  pointer-events: none;
+  animation: fadeOut 0.6s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes slideInFromRight {
   from {
     transform: translateX(6%) scale(1.03);
@@ -85,8 +101,10 @@ body {
   }
 }
 
-/* Kenburns zoom on active slide image */
-.hero-slide-active .hero-slide-img {
+/* Kenburns zoom on active and entering slide images */
+.hero-slide-active .hero-slide-img,
+.hero-slide-enter-right .hero-slide-img,
+.hero-slide-enter-left .hero-slide-img {
   animation: kenBurns 8s ease-out forwards;
 }
 

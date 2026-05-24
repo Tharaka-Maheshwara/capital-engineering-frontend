@@ -1,9 +1,13 @@
 import HeroSlider from "@/components/common/hero-slider";
+import StatsSection from "@/components/common/stats-section";
 
 export default function Home() {
   return (
     <main>
       <HeroSlider />
+      
+      {/* Stats section added in place of old header text */}
+      <StatsSection />
 
       <div className="mx-auto w-[min(1280px,calc(100%-48px))] py-12 md:py-16">
         <section
@@ -15,10 +19,10 @@ export default function Home() {
               Capital Engineering Ceylon
             </p>
             <h1 className="max-w-[10ch] text-[clamp(2.4rem,5vw,4.8rem)] font-medium leading-[0.95] tracking-[-0.05em] text-white">
-              Structural confidence with a clear, modern header.
+              Let's Build Together.
             </h1>
             <p className="mt-4 max-w-[58ch] text-[1.05rem] leading-7 text-slate-100/80">
-              The navbar now mirrors the requested composition and includes Pricing and Articles.
+              Get in touch with our team of structural engineers and architects to bring your construction vision to life.
             </p>
           </div>
         </section>

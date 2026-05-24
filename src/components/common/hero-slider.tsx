@@ -72,6 +72,7 @@ function ChevronRightIcon() {
 
 export default function HeroSlider() {
   const [current, setCurrent] = useState(0);
+  const [previous, setPrevious] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isPaused, setIsPaused] = useState(false);
@@ -81,16 +82,14 @@ export default function HeroSlider() {
 
   const goTo = useCallback(
     (index: number, dir: "left" | "right" = "right") => {
-      if (isAnimating) return;
+      if (isAnimating || index === current) return;
       setDirection(dir);
+      setPrevious(current);
+      setCurrent(index);
       setIsAnimating(true);
       setProgress(0);
-      setTimeout(() => {
-        setCurrent(index);
-        setIsAnimating(false);
-      }, 600);
     },
-    [isAnimating]
+    [isAnimating, current]
   );
 
   const next = useCallback(() => {
@@ -100,6 +99,16 @@ export default function HeroSlider() {
   const prev = useCallback(() => {
     goTo((current - 1 + slides.length) % slides.length, "left");
   }, [current, goTo]);
+
+  // Reset animation status after transition duration
+  useEffect(() => {
+    if (!isAnimating) return;
+    const timer = setTimeout(() => {
+      setIsAnimating(false);
+      setPrevious(null);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [isAnimating]);
 
   // Progress bar
   useEffect(() => {
@@ -136,13 +145,18 @@ export default function HeroSlider() {
       <div className="hero-slider-track">
         {slides.map((slide, idx) => {
           const isActive = idx === current;
-          const animClass = isAnimating && isActive
-            ? direction === "right"
-              ? "hero-slide-enter-right"
-              : "hero-slide-enter-left"
-            : isActive
-            ? "hero-slide-active"
-            : "hero-slide-hidden";
+          const isPrev = idx === previous;
+
+          let animClass = "hero-slide-hidden";
+          if (isActive) {
+            if (isAnimating) {
+              animClass = direction === "right" ? "hero-slide-enter-right" : "hero-slide-enter-left";
+            } else {
+              animClass = "hero-slide-active";
+            }
+          } else if (isPrev) {
+            animClass = "hero-slide-exit";
+          }
 
           return (
             <div
@@ -165,7 +179,7 @@ export default function HeroSlider() {
 
               {/* Content */}
               <div className="hero-content-wrapper">
-                <div className={`hero-content ${isActive && !isAnimating ? "hero-content-visible" : "hero-content-hidden"}`}>
+                <div className={`hero-content ${isActive ? "hero-content-visible" : "hero-content-hidden"}`}>
                   <span className="hero-tag">{slide.tag}</span>
                   <h2 className="hero-title">{slide.title}</h2>
                   <p className="hero-description">{slide.description}</p>
@@ -174,7 +188,7 @@ export default function HeroSlider() {
                       View Our Projects
                     </a>
                     <a href="/#contact" className="hero-btn-secondary">
-                      Get a Quote
+                      Start Your Project
                     </a>
                   </div>
                 </div>
