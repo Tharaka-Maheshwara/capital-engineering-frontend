@@ -4,6 +4,7 @@ import ServicesSection from "@/components/common/services-section";
 import CompanyOverviewSection from "@/components/common/company-overview-section";
 import AdvantagesSection from "@/components/common/advantages-section";
 import FeaturedProjectSection from "@/components/common/featured-project-section";
+import TestimonialsSection from "@/components/common/testimonials-section";
 
 export default function Home() {
   return (
@@ -24,6 +25,9 @@ export default function Home() {
 
       {/* Featured project section */}
       <FeaturedProjectSection />
+
+      {/* Testimonials section */}
+      <TestimonialsSection />
     </main>
   );
 }
