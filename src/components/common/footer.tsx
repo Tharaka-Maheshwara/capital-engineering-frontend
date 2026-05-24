@@ -31,7 +31,6 @@ export default function Footer(): JSX.Element {
                 of Sri Lanka with innovative solutions and professional
                 expertise.
               </p>
-
             </div>
 
             <div>
