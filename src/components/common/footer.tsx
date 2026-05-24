@@ -4,8 +4,8 @@ export default function Footer(): JSX.Element {
   return (
     <footer className="mt-8 w-full bg-[#162840] text-slate-300">
       <div className="w-full">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:gap-12 xl:gap-16">
+        <div className="mx-auto max-w-400 px-4 sm:px-6 lg:px-12 xl:px-20 py-8">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-4 lg:gap-16 xl:gap-24">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10 rounded-lg bg-white/10 p-1.5">
@@ -138,7 +138,7 @@ export default function Footer(): JSX.Element {
       </div>
 
       <div className="border-t border-white/6 bg-[#0f2a3f] w-full">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center justify-between gap-3 md:flex-row">
+        <div className="mx-auto max-w-400 px-4 sm:px-6 lg:px-12 xl:px-20 py-3 flex flex-col items-center justify-between gap-3 md:flex-row">
           <div className="text-lg text-slate-400">
             © 2026 Capital Engineering Ceylon (PVT) LTD. All rights reserved.
           </div>
