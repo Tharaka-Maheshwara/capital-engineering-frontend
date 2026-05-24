@@ -50,22 +50,22 @@ export default function AboutPage() {
             <p className="mt-6 max-w-2xl text-[1rem] leading-8 text-slate-600">
               Founded in 2010, Capital Engineering Ceylon has grown from a small
               local contractor to one of the region&apos;s most trusted
-              construction companies. Our journey began with a simple mission: to
-              deliver exceptional construction services while maintaining the
+              construction companies. Our journey began with a simple mission:
+              to deliver exceptional construction services while maintaining the
               highest standards of quality and integrity.
             </p>
 
             <p className="mt-5 max-w-2xl text-[1rem] leading-8 text-slate-600">
-              Today, we&apos;ve successfully completed over 500 projects, ranging
-              from residential homes to large-scale commercial developments. Our
-              team of 150+ dedicated professionals brings expertise, innovation,
-              and passion to every project.
+              Today, we&apos;ve successfully completed over 500 projects,
+              ranging from residential homes to large-scale commercial
+              developments. Our team of 150+ dedicated professionals brings
+              expertise, innovation, and passion to every project.
             </p>
 
             <p className="mt-5 max-w-2xl text-[1rem] leading-8 text-slate-600">
-              What sets us apart is our commitment to understanding our clients&apos;
-              vision and bringing it to life with precision and care - building
-              not just structures, but lasting legacies.
+              What sets us apart is our commitment to understanding our
+              clients&apos; vision and bringing it to life with precision and
+              care - building not just structures, but lasting legacies.
             </p>
 
             <div className="mt-10">
