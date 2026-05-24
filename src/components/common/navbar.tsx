@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <header className="relative z-10">
       <div className="border-b border-white/10 bg-slate-950/95">
-        <div className="mx-auto flex min-h-[58px] w-[min(1280px,calc(100%-48px))] flex-wrap items-center justify-center gap-3 py-2 text-[0.82rem] text-slate-100 md:justify-between md:gap-7 md:py-0 md:text-[0.95rem]">
+        <div className="flex min-h-14.5 w-full flex-wrap items-center justify-center gap-3 px-6 py-2 text-[0.82rem] text-slate-100 md:justify-between md:gap-7 md:py-0 md:text-[0.95rem] lg:px-8">
           <a
             href="tel:+94777434403"
             className="inline-flex items-center gap-2 whitespace-nowrap"
@@ -41,16 +41,21 @@ export default function Navbar() {
 
       <div className="relative overflow-hidden border-b border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,37,58,0.9),rgba(18,37,58,0.64)),linear-gradient(135deg,transparent_0_76%,rgba(255,255,255,0.05)_76%_78%,transparent_78%_100%),radial-gradient(circle_at_72%_26%,rgba(255,255,255,0.05),transparent_18%)] backdrop-blur-md" />
-        <div className="relative mx-auto flex min-h-[92px] w-[min(1280px,calc(100%-48px))] flex-col items-center gap-4 py-4 lg:flex-row lg:gap-6">
+        <div className="relative flex min-h-23 w-full flex-col items-center gap-4 px-6 py-4 lg:flex-row lg:justify-between lg:gap-6 lg:px-8">
           <Link href="/" className="inline-flex items-center gap-3">
             <Image
               src="/images/logo.png"
               alt="Capital Engineering Logo"
               width={74}
               height={74}
-              className="h-[74px] w-[74px] flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)]"
+              className="h-18.5 w-18.5 flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)]"
               priority
             />
+            <span className="hidden flex-col leading-none sm:flex">
+              <span className="text-[1.35rem] font-bold tracking-[-0.03em] text-slate-50 lg:text-[1.55rem]">
+                Capital Engineering (PVT) LTD
+              </span>
+            </span>
           </Link>
 
           <nav
