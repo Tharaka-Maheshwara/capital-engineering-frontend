@@ -32,20 +32,6 @@ export default function Footer(): JSX.Element {
                 expertise.
               </p>
 
-              <div className="flex gap-3">
-                <a className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/6 text-sm">
-                  FB
-                </a>
-                <a className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/6 text-sm">
-                  TW
-                </a>
-                <a className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/6 text-sm">
-                  LN
-                </a>
-                <a className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/6 text-sm">
-                  IG
-                </a>
-              </div>
             </div>
 
             <div>
