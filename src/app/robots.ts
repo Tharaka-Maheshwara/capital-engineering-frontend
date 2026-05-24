@@ -1,5 +1,11 @@
-// robots.txt route placeholder
-export async function GET() {
-  const txt = `User-agent: *\nDisallow:`;
-  return new Response(txt, { headers: { "Content-Type": "text/plain" } });
+import type { MetadataRoute } from "next";
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+  };
 }
+

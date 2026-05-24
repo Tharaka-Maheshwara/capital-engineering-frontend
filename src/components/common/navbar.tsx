@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { label: "Home", href: "/" },
@@ -11,18 +12,6 @@ const links = [
   { label: "Articles", href: "/articles" },
   { label: "Contact", href: "/#contact" },
 ];
-
-function BrandMark() {
-  return (
-    <div
-      aria-hidden="true"
-      className="relative h-[74px] w-[74px] flex-none rounded-[18px] bg-gradient-to-b from-slate-50 to-slate-200 shadow-[0_12px_28px_rgba(0,0,0,0.24)]"
-    >
-      <span className="absolute inset-[18px_20px] rounded-[12px] border-l-[8px] border-t-[8px] border-slate-800 rotate-45 skew-y-[-10deg]" />
-      <span className="absolute inset-[20px_23px] rounded-[12px] border-b-[8px] border-r-[8px] border-slate-800 rotate-45 skew-y-[-10deg]" />
-    </div>
-  );
-}
 
 export default function Navbar() {
   return (
@@ -53,22 +42,15 @@ export default function Navbar() {
       <div className="relative overflow-hidden border-b border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,37,58,0.9),rgba(18,37,58,0.64)),linear-gradient(135deg,transparent_0_76%,rgba(255,255,255,0.05)_76%_78%,transparent_78%_100%),radial-gradient(circle_at_72%_26%,rgba(255,255,255,0.05),transparent_18%)] backdrop-blur-md" />
         <div className="relative mx-auto flex min-h-[92px] w-[min(1280px,calc(100%-48px))] flex-col items-center gap-4 py-4 lg:flex-row lg:gap-6">
-          <Link
-            href="/"
-            className="inline-flex min-w-[300px] items-center gap-3"
-          >
-            <BrandMark />
-            <span className="flex flex-col leading-none">
-              <span className="inline-flex items-baseline gap-2">
-                <span className="text-[1.55rem] font-bold tracking-[-0.03em] text-slate-50">
-                  Capital Engineering
-                </span>
-                <span className="text-[1.42rem] text-slate-200/70">Ceylon</span>
-              </span>
-              <span className="text-[0.78rem] tracking-[0.18em] text-slate-100/85">
-                (PVT) LTD
-              </span>
-            </span>
+          <Link href="/" className="inline-flex items-center gap-3">
+            <Image
+              src="/images/logo.png"
+              alt="Capital Engineering Logo"
+              width={74}
+              height={74}
+              className="h-[74px] w-[74px] flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)]"
+              priority
+            />
           </Link>
 
           <nav
