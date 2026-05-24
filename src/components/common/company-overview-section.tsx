@@ -70,14 +70,17 @@ export default function CompanyOverviewSection() {
           </p>
 
           <p className="mt-5 max-w-[58ch] text-[1rem] leading-8 text-slate-300/85">
-            Today, with 500+ completed projects and 150+ dedicated professionals,
-            we bring expertise, innovation, and passion to every structure we
-            raise.
+            Today, with 500+ completed projects and 150+ dedicated
+            professionals, we bring expertise, innovation, and passion to every
+            structure we raise.
           </p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {highlights.map((item) => (
-              <div key={item} className="flex items-center gap-3 text-[0.98rem] text-slate-100">
+              <div
+                key={item}
+                className="flex items-center gap-3 text-[0.98rem] text-slate-100"
+              >
                 <span className="inline-flex h-5 w-5 flex-none items-center justify-center text-slate-300/90">
                   <CheckIcon />
                 </span>
