@@ -24,10 +24,10 @@ export default function AboutPage() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200/90 sm:text-xl">
-              Over 15 years of creating remarkable structures and lasting
-              client relationships across the region. From residential builds
-              to large-scale infrastructure, we combine precision, reliability,
-              and engineering expertise in every project we deliver.
+              Over 15 years of creating remarkable structures and lasting client
+              relationships across the region. From residential builds to
+              large-scale infrastructure, we combine precision, reliability, and
+              engineering expertise in every project we deliver.
             </p>
           </div>
         </div>
