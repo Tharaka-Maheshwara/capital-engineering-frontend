@@ -16,7 +16,7 @@ export default function AboutPage() {
         </div>
 
         <div className="relative flex min-h-[78vh] w-full items-center px-4 py-20 sm:px-6 lg:px-10">
-          <div className="max-w-3xl lg:max-w-4xl ml-60">
+          <div className="max-w-3xl lg:max-w-4xl ml-40">
             <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.22em] text-slate-200/80 backdrop-blur-sm">
               About Capital Engineering Ceylon
             </span>
