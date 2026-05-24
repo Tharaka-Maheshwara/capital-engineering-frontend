@@ -92,7 +92,7 @@ export default function Navbar() {
   return (
     <header className="relative z-10">
       <div className="border-b border-white/10 bg-slate-950/95">
-        <div className="grid w-full grid-cols-1 gap-2 px-4 py-2 text-center text-[0.75rem] text-slate-100 sm:min-h-14.5 sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[0.85rem] md:text-[0.95rem] lg:px-8">
+        <div className="grid w-full grid-cols-1 gap-2 px-4 py-4 text-center text-[1rem] text-slate-100 sm:min-h-20 sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[1.08rem] md:text-[1.18rem] lg:px-8">
           <a
             href="tel:+94777434403"
             className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-start sm:text-left"
@@ -127,7 +127,7 @@ export default function Navbar() {
                 className="h-16 w-16 flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)] sm:h-18.5 sm:w-18.5"
                 priority
               />
-              <span className="hidden min-w-0 flex-col leading-none sm:flex">
+              <span className="hidden min-w-0 flex-col leading-tight sm:flex">
                 <span className="truncate text-[1.2rem] font-bold tracking-[-0.03em] text-slate-50 lg:text-[1.55rem]">
                   Capital Engineering (PVT) LTD
                 </span>
