@@ -156,7 +156,9 @@ export default function TestimonialsSection() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
             className={`mx-auto max-w-3xl text-center transition-all duration-700 ease-out ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
             }`}
           >
             <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-blue-700">
