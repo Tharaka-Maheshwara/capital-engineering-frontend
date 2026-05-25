@@ -64,7 +64,7 @@ export default function ContactForm() {
     return (
       <div
         role="status"
-        className="rounded-md bg-emerald-700/20 p-4 text-emerald-200"
+        className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-emerald-100 shadow-[0_16px_30px_rgba(3,15,31,0.18)]"
       >
         Thanks — your message was sent. We'll be in touch shortly.
       </div>
@@ -82,13 +82,13 @@ export default function ContactForm() {
         style={{ display: "none" }}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-slate-300">
+          <label className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-300/85">
             Full Name *
           </label>
           <input
-            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-slate-50 placeholder-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition-colors focus:border-sky-300/50 focus:bg-white/8"
             value={form.name}
             onChange={(e) => update("name", e.target.value)}
             required
@@ -98,12 +98,12 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">
+          <label className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-300/85">
             Email Address *
           </label>
           <input
             type="email"
-            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-slate-50 placeholder-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition-colors focus:border-sky-300/50 focus:bg-white/8"
             value={form.email}
             onChange={(e) => update("email", e.target.value)}
             required
@@ -113,11 +113,11 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">
+          <label className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-300/85">
             Phone Number
           </label>
           <input
-            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-slate-50 placeholder-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition-colors focus:border-sky-300/50 focus:bg-white/8"
             value={form.phone}
             onChange={(e) => update("phone", e.target.value)}
             placeholder="(555) 000-0000"
@@ -125,11 +125,11 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">
+          <label className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-300/85">
             Project Type *
           </label>
           <select
-            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 text-slate-100 focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-slate-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition-colors focus:border-sky-300/50 focus:bg-white/8"
             value={form.subject}
             onChange={(e) => update("subject", e.target.value)}
           >
@@ -142,11 +142,11 @@ export default function ContactForm() {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-slate-300">
+          <label className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-300/85">
             Message *
           </label>
           <textarea
-            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-3 placeholder-slate-400 text-slate-100 focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-slate-50 placeholder-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition-colors focus:border-sky-300/50 focus:bg-white/8"
             rows={6}
             value={form.message}
             onChange={(e) => update("message", e.target.value)}
@@ -156,17 +156,21 @@ export default function ContactForm() {
         </div>
       </div>
 
-      {error && <div className="text-rose-400 mt-2">{error}</div>}
+      {error && (
+        <div className="mt-4 rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">
+          {error}
+        </div>
+      )}
 
-      <div className="mt-4">
+      <div className="mt-5">
         <button
           type="submit"
-          className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-600/60 px-4 py-3 text-slate-100 disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-slate-100 to-white px-4 py-3.5 font-semibold text-[#17324a] shadow-[0_16px_34px_rgba(3,15,31,0.2)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={loading}
         >
           <span>{loading ? "Sending..." : "Send Message"}</span>
           <svg
-            className="h-4 w-4 text-slate-100"
+            className="h-4 w-4 text-[#17324a]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
