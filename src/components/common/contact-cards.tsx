@@ -55,7 +55,7 @@ export default function ContactCards() {
     <section className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] py-10 sm:py-14 lg:py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(15,23,42,0.05),transparent_24%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.06),transparent_22%)]" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto w-full max-w-8xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
             Quick Contact
