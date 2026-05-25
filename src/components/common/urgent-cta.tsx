@@ -42,7 +42,9 @@ export default function UrgentCta() {
                 <IconPhoneSmall />
               </span>
               <span>+94 4 981 500</span>
-              <span aria-hidden className="ml-2">→</span>
+              <span aria-hidden className="ml-2">
+                →
+              </span>
             </Link>
           </div>
         </div>
