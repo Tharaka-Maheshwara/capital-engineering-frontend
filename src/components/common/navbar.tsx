@@ -15,25 +15,18 @@ const links = [
   { label: "Contact", href: "/contact" },
 ];
 
-function LoginIcon() {
+function UserIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M14 5h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6"
+        d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M4 12h10"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9 9l5 3-5 3"
+        d="M4 19a8 8 0 0 1 16 0"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
@@ -189,7 +182,7 @@ export default function Navbar() {
             >
               <span className="sr-only">Login</span>
               <span className="h-5 w-5 shrink-0">
-                <LoginIcon />
+                <UserIcon />
               </span>
             </Link>
 
@@ -235,7 +228,7 @@ export default function Navbar() {
               className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-slate-400/95 px-5 py-3 text-sm font-bold text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95"
             >
               <span className="h-5 w-5 shrink-0">
-                <LoginIcon />
+                <UserIcon />
               </span>
               <span>Login</span>
             </Link>
