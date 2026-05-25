@@ -12,7 +12,7 @@ const links = [
   { label: "Designs", href: "/services" },
   { label: "Pricing", href: "/pricing" },
   { label: "Articles", href: "/articles" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 function LoginIcon() {
