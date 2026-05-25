@@ -18,7 +18,7 @@ function IconPhoneSmall() {
 export default function UrgentCta() {
   return (
     <section className="mx-auto w-full max-w-7xl">
-      <div className="overflow-hidden rounded-[20px] border border-white/6 bg-[linear-gradient(180deg,#172b45_0%,#12263b_100%)] p-6 shadow-[0_24px_60px_rgba(3,15,31,0.24)]">
+      <div className="overflow-hidden rounded-[20px] border border-white/6 bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] p-6 shadow-[0_24px_60px_rgba(3,15,31,0.24)]">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="max-w-3xl">
             <span className="inline-flex rounded-full bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-200/80">
