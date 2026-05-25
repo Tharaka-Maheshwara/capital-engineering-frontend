@@ -1,6 +1,7 @@
 import React from "react";
 import ContactCards from "@/components/common/contact-cards";
 import ContactSection from "@/components/common/contact-section";
+import UrgentCta from "@/components/common/urgent-cta";
 
 export const metadata = {
   title: "Contact Us",
@@ -25,6 +26,10 @@ export default function ContactPage() {
         </header>
 
         <ContactSection />
+
+        <div className="mt-10">
+          <UrgentCta />
+        </div>
       </div>
     </main>
   );
