@@ -41,13 +41,13 @@ export default function ContactSection() {
           </div>
 
           <div className="h-56 overflow-hidden sm:h-64">
-          <iframe
-            title="Company location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093746!2d144.9537353153169!3d-37.81627974202179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f1f1f1f1%3A0xabcdefabcdef!2sFlinders%20Street%20Station!5e0!3m2!1sen!2sau!4v1620000000000"
-            className="h-full w-full border-0"
-            loading="lazy"
-          />
-        </div>
+            <iframe
+              title="Company location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093746!2d144.9537353153169!3d-37.81627974202179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f1f1f1f1%3A0xabcdefabcdef!2sFlinders%20Street%20Station!5e0!3m2!1sen!2sau!4v1620000000000"
+              className="h-full w-full border-0"
+              loading="lazy"
+            />
+          </div>
         </div>
 
         <div className="rounded-[28px] border border-white/10 bg-[#16324a] p-6 shadow-[0_20px_50px_rgba(3,15,31,0.24)] sm:p-7">
@@ -62,7 +62,10 @@ export default function ContactSection() {
               "Dedicated project manager for every build",
               "Transparent pricing — no hidden costs",
             ].map((t) => (
-              <li key={t} className="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/5 px-4 py-3">
+              <li
+                key={t}
+                className="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/5 px-4 py-3"
+              >
                 <svg
                   className="mt-0.5 h-5 w-5 flex-none text-slate-200"
                   fill="none"

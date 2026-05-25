@@ -66,7 +66,8 @@ export default function ContactCards() {
           </h2>
 
           <p className="mt-4 text-[0.98rem] leading-7 text-slate-500 sm:text-[1.02rem]">
-            Use the most direct channel below for project inquiries, email, or urgent support.
+            Use the most direct channel below for project inquiries, email, or
+            urgent support.
           </p>
         </div>
 
@@ -132,9 +133,13 @@ function Card({
 }) {
   return (
     <div className="group relative overflow-hidden rounded-[28px] border border-slate-200 bg-white p-6 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] sm:p-7">
-      <div className={`absolute inset-x-0 top-0 h-1 bg-linear-to-r ${accent}`} />
+      <div
+        className={`absolute inset-x-0 top-0 h-1 bg-linear-to-r ${accent}`}
+      />
       <div className="flex items-start gap-4">
-        <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br ${iconBg} text-white shadow-[0_12px_24px_rgba(15,23,42,0.22)] transition-transform duration-200 group-hover:scale-105`}>
+        <div
+          className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br ${iconBg} text-white shadow-[0_12px_24px_rgba(15,23,42,0.22)] transition-transform duration-200 group-hover:scale-105`}
+        >
           {icon}
         </div>
         <div className="min-w-0 flex-1">
