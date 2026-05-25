@@ -172,7 +172,7 @@ function LoginForm() {
 
       <button
         type="submit"
-          className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white shadow-[0_16px_34px_rgba(32,57,95,0.24)] transition-transform duration-150 hover:-translate-y-0.5"
+        className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white shadow-[0_16px_34px_rgba(32,57,95,0.24)] transition-transform duration-150 hover:-translate-y-0.5"
       >
         Sign In
       </button>
@@ -252,9 +252,7 @@ function SignupForm() {
           type="checkbox"
           className="mt-1 h-4 w-4 rounded border-slate-300 text-[#20395f] focus:ring-[#20395f]"
         />
-        <span>
-          I agree to the terms of service and privacy policy.
-        </span>
+        <span>I agree to the terms of service and privacy policy.</span>
       </label>
 
       <button
