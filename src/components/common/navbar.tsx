@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import AuthModal from "@/components/common/auth-modal";
 
 const links = [
   { label: "Home", href: "/" },
@@ -82,6 +83,7 @@ function CloseIcon() {
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const pathname = usePathname();
 
@@ -175,16 +177,17 @@ export default function Navbar() {
               })}
             </nav>
 
-            <Link
-              href="/login"
-              aria-label="Login"
+            <button
+              type="button"
+              aria-label="Open login form"
+              onClick={() => setIsAuthOpen(true)}
               className="hidden ml-auto h-11 w-11 flex-none items-center justify-center rounded-[14px] bg-slate-400/95 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:flex"
             >
               <span className="sr-only">Login</span>
               <span className="h-5 w-5 shrink-0">
                 <UserIcon />
               </span>
-            </Link>
+            </button>
 
             <button
               type="button"
@@ -222,19 +225,24 @@ export default function Navbar() {
               })}
             </nav>
 
-            <Link
-              href="/login"
-              onClick={() => setIsMenuOpen(false)}
+            <button
+              type="button"
+              onClick={() => {
+                setIsMenuOpen(false);
+                setIsAuthOpen(true);
+              }}
               className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-slate-400/95 px-5 py-3 text-sm font-bold text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95"
             >
               <span className="h-5 w-5 shrink-0">
                 <UserIcon />
               </span>
               <span>Login</span>
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </header>
   );
 }
