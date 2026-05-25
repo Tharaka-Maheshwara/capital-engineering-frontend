@@ -39,7 +39,8 @@ const metricCards = [
 const activityItems = [
   {
     title: "Project milestone approved",
-    description: "Skyline Urban Development moved to the final finishing stage.",
+    description:
+      "Skyline Urban Development moved to the final finishing stage.",
     time: "12 minutes ago",
   },
   {
@@ -49,7 +50,8 @@ const activityItems = [
   },
   {
     title: "Team roster updated",
-    description: "Two engineers and one supervisor were assigned to a new site.",
+    description:
+      "Two engineers and one supervisor were assigned to a new site.",
     time: "Today",
   },
 ];
@@ -70,7 +72,9 @@ export default function AdminDashboardPage() {
           <div className="relative flex h-full flex-col px-5 py-6 sm:px-6 lg:px-5 lg:py-7">
             <div className="flex items-center gap-3 rounded-[22px] border border-white/10 bg-white/5 px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
-                <span className="text-lg font-black tracking-[-0.06em]">CE</span>
+                <span className="text-lg font-black tracking-[-0.06em]">
+                  CE
+                </span>
               </div>
               <div>
                 <div className="text-[0.96rem] font-semibold uppercase tracking-[0.24em] text-slate-200/70">
@@ -82,7 +86,10 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <nav className="mt-8 flex flex-1 flex-col gap-2" aria-label="Admin navigation">
+            <nav
+              className="mt-8 flex flex-1 flex-col gap-2"
+              aria-label="Admin navigation"
+            >
               {navigationItems.map((item) => {
                 const Icon = item.icon;
 
@@ -93,7 +100,9 @@ export default function AdminDashboardPage() {
                     aria-current={item.active ? "page" : undefined}
                     className={`group flex items-center gap-3 rounded-[18px] px-4 py-3 text-[1rem] font-medium transition-colors duration-150 ${item.active ? "bg-white/14 text-white shadow-[0_14px_30px_rgba(0,0,0,0.16)]" : "text-slate-200/72 hover:bg-white/7 hover:text-white"}`}
                   >
-                    <span className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${item.active ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}>
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${item.active ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}
+                    >
                       <Icon />
                     </span>
                     <span>{item.label}</span>
@@ -103,9 +112,12 @@ export default function AdminDashboardPage() {
             </nav>
 
             <div className="mt-6 rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
-              <div className="text-sm font-semibold text-white">Security Status</div>
+              <div className="text-sm font-semibold text-white">
+                Security Status
+              </div>
               <p className="mt-2 text-sm leading-6 text-slate-200/70">
-                Secure session active with role-based access and dashboard monitoring.
+                Secure session active with role-based access and dashboard
+                monitoring.
               </p>
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">
                 <span>Protected</span>
@@ -148,7 +160,9 @@ export default function AdminDashboardPage() {
                   Manage services, projects, and team operations from one place.
                 </h2>
                 <p className="mt-4 max-w-2xl text-[1rem] leading-7 text-slate-100/78 sm:text-[1.05rem]">
-                  This dashboard is set up to match the professional admin style in the screenshot, with a strong left rail, summary cards, and quick access actions.
+                  This dashboard is set up to match the professional admin style
+                  in the screenshot, with a strong left rail, summary cards, and
+                  quick access actions.
                 </p>
               </div>
             </div>
@@ -222,7 +236,7 @@ export default function AdminDashboardPage() {
                       className="flex w-full items-center justify-between rounded-[18px] border border-slate-200 px-4 py-4 text-left text-[0.98rem] font-medium text-slate-700 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50"
                     >
                       <span>{action}</span>
-                        <span className="text-slate-400">-&gt;</span>
+                      <span className="text-slate-400">-&gt;</span>
                     </button>
                   ))}
                 </div>
@@ -240,7 +254,9 @@ export default function AdminDashboardPage() {
                       Platform updates
                     </h3>
                   </div>
-                  <span className="text-sm font-medium text-slate-500">Updated now</span>
+                  <span className="text-sm font-medium text-slate-500">
+                    Updated now
+                  </span>
                 </div>
 
                 <div className="mt-5 space-y-4">
@@ -299,7 +315,8 @@ export default function AdminDashboardPage() {
                     Admin note
                   </div>
                   <p className="mt-3 text-[0.98rem] leading-7 text-white/85">
-                    Use this area for alerts, approvals, or operational highlights without changing the overall professional look.
+                    Use this area for alerts, approvals, or operational
+                    highlights without changing the overall professional look.
                   </p>
                 </div>
               </section>
@@ -312,7 +329,9 @@ export default function AdminDashboardPage() {
 }
 
 function DashboardIcon() {
-  return <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />;
+  return (
+    <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />
+  );
 }
 
 function LayersIcon() {
@@ -320,19 +339,27 @@ function LayersIcon() {
 }
 
 function FolderIcon() {
-  return <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />;
+  return (
+    <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />
+  );
 }
 
 function TeamIcon() {
-  return <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />;
+  return (
+    <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />
+  );
 }
 
 function UsersIcon() {
-  return <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />;
+  return (
+    <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />
+  );
 }
 
 function SettingsIcon() {
-  return <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />;
+  return (
+    <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />
+  );
 }
 
 function PlusIcon() {
@@ -344,7 +371,9 @@ function ArrowRightIcon() {
 }
 
 function LogoutIcon() {
-  return <GlyphIcon path="M10 17l5-5-5-5M15 12H3m12-7h3a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-3" />;
+  return (
+    <GlyphIcon path="M10 17l5-5-5-5M15 12H3m12-7h3a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-3" />
+  );
 }
 
 function GlyphIcon({ path }: { path: string }) {

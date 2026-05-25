@@ -5,11 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
 
-export default function SiteChrome({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
 
