@@ -62,7 +62,10 @@ export default function ContactForm() {
 
   if (success)
     return (
-      <div role="status" className="rounded-md bg-emerald-700/20 p-4 text-emerald-200">
+      <div
+        role="status"
+        className="rounded-md bg-emerald-700/20 p-4 text-emerald-200"
+      >
         Thanks — your message was sent. We'll be in touch shortly.
       </div>
     );
@@ -79,10 +82,11 @@ export default function ContactForm() {
         style={{ display: "none" }}
       />
 
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300">Full Name *</label>
+          <label className="block text-sm font-medium text-slate-300">
+            Full Name *
+          </label>
           <input
             className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
             value={form.name}
@@ -94,7 +98,9 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">Email Address *</label>
+          <label className="block text-sm font-medium text-slate-300">
+            Email Address *
+          </label>
           <input
             type="email"
             className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
@@ -107,7 +113,9 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">Phone Number</label>
+          <label className="block text-sm font-medium text-slate-300">
+            Phone Number
+          </label>
           <input
             className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
             value={form.phone}
@@ -117,7 +125,9 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300">Project Type *</label>
+          <label className="block text-sm font-medium text-slate-300">
+            Project Type *
+          </label>
           <select
             className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 text-slate-100 focus:outline-none"
             value={form.subject}
@@ -132,7 +142,9 @@ export default function ContactForm() {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-slate-300">Message *</label>
+          <label className="block text-sm font-medium text-slate-300">
+            Message *
+          </label>
           <textarea
             className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-3 placeholder-slate-400 text-slate-100 focus:outline-none"
             rows={6}
@@ -153,8 +165,18 @@ export default function ContactForm() {
           disabled={loading}
         >
           <span>{loading ? "Sending..." : "Send Message"}</span>
-          <svg className="h-4 w-4 text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M2 12l19-9-9 19-2-7-8-3z" />
+          <svg
+            className="h-4 w-4 text-slate-100"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2 12l19-9-9 19-2-7-8-3z"
+            />
           </svg>
         </button>
       </div>

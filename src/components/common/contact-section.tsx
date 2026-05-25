@@ -12,8 +12,13 @@ export default function ContactSection() {
             <span className="inline-block rounded-full bg-[#17324a] px-3 py-1 text-xs uppercase tracking-wide text-slate-300">
               MESSAGE US
             </span>
-            <h2 className="mt-4 text-2xl font-semibold text-slate-100">Send Us a Message</h2>
-            <p className="mt-2 text-slate-300">We’d love to hear about your project — tell us a bit about it and we’ll get back quickly.</p>
+            <h2 className="mt-4 text-2xl font-semibold text-slate-100">
+              Send Us a Message
+            </h2>
+            <p className="mt-2 text-slate-300">
+              We’d love to hear about your project — tell us a bit about it and
+              we’ll get back quickly.
+            </p>
           </div>
 
           <ContactForm />
@@ -31,7 +36,9 @@ export default function ContactSection() {
         </div>
 
         <div className="rounded-2xl border border-slate-700 bg-[#16324a]/60 p-6">
-          <h3 className="text-lg font-semibold text-slate-100">Why Work With Capital Engineering Ceylon?</h3>
+          <h3 className="text-lg font-semibold text-slate-100">
+            Why Work With Capital Engineering Ceylon?
+          </h3>
           <ul className="mt-4 space-y-3 text-slate-300">
             {[
               "Free initial consultation and project estimate",
@@ -41,8 +48,18 @@ export default function ContactSection() {
               "Transparent pricing — no hidden costs",
             ].map((t) => (
               <li key={t} className="flex items-start gap-3">
-                <svg className="h-5 w-5 text-slate-300 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                <svg
+                  className="h-5 w-5 text-slate-300 mt-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 <span>{t}</span>
               </li>
