@@ -10,9 +10,13 @@ export const metadata = {
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#12263b] px-4 py-12 text-slate-100">
-      <div className="container mx-auto">
-        <ContactCards />
+      <section className="-mx-4 bg-white py-2 text-slate-900 sm:-mx-6 lg:-mx-8">
+        <div className="container mx-auto">
+          <ContactCards />
+        </div>
+      </section>
 
+      <div className="container mx-auto mt-10">
         <header className="mb-8">
           <h1 className="text-3xl font-bold">Contact Us</h1>
           <p className="mt-2 text-slate-300">
