@@ -53,9 +53,9 @@ function IconClock() {
 export default function ContactCards() {
   return (
     <section className="bg-white py-8 sm:py-10 lg:py-12">
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 sm:gap-5 xl:gap-6">
-          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)] sm:p-7">
+          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_16px_40px_rgba(15,23,42,0.1)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_22px_50px_rgba(15,23,42,0.14)] sm:p-7">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-slate-800 to-slate-600 text-white shadow-[0_12px_24px_rgba(30,41,59,0.28)] transition-transform duration-200 group-hover:scale-105">
               <IconPhone />
             </div>
@@ -72,7 +72,7 @@ export default function ContactCards() {
             </p>
           </div>
 
-          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)] sm:p-7">
+          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_16px_40px_rgba(15,23,42,0.1)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_22px_50px_rgba(15,23,42,0.14)] sm:p-7">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-slate-800 to-slate-600 text-white shadow-[0_12px_24px_rgba(30,41,59,0.28)] transition-transform duration-200 group-hover:scale-105">
               <IconMail />
             </div>
@@ -89,7 +89,7 @@ export default function ContactCards() {
             </p>
           </div>
 
-          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)] sm:p-7">
+          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_16px_40px_rgba(15,23,42,0.1)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_22px_50px_rgba(15,23,42,0.14)] sm:p-7">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-slate-800 to-slate-600 text-white shadow-[0_12px_24px_rgba(30,41,59,0.28)] transition-transform duration-200 group-hover:scale-105">
               <IconPhone />
             </div>
@@ -106,7 +106,7 @@ export default function ContactCards() {
             </p>
           </div>
 
-          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)] sm:p-7">
+          <div className="group rounded-3xl border border-slate-200/80 bg-linear-to-b from-white to-slate-50 p-6 text-center shadow-[0_16px_40px_rgba(15,23,42,0.1)] transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_22px_50px_rgba(15,23,42,0.14)] sm:p-7">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-slate-800 to-slate-600 text-white shadow-[0_12px_24px_rgba(30,41,59,0.28)] transition-transform duration-200 group-hover:scale-105">
               <IconClock />
             </div>
