@@ -62,17 +62,13 @@ export default function ContactForm() {
 
   if (success)
     return (
-      <div role="status" className="rounded-md bg-green-50 p-4 text-green-800">
+      <div role="status" className="rounded-md bg-emerald-700/20 p-4 text-emerald-200">
         Thanks — your message was sent. We'll be in touch shortly.
       </div>
     );
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="max-w-xl space-y-4"
-      aria-label="Contact form"
-    >
+    <form onSubmit={onSubmit} className="w-full" aria-label="Contact form">
       <input
         type="text"
         name="website"
@@ -83,67 +79,83 @@ export default function ContactForm() {
         style={{ display: "none" }}
       />
 
-      <div>
-        <label className="block text-sm font-medium">Name</label>
-        <input
-          className="mt-1 w-full rounded border px-3 py-2"
-          value={form.name}
-          onChange={(e) => update("name", e.target.value)}
-          required
-          aria-required
-        />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-slate-300">Full Name *</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            required
+            aria-required
+            placeholder="John Smith"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300">Email Address *</label>
+          <input
+            type="email"
+            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
+            value={form.email}
+            onChange={(e) => update("email", e.target.value)}
+            required
+            aria-required
+            placeholder="john@example.com"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300">Phone Number</label>
+          <input
+            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 placeholder-slate-400 text-slate-100 focus:outline-none"
+            value={form.phone}
+            onChange={(e) => update("phone", e.target.value)}
+            placeholder="(555) 000-0000"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300">Project Type *</label>
+          <select
+            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-2 text-slate-100 focus:outline-none"
+            value={form.subject}
+            onChange={(e) => update("subject", e.target.value)}
+          >
+            <option value="">Select type...</option>
+            <option>Residential</option>
+            <option>Commercial</option>
+            <option>Industrial</option>
+            <option>Renovation</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-slate-300">Message *</label>
+          <textarea
+            className="mt-2 w-full rounded-lg bg-[#12263b]/60 border border-slate-700 px-3 py-3 placeholder-slate-400 text-slate-100 focus:outline-none"
+            rows={6}
+            value={form.message}
+            onChange={(e) => update("message", e.target.value)}
+            required
+            placeholder="Tell us about your project..."
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium">Email</label>
-        <input
-          type="email"
-          className="mt-1 w-full rounded border px-3 py-2"
-          value={form.email}
-          onChange={(e) => update("email", e.target.value)}
-          required
-          aria-required
-        />
-      </div>
+      {error && <div className="text-rose-400 mt-2">{error}</div>}
 
-      <div>
-        <label className="block text-sm font-medium">Phone (optional)</label>
-        <input
-          className="mt-1 w-full rounded border px-3 py-2"
-          value={form.phone}
-          onChange={(e) => update("phone", e.target.value)}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium">Subject</label>
-        <input
-          className="mt-1 w-full rounded border px-3 py-2"
-          value={form.subject}
-          onChange={(e) => update("subject", e.target.value)}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium">Message</label>
-        <textarea
-          className="mt-1 w-full rounded border px-3 py-2"
-          rows={6}
-          value={form.message}
-          onChange={(e) => update("message", e.target.value)}
-          required
-        />
-      </div>
-
-      {error && <div className="text-red-600">{error}</div>}
-
-      <div>
+      <div className="mt-4">
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-60"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-600/60 px-4 py-3 text-slate-100 disabled:opacity-60"
           disabled={loading}
         >
-          {loading ? "Sending..." : "Send Message"}
+          <span>{loading ? "Sending..." : "Send Message"}</span>
+          <svg className="h-4 w-4 text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M2 12l19-9-9 19-2-7-8-3z" />
+          </svg>
         </button>
       </div>
     </form>
