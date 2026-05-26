@@ -36,7 +36,12 @@ type ProjectFormState = {
 const navigationItems: NavigationItem[] = [
   { label: "Dashboard", href: "/admin/admin-dashboard", icon: DashboardIcon },
   { label: "Services", href: "#", icon: LayersIcon },
-  { label: "Projects", href: "/admin/projects", active: true, icon: FolderIcon },
+  {
+    label: "Projects",
+    href: "/admin/projects",
+    active: true,
+    icon: FolderIcon,
+  },
   { label: "Team", href: "#", icon: TeamIcon },
   { label: "Users", href: "#", icon: UsersIcon },
   { label: "Settings", href: "#", icon: SettingsIcon },
@@ -52,7 +57,8 @@ const initialFormState: ProjectFormState = {
   metaDescription: "",
 };
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 const fieldInputClass =
   "mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] outline-none transition-colors placeholder:text-slate-400 focus:border-sky-300 focus:bg-white";
 
@@ -73,9 +79,12 @@ export default function ProjectManager() {
     setError(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/projects?per_page=12`, {
-        cache: "no-store",
-      });
+      const response = await fetch(
+        `${apiBaseUrl}/api/v1/projects?per_page=12`,
+        {
+          cache: "no-store",
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to load projects");
@@ -84,13 +93,20 @@ export default function ProjectManager() {
       const payload = (await response.json()) as { data?: ProjectRecord[] };
       setProjects(Array.isArray(payload.data) ? payload.data : []);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Failed to load projects");
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "Failed to load projects",
+      );
     } finally {
       setLoadingProjects(false);
     }
   }
 
-  function updateField<K extends keyof ProjectFormState>(key: K, value: ProjectFormState[K]) {
+  function updateField<K extends keyof ProjectFormState>(
+    key: K,
+    value: ProjectFormState[K],
+  ) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -98,7 +114,9 @@ export default function ProjectManager() {
     updateField("title", value);
   }
 
-  async function readResponsePayload(response: Response): Promise<Record<string, unknown> | null> {
+  async function readResponsePayload(
+    response: Response,
+  ): Promise<Record<string, unknown> | null> {
     const contentType = response.headers.get("content-type") ?? "";
     const bodyText = await response.text();
 
@@ -157,7 +175,11 @@ export default function ProjectManager() {
       setForm(initialFormState);
       await loadProjects();
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Project could not be saved");
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Project could not be saved",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -165,9 +187,11 @@ export default function ProjectManager() {
 
   const projectTotals = {
     total: projects.length,
-    planning: projects.filter((project) => project.status === "planning").length,
+    planning: projects.filter((project) => project.status === "planning")
+      .length,
     ongoing: projects.filter((project) => project.status === "ongoing").length,
-    completed: projects.filter((project) => project.status === "completed").length,
+    completed: projects.filter((project) => project.status === "completed")
+      .length,
   };
 
   return (
@@ -178,7 +202,9 @@ export default function ProjectManager() {
           <div className="relative flex h-full flex-col px-5 py-6 sm:px-6 lg:px-5 lg:py-7">
             <div className="flex items-center gap-3 rounded-[22px] border border-white/10 bg-white/5 px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
-                <span className="text-lg font-black tracking-[-0.06em]">CE</span>
+                <span className="text-lg font-black tracking-[-0.06em]">
+                  CE
+                </span>
               </div>
               <div>
                 <div className="text-[0.96rem] font-semibold uppercase tracking-[0.24em] text-slate-200/70">
@@ -190,7 +216,10 @@ export default function ProjectManager() {
               </div>
             </div>
 
-            <nav className="mt-8 flex flex-1 flex-col gap-2" aria-label="Admin navigation">
+            <nav
+              className="mt-8 flex flex-1 flex-col gap-2"
+              aria-label="Admin navigation"
+            >
               {navigationItems.map((item) => {
                 const Icon = item.icon;
 
@@ -213,9 +242,12 @@ export default function ProjectManager() {
             </nav>
 
             <div className="mt-6 rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
-              <div className="text-sm font-semibold text-white">Project Intake</div>
+              <div className="text-sm font-semibold text-white">
+                Project Intake
+              </div>
               <p className="mt-2 text-sm leading-6 text-slate-200/70">
-                Add the project details, description, and SEO metadata directly into the backend.
+                Add the project details, description, and SEO metadata directly
+                into the backend.
               </p>
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-sm text-sky-200">
                 <span>Connected</span>
@@ -248,10 +280,26 @@ export default function ProjectManager() {
 
           <section className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              <StatCard label="Total Projects" value={String(projectTotals.total).padStart(2, "0")} tone="from-slate-900 via-slate-800 to-slate-700" />
-              <StatCard label="Planning" value={String(projectTotals.planning).padStart(2, "0")} tone="from-sky-900 via-sky-800 to-slate-800" />
-              <StatCard label="Ongoing" value={String(projectTotals.ongoing).padStart(2, "0")} tone="from-emerald-900 via-emerald-800 to-slate-800" />
-              <StatCard label="Completed" value={String(projectTotals.completed).padStart(2, "0")} tone="from-amber-900 via-amber-800 to-slate-800" />
+              <StatCard
+                label="Total Projects"
+                value={String(projectTotals.total).padStart(2, "0")}
+                tone="from-slate-900 via-slate-800 to-slate-700"
+              />
+              <StatCard
+                label="Planning"
+                value={String(projectTotals.planning).padStart(2, "0")}
+                tone="from-sky-900 via-sky-800 to-slate-800"
+              />
+              <StatCard
+                label="Ongoing"
+                value={String(projectTotals.ongoing).padStart(2, "0")}
+                tone="from-emerald-900 via-emerald-800 to-slate-800"
+              />
+              <StatCard
+                label="Completed"
+                value={String(projectTotals.completed).padStart(2, "0")}
+                tone="from-amber-900 via-amber-800 to-slate-800"
+              />
             </div>
 
             <div className="mt-6 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
@@ -286,7 +334,12 @@ export default function ProjectManager() {
                       <select
                         className={fieldInputClass}
                         value={form.status}
-                        onChange={(event) => updateField("status", event.target.value as ProjectFormState["status"])}
+                        onChange={(event) =>
+                          updateField(
+                            "status",
+                            event.target.value as ProjectFormState["status"],
+                          )
+                        }
                       >
                         <option value="planning">Planning</option>
                         <option value="ongoing">Ongoing</option>
@@ -298,7 +351,9 @@ export default function ProjectManager() {
                       <input
                         className={fieldInputClass}
                         value={form.location}
-                        onChange={(event) => updateField("location", event.target.value)}
+                        onChange={(event) =>
+                          updateField("location", event.target.value)
+                        }
                         placeholder="Colombo, Sri Lanka"
                         required
                       />
@@ -308,7 +363,9 @@ export default function ProjectManager() {
                       <input
                         className={fieldInputClass}
                         value={form.client}
-                        onChange={(event) => updateField("client", event.target.value)}
+                        onChange={(event) =>
+                          updateField("client", event.target.value)
+                        }
                         placeholder="Capital Holdings"
                         required
                       />
@@ -318,7 +375,9 @@ export default function ProjectManager() {
                       <input
                         className={fieldInputClass}
                         value={form.area}
-                        onChange={(event) => updateField("area", event.target.value)}
+                        onChange={(event) =>
+                          updateField("area", event.target.value)
+                        }
                         placeholder="24,000 sq ft"
                       />
                     </Field>
@@ -327,7 +386,9 @@ export default function ProjectManager() {
                       <textarea
                         className={`${fieldInputClass} min-h-28 resize-y`}
                         value={form.metaDescription}
-                        onChange={(event) => updateField("metaDescription", event.target.value)}
+                        onChange={(event) =>
+                          updateField("metaDescription", event.target.value)
+                        }
                         maxLength={160}
                         placeholder="Short SEO summary for search snippets"
                       />
@@ -337,7 +398,9 @@ export default function ProjectManager() {
                       <textarea
                         className={`${fieldInputClass} min-h-44 resize-y`}
                         value={form.description}
-                        onChange={(event) => updateField("description", event.target.value)}
+                        onChange={(event) =>
+                          updateField("description", event.target.value)
+                        }
                         placeholder="Write the full project brief, scope, and delivery notes."
                         required
                       />
@@ -378,16 +441,23 @@ export default function ProjectManager() {
                       </h2>
                     </div>
                     <span className="text-sm font-medium text-slate-500">
-                      {loadingProjects ? "Loading..." : `${projects.length} items`}
+                      {loadingProjects
+                        ? "Loading..."
+                        : `${projects.length} items`}
                     </span>
                   </div>
 
                   <div className="mt-5 space-y-3">
                     {projects.map((project) => (
-                      <article key={project.id} className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4">
+                      <article
+                        key={project.id}
+                        className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4"
+                      >
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="text-[1rem] font-semibold text-slate-900">{project.title}</h3>
+                            <h3 className="text-[1rem] font-semibold text-slate-900">
+                              {project.title}
+                            </h3>
                             <p className="mt-1 text-sm text-slate-600">
                               {project.location} · {project.client}
                             </p>
@@ -412,7 +482,8 @@ export default function ProjectManager() {
                     Input format
                   </div>
                   <p className="mt-3 text-sm leading-7 text-white/85">
-                    The backend now stores only the project fields shown in the form.
+                    The backend now stores only the project fields shown in the
+                    form.
                   </p>
                 </section>
               </aside>
@@ -453,15 +524,21 @@ function StatCard({
   tone: string;
 }) {
   return (
-    <article className={`rounded-3xl bg-linear-to-br ${tone} p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)]`}>
+    <article
+      className={`rounded-3xl bg-linear-to-br ${tone} p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)]`}
+    >
       <p className="text-sm font-medium text-white/80">{label}</p>
-      <div className="mt-3 text-5xl font-semibold tracking-[-0.08em] text-white">{value}</div>
+      <div className="mt-3 text-5xl font-semibold tracking-[-0.08em] text-white">
+        {value}
+      </div>
     </article>
   );
 }
 
 function DashboardIcon() {
-  return <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />;
+  return (
+    <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />
+  );
 }
 
 function LayersIcon() {
@@ -469,19 +546,27 @@ function LayersIcon() {
 }
 
 function FolderIcon() {
-  return <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />;
+  return (
+    <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />
+  );
 }
 
 function TeamIcon() {
-  return <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />;
+  return (
+    <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />
+  );
 }
 
 function UsersIcon() {
-  return <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />;
+  return (
+    <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />
+  );
 }
 
 function SettingsIcon() {
-  return <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />;
+  return (
+    <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />
+  );
 }
 
 function GlyphIcon({ path }: { path: string }) {
