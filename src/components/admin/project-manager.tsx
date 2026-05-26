@@ -70,7 +70,9 @@ export default function ProjectManager() {
   const [submitting, setSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
-  const [deletingProjectId, setDeletingProjectId] = useState<number | null>(null);
+  const [deletingProjectId, setDeletingProjectId] = useState<number | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -209,7 +211,11 @@ export default function ProjectManager() {
         throw new Error(message);
       }
 
-      setSuccess(isEditing ? "Project updated successfully." : "Project saved successfully.");
+      setSuccess(
+        isEditing
+          ? "Project updated successfully."
+          : "Project saved successfully.",
+      );
       setForm(initialFormState);
       setIsModalOpen(false);
       setEditingProjectId(null);
@@ -235,12 +241,15 @@ export default function ProjectManager() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/projects/${projectId}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
+      const response = await fetch(
+        `${apiBaseUrl}/api/v1/projects/${projectId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         const payload = await readResponsePayload(response);
@@ -414,7 +423,9 @@ export default function ProjectManager() {
                     </h2>
                   </div>
                   <span className="text-sm font-medium text-slate-500">
-                    {loadingProjects ? "Loading..." : `${projects.length} items`}
+                    {loadingProjects
+                      ? "Loading..."
+                      : `${projects.length} items`}
                   </span>
                 </div>
 
@@ -458,7 +469,9 @@ export default function ProjectManager() {
                           disabled={deletingProjectId === project.id}
                           className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                          {deletingProjectId === project.id ? "Deleting..." : "Delete"}
+                          {deletingProjectId === project.id
+                            ? "Deleting..."
+                            : "Delete"}
                         </button>
                       </div>
                     </article>
@@ -466,7 +479,8 @@ export default function ProjectManager() {
 
                   {!loadingProjects && projects.length === 0 && (
                     <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-                      No projects yet. Click Add New Project to create the first entry.
+                      No projects yet. Click Add New Project to create the first
+                      entry.
                     </div>
                   )}
                 </div>
@@ -478,10 +492,12 @@ export default function ProjectManager() {
                     Management flow
                   </div>
                   <p className="mt-3 text-sm leading-7 text-white/85">
-                    Use Add New Project for creation, Edit for updates, and Delete for removal.
+                    Use Add New Project for creation, Edit for updates, and
+                    Delete for removal.
                   </p>
                   <p className="mt-3 text-sm leading-7 text-white/85">
-                    All actions sync directly with the backend API and refresh the list automatically.
+                    All actions sync directly with the backend API and refresh
+                    the list automatically.
                   </p>
                 </section>
               </aside>
@@ -496,7 +512,9 @@ export default function ProjectManager() {
                         Project form
                       </p>
                       <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                        {editingProjectId === null ? "Add new project" : "Edit project"}
+                        {editingProjectId === null
+                          ? "Add new project"
+                          : "Edit project"}
                       </h2>
                     </div>
                     <button
@@ -514,7 +532,9 @@ export default function ProjectManager() {
                         <input
                           className={fieldInputClass}
                           value={form.title}
-                          onChange={(event) => updateField("title", event.target.value)}
+                          onChange={(event) =>
+                            updateField("title", event.target.value)
+                          }
                           placeholder="Central Plaza Tower"
                           required
                         />
@@ -525,7 +545,10 @@ export default function ProjectManager() {
                           className={fieldInputClass}
                           value={form.status}
                           onChange={(event) =>
-                            updateField("status", event.target.value as ProjectFormState["status"])
+                            updateField(
+                              "status",
+                              event.target.value as ProjectFormState["status"],
+                            )
                           }
                         >
                           <option value="planning">Planning</option>
@@ -538,7 +561,9 @@ export default function ProjectManager() {
                         <input
                           className={fieldInputClass}
                           value={form.location}
-                          onChange={(event) => updateField("location", event.target.value)}
+                          onChange={(event) =>
+                            updateField("location", event.target.value)
+                          }
                           placeholder="Colombo, Sri Lanka"
                           required
                         />
@@ -548,7 +573,9 @@ export default function ProjectManager() {
                         <input
                           className={fieldInputClass}
                           value={form.client}
-                          onChange={(event) => updateField("client", event.target.value)}
+                          onChange={(event) =>
+                            updateField("client", event.target.value)
+                          }
                           placeholder="Capital Holdings"
                           required
                         />
@@ -558,7 +585,9 @@ export default function ProjectManager() {
                         <input
                           className={fieldInputClass}
                           value={form.area}
-                          onChange={(event) => updateField("area", event.target.value)}
+                          onChange={(event) =>
+                            updateField("area", event.target.value)
+                          }
                           placeholder="24,000 sq ft"
                         />
                       </Field>
@@ -567,7 +596,9 @@ export default function ProjectManager() {
                         <textarea
                           className={`${fieldInputClass} min-h-28 resize-y`}
                           value={form.metaDescription}
-                          onChange={(event) => updateField("metaDescription", event.target.value)}
+                          onChange={(event) =>
+                            updateField("metaDescription", event.target.value)
+                          }
                           maxLength={160}
                           placeholder="Short SEO summary for search snippets"
                         />
@@ -577,7 +608,9 @@ export default function ProjectManager() {
                         <textarea
                           className={`${fieldInputClass} min-h-44 resize-y`}
                           value={form.description}
-                          onChange={(event) => updateField("description", event.target.value)}
+                          onChange={(event) =>
+                            updateField("description", event.target.value)
+                          }
                           placeholder="Write the full project brief, scope, and delivery notes."
                           required
                         />
