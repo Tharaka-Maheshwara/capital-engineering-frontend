@@ -19,6 +19,7 @@ type ProjectRecord = {
   location: string;
   client: string;
   area: string | null;
+  description: string;
   meta_description: string | null;
   published_at: string | null;
 };
@@ -67,6 +68,9 @@ export default function ProjectManager() {
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
+  const [deletingProjectId, setDeletingProjectId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -110,8 +114,38 @@ export default function ProjectManager() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
-  function syncTitle(value: string) {
-    updateField("title", value);
+  function openCreateModal() {
+    setEditingProjectId(null);
+    setForm(initialFormState);
+    setError(null);
+    setSuccess(null);
+    setIsModalOpen(true);
+  }
+
+  function openEditModal(project: ProjectRecord) {
+    setEditingProjectId(project.id);
+    setForm({
+      title: project.title,
+      description: project.description,
+      status: project.status as ProjectFormState["status"],
+      location: project.location,
+      client: project.client,
+      area: project.area ?? "",
+      metaDescription: project.meta_description ?? "",
+    });
+    setError(null);
+    setSuccess(null);
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    if (submitting) {
+      return;
+    }
+
+    setIsModalOpen(false);
+    setEditingProjectId(null);
+    setForm(initialFormState);
   }
 
   async function readResponsePayload(
@@ -144,8 +178,12 @@ export default function ProjectManager() {
     setSubmitting(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/projects`, {
-        method: "POST",
+      const isEditing = editingProjectId !== null;
+      const endpoint = isEditing
+        ? `${apiBaseUrl}/api/v1/projects/${editingProjectId}`
+        : `${apiBaseUrl}/api/v1/projects`;
+      const response = await fetch(endpoint, {
+        method: isEditing ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -171,8 +209,10 @@ export default function ProjectManager() {
         throw new Error(message);
       }
 
-      setSuccess("Project saved successfully.");
+      setSuccess(isEditing ? "Project updated successfully." : "Project saved successfully.");
       setForm(initialFormState);
+      setIsModalOpen(false);
+      setEditingProjectId(null);
       await loadProjects();
     } catch (saveError) {
       setError(
@@ -182,6 +222,45 @@ export default function ProjectManager() {
       );
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleDelete(projectId: number) {
+    if (!confirm("Delete this project? This action cannot be undone.")) {
+      return;
+    }
+
+    setDeletingProjectId(projectId);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/v1/projects/${projectId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const payload = await readResponsePayload(response);
+        const message =
+          (payload?.message as string | undefined) ||
+          (payload?.error as string | undefined) ||
+          "Project could not be deleted";
+        throw new Error(message);
+      }
+
+      setSuccess("Project deleted successfully.");
+      await loadProjects();
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Project could not be deleted",
+      );
+    } finally {
+      setDeletingProjectId(null);
     }
   }
 
@@ -265,16 +344,25 @@ export default function ProjectManager() {
                   Project Management
                 </p>
                 <h1 className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-[2.15rem]">
-                  Add a new project
+                  Projects
                 </h1>
               </div>
 
-              <Link
-                href="/admin/admin-dashboard"
-                className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition-transform duration-150 hover:-translate-y-0.5 hover:text-slate-800"
-              >
-                Back to dashboard
-              </Link>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={openCreateModal}
+                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-4 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] transition-transform duration-150 hover:-translate-y-0.5"
+                >
+                  Add New Project
+                </button>
+                <Link
+                  href="/admin/admin-dashboard"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition-transform duration-150 hover:-translate-y-0.5 hover:text-slate-800"
+                >
+                  Back to dashboard
+                </Link>
+              </div>
             </div>
           </header>
 
@@ -302,192 +390,227 @@ export default function ProjectManager() {
               />
             </div>
 
+            {error && (
+              <div className="mt-6 rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-700">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-700">
+                {success}
+              </div>
+            )}
+
             <div className="mt-6 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
-              <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+              <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)] xl:col-span-1">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      Project form
+                      Project records
                     </p>
                     <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                      Create project entry
+                      Saved projects
                     </h2>
                   </div>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    API powered
+                  <span className="text-sm font-medium text-slate-500">
+                    {loadingProjects ? "Loading..." : `${projects.length} items`}
                   </span>
                 </div>
 
-                <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Field label="Title *">
-                      <input
-                        className={fieldInputClass}
-                        value={form.title}
-                        onChange={(event) => syncTitle(event.target.value)}
-                        placeholder="Central Plaza Tower"
-                        required
-                      />
-                    </Field>
+                <div className="mt-5 space-y-3">
+                  {projects.map((project) => (
+                    <article
+                      key={project.id}
+                      className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-[1rem] font-semibold text-slate-900">
+                            {project.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-slate-600">
+                            {project.location} · {project.client}
+                          </p>
+                          {project.area && (
+                            <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
+                              Area: {project.area}
+                            </p>
+                          )}
+                        </div>
 
-                    <Field label="Status *">
-                      <select
-                        className={fieldInputClass}
-                        value={form.status}
-                        onChange={(event) =>
-                          updateField(
-                            "status",
-                            event.target.value as ProjectFormState["status"],
-                          )
-                        }
-                      >
-                        <option value="planning">Planning</option>
-                        <option value="ongoing">Ongoing</option>
-                        <option value="completed">Completed</option>
-                      </select>
-                    </Field>
+                        <span className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 shadow-sm">
+                          {project.status_label}
+                        </span>
+                      </div>
 
-                    <Field label="Location *">
-                      <input
-                        className={fieldInputClass}
-                        value={form.location}
-                        onChange={(event) =>
-                          updateField("location", event.target.value)
-                        }
-                        placeholder="Colombo, Sri Lanka"
-                        required
-                      />
-                    </Field>
+                      <div className="mt-4 flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(project)}
+                          className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 transition-colors hover:bg-slate-100"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(project.id)}
+                          disabled={deletingProjectId === project.id}
+                          className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {deletingProjectId === project.id ? "Deleting..." : "Delete"}
+                        </button>
+                      </div>
+                    </article>
+                  ))}
 
-                    <Field label="Client *">
-                      <input
-                        className={fieldInputClass}
-                        value={form.client}
-                        onChange={(event) =>
-                          updateField("client", event.target.value)
-                        }
-                        placeholder="Capital Holdings"
-                        required
-                      />
-                    </Field>
-
-                    <Field label="Area">
-                      <input
-                        className={fieldInputClass}
-                        value={form.area}
-                        onChange={(event) =>
-                          updateField("area", event.target.value)
-                        }
-                        placeholder="24,000 sq ft"
-                      />
-                    </Field>
-
-                    <Field label="Meta Description" fullWidth>
-                      <textarea
-                        className={`${fieldInputClass} min-h-28 resize-y`}
-                        value={form.metaDescription}
-                        onChange={(event) =>
-                          updateField("metaDescription", event.target.value)
-                        }
-                        maxLength={160}
-                        placeholder="Short SEO summary for search snippets"
-                      />
-                    </Field>
-
-                    <Field label="Description *" fullWidth>
-                      <textarea
-                        className={`${fieldInputClass} min-h-44 resize-y`}
-                        value={form.description}
-                        onChange={(event) =>
-                          updateField("description", event.target.value)
-                        }
-                        placeholder="Write the full project brief, scope, and delivery notes."
-                        required
-                      />
-                    </Field>
-                  </div>
-
-                  {error && (
-                    <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-700">
-                      {error}
+                  {!loadingProjects && projects.length === 0 && (
+                    <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
+                      No projects yet. Click Add New Project to create the first entry.
                     </div>
                   )}
-
-                  {success && (
-                    <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-700">
-                      {success}
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(3,15,31,0.2)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {submitting ? "Saving project..." : "Save project"}
-                  </button>
-                </form>
+                </div>
               </section>
 
               <aside className="space-y-5">
-                <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Latest records
-                      </p>
-                      <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                        Saved projects
-                      </h2>
-                    </div>
-                    <span className="text-sm font-medium text-slate-500">
-                      {loadingProjects
-                        ? "Loading..."
-                        : `${projects.length} items`}
-                    </span>
-                  </div>
-
-                  <div className="mt-5 space-y-3">
-                    {projects.map((project) => (
-                      <article
-                        key={project.id}
-                        className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <h3 className="text-[1rem] font-semibold text-slate-900">
-                              {project.title}
-                            </h3>
-                            <p className="mt-1 text-sm text-slate-600">
-                              {project.location} · {project.client}
-                            </p>
-                          </div>
-                          <span className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 shadow-sm">
-                            {project.status_label}
-                          </span>
-                        </div>
-                      </article>
-                    ))}
-
-                    {!loadingProjects && projects.length === 0 && (
-                      <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-                        No projects yet. Use the form to create the first entry.
-                      </div>
-                    )}
-                  </div>
-                </section>
-
                 <section className="rounded-3xl border border-slate-200/80 bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
                   <div className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
-                    Input format
+                    Management flow
                   </div>
                   <p className="mt-3 text-sm leading-7 text-white/85">
-                    The backend now stores only the project fields shown in the
-                    form.
+                    Use Add New Project for creation, Edit for updates, and Delete for removal.
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-white/85">
+                    All actions sync directly with the backend API and refresh the list automatically.
                   </p>
                 </section>
               </aside>
             </div>
+
+            {isModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm">
+                <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-slate-200/90 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.25)] sm:p-6">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Project form
+                      </p>
+                      <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
+                        {editingProjectId === null ? "Add new project" : "Edit project"}
+                      </h2>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <Field label="Title *">
+                        <input
+                          className={fieldInputClass}
+                          value={form.title}
+                          onChange={(event) => updateField("title", event.target.value)}
+                          placeholder="Central Plaza Tower"
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Status *">
+                        <select
+                          className={fieldInputClass}
+                          value={form.status}
+                          onChange={(event) =>
+                            updateField("status", event.target.value as ProjectFormState["status"])
+                          }
+                        >
+                          <option value="planning">Planning</option>
+                          <option value="ongoing">Ongoing</option>
+                          <option value="completed">Completed</option>
+                        </select>
+                      </Field>
+
+                      <Field label="Location *">
+                        <input
+                          className={fieldInputClass}
+                          value={form.location}
+                          onChange={(event) => updateField("location", event.target.value)}
+                          placeholder="Colombo, Sri Lanka"
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Client *">
+                        <input
+                          className={fieldInputClass}
+                          value={form.client}
+                          onChange={(event) => updateField("client", event.target.value)}
+                          placeholder="Capital Holdings"
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Area">
+                        <input
+                          className={fieldInputClass}
+                          value={form.area}
+                          onChange={(event) => updateField("area", event.target.value)}
+                          placeholder="24,000 sq ft"
+                        />
+                      </Field>
+
+                      <Field label="Meta Description" fullWidth>
+                        <textarea
+                          className={`${fieldInputClass} min-h-28 resize-y`}
+                          value={form.metaDescription}
+                          onChange={(event) => updateField("metaDescription", event.target.value)}
+                          maxLength={160}
+                          placeholder="Short SEO summary for search snippets"
+                        />
+                      </Field>
+
+                      <Field label="Description *" fullWidth>
+                        <textarea
+                          className={`${fieldInputClass} min-h-44 resize-y`}
+                          value={form.description}
+                          onChange={(event) => updateField("description", event.target.value)}
+                          placeholder="Write the full project brief, scope, and delivery notes."
+                          required
+                        />
+                      </Field>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(3,15,31,0.2)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {submitting
+                          ? editingProjectId === null
+                            ? "Saving project..."
+                            : "Updating project..."
+                          : editingProjectId === null
+                            ? "Save project"
+                            : "Update project"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </section>
         </div>
       </div>
