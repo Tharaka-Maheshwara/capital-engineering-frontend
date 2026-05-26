@@ -411,8 +411,8 @@ export default function ProjectManager() {
               </div>
             )}
 
-            <div className="mt-6 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
-              <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)] xl:col-span-1">
+            <div className="mt-6">
+              <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -485,22 +485,6 @@ export default function ProjectManager() {
                   )}
                 </div>
               </section>
-
-              <aside className="space-y-5">
-                <section className="rounded-3xl border border-slate-200/80 bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                  <div className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
-                    Management flow
-                  </div>
-                  <p className="mt-3 text-sm leading-7 text-white/85">
-                    Use Add New Project for creation, Edit for updates, and
-                    Delete for removal.
-                  </p>
-                  <p className="mt-3 text-sm leading-7 text-white/85">
-                    All actions sync directly with the backend API and refresh
-                    the list automatically.
-                  </p>
-                </section>
-              </aside>
             </div>
 
             {isModalOpen && (
