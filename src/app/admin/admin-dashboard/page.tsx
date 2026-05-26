@@ -1,12 +1,13 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const navigationItems = [
-  { label: "Dashboard", active: true, icon: DashboardIcon },
-  { label: "Services", icon: LayersIcon },
-  { label: "Projects", icon: FolderIcon },
-  { label: "Team", icon: TeamIcon },
-  { label: "Users", icon: UsersIcon },
-  { label: "Settings", icon: SettingsIcon },
+  { label: "Dashboard", href: "/admin/admin-dashboard", active: true, icon: DashboardIcon },
+  { label: "Services", href: "#", icon: LayersIcon },
+  { label: "Projects", href: "/admin/projects", icon: FolderIcon },
+  { label: "Team", href: "#", icon: TeamIcon },
+  { label: "Users", href: "#", icon: UsersIcon },
+  { label: "Settings", href: "#", icon: SettingsIcon },
 ];
 
 const metricCards = [
@@ -93,20 +94,22 @@ export default function AdminDashboardPage() {
               {navigationItems.map((item) => {
                 const Icon = item.icon;
 
+                const isActive = item.active;
+
                 return (
-                  <a
+                  <Link
                     key={item.label}
-                    href="#"
-                    aria-current={item.active ? "page" : undefined}
-                    className={`group flex items-center gap-3 rounded-[18px] px-4 py-3 text-[1rem] font-medium transition-colors duration-150 ${item.active ? "bg-white/14 text-white shadow-[0_14px_30px_rgba(0,0,0,0.16)]" : "text-slate-200/72 hover:bg-white/7 hover:text-white"}`}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`group flex items-center gap-3 rounded-[18px] px-4 py-3 text-[1rem] font-medium transition-colors duration-150 ${isActive ? "bg-white/14 text-white shadow-[0_14px_30px_rgba(0,0,0,0.16)]" : "text-slate-200/72 hover:bg-white/7 hover:text-white"}`}
                   >
                     <span
-                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${item.active ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${isActive ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}
                     >
                       <Icon />
                     </span>
                     <span>{item.label}</span>
-                  </a>
+                  </Link>
                 );
               })}
             </nav>
