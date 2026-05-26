@@ -553,7 +553,8 @@ export default function ProjectManager() {
                             Display Image *
                           </span>
                           <span className="mt-2 block text-sm leading-6 text-slate-500">
-                            Select one primary image for the project card or hero area.
+                            Select one primary image for the project card or
+                            hero area.
                           </span>
                           <input
                             key={`display-${mediaResetKey}`}
@@ -605,7 +606,9 @@ export default function ProjectManager() {
                                       </span>
                                       <button
                                         type="button"
-                                        onClick={() => removeGalleryImage(index)}
+                                        onClick={() =>
+                                          removeGalleryImage(index)
+                                        }
                                         className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-rose-100 hover:text-rose-700"
                                         aria-label={`Remove ${file.name}`}
                                       >
