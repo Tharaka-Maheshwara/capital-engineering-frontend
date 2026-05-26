@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { FormEvent, ReactNode } from "react";
+import type { ChangeEvent, FormEvent, ReactNode } from "react";
 
 type NavigationItem = {
   label: string;
@@ -73,6 +73,9 @@ export default function ProjectManager() {
   const [deletingProjectId, setDeletingProjectId] = useState<number | null>(
     null,
   );
+  const [displayImageFile, setDisplayImageFile] = useState<File | null>(null);
+  const [galleryImageFiles, setGalleryImageFiles] = useState<File[]>([]);
+  const [mediaResetKey, setMediaResetKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -116,9 +119,30 @@ export default function ProjectManager() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
+  function resetMediaFields() {
+    setDisplayImageFile(null);
+    setGalleryImageFiles([]);
+    setMediaResetKey((current) => current + 1);
+  }
+
+  function handleDisplayImageChange(event: ChangeEvent<HTMLInputElement>) {
+    setDisplayImageFile(event.target.files?.[0] ?? null);
+  }
+
+  function handleGalleryImagesChange(event: ChangeEvent<HTMLInputElement>) {
+    setGalleryImageFiles(Array.from(event.target.files ?? []));
+  }
+
+  function removeGalleryImage(indexToRemove: number) {
+    setGalleryImageFiles((current) =>
+      current.filter((_, index) => index !== indexToRemove),
+    );
+  }
+
   function openCreateModal() {
     setEditingProjectId(null);
     setForm(initialFormState);
+    resetMediaFields();
     setError(null);
     setSuccess(null);
     setIsModalOpen(true);
@@ -135,6 +159,7 @@ export default function ProjectManager() {
       area: project.area ?? "",
       metaDescription: project.meta_description ?? "",
     });
+    resetMediaFields();
     setError(null);
     setSuccess(null);
     setIsModalOpen(true);
@@ -148,6 +173,7 @@ export default function ProjectManager() {
     setIsModalOpen(false);
     setEditingProjectId(null);
     setForm(initialFormState);
+    resetMediaFields();
   }
 
   async function readResponsePayload(
@@ -217,6 +243,7 @@ export default function ProjectManager() {
           : "Project saved successfully.",
       );
       setForm(initialFormState);
+      resetMediaFields();
       setIsModalOpen(false);
       setEditingProjectId(null);
       await loadProjects();
@@ -511,6 +538,91 @@ export default function ProjectManager() {
                   </div>
 
                   <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
+                    <section className="rounded-3xl border border-slate-200/80 bg-slate-50/80 p-4 sm:p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                            Project Media
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                        <label className="block rounded-3xl border border-dashed border-sky-200 bg-white p-4">
+                          <span className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            Display Image *
+                          </span>
+                          <span className="mt-2 block text-sm leading-6 text-slate-500">
+                            Select one primary image for the project card or hero area.
+                          </span>
+                          <input
+                            key={`display-${mediaResetKey}`}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleDisplayImageChange}
+                            className="mt-4 block w-full cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:bg-slate-100"
+                          />
+                          <div className="mt-3 min-h-12 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                            {displayImageFile ? (
+                              <span className="inline-flex items-center rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700">
+                                {displayImageFile.name}
+                              </span>
+                            ) : (
+                              "No display image selected yet."
+                            )}
+                          </div>
+                        </label>
+
+                        <label className="block rounded-3xl border border-dashed border-slate-300 bg-white p-4">
+                          <span className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            Gallery Images
+                          </span>
+                          <span className="mt-2 block text-sm leading-6 text-slate-500">
+                            Select multiple images for the project gallery.
+                          </span>
+                          <input
+                            key={`gallery-${mediaResetKey}`}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleGalleryImagesChange}
+                            className="mt-4 block w-full cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:bg-slate-100"
+                          />
+                          <div className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                            {galleryImageFiles.length > 0 ? (
+                              <>
+                                <div className="mb-2 text-sm font-medium text-slate-700">
+                                  {galleryImageFiles.length} images selected
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {galleryImageFiles.map((file, index) => (
+                                    <span
+                                      key={`${file.name}-${index}`}
+                                      className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm"
+                                    >
+                                      <span className="max-w-48 truncate">
+                                        {file.name}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => removeGalleryImage(index)}
+                                        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-rose-100 hover:text-rose-700"
+                                        aria-label={`Remove ${file.name}`}
+                                      >
+                                        ×
+                                      </button>
+                                    </span>
+                                  ))}
+                                </div>
+                              </>
+                            ) : (
+                              "No gallery images selected yet."
+                            )}
+                          </div>
+                        </label>
+                      </div>
+                    </section>
+
                     <div className="grid gap-4 md:grid-cols-2">
                       <Field label="Title *">
                         <input
