@@ -217,7 +217,10 @@ export default function ProjectFormModal({
                 className={fieldInputClass}
                 value={form.type}
                 onChange={(event) =>
-                  onFieldChange("type", event.target.value as ProjectFormState["type"])
+                  onFieldChange(
+                    "type",
+                    event.target.value as ProjectFormState["type"],
+                  )
                 }
                 required
               >
