@@ -80,10 +80,13 @@ export default function ProjectFormModal({
               </div>
             </div>
 
-            {(editingProject?.featured_image_thumbnail || displayPreviewUrl) && (
+            {(editingProject?.featured_image_thumbnail ||
+              displayPreviewUrl) && (
               <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  {displayPreviewUrl ? "Selected image preview" : "Current image"}
+                  {displayPreviewUrl
+                    ? "Selected image preview"
+                    : "Current image"}
                 </p>
                 <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                   <img
@@ -235,7 +238,9 @@ export default function ProjectFormModal({
               <input
                 className={fieldInputClass}
                 value={form.client}
-                onChange={(event) => onFieldChange("client", event.target.value)}
+                onChange={(event) =>
+                  onFieldChange("client", event.target.value)
+                }
                 placeholder="Capital Holdings"
                 required
               />
