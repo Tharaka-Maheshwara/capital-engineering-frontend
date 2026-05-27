@@ -75,8 +75,9 @@ export default function ProjectManager() {
   const [submitting, setSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
-  const [editingProject, setEditingProject] =
-    useState<ProjectRecord | null>(null);
+  const [editingProject, setEditingProject] = useState<ProjectRecord | null>(
+    null,
+  );
   const [deletingProjectId, setDeletingProjectId] = useState<number | null>(
     null,
   );
@@ -506,7 +507,9 @@ export default function ProjectManager() {
                             {project.featured_image_thumbnail ? (
                               <img
                                 src={project.featured_image_thumbnail}
-                                alt={project.featured_image_alt ?? project.title}
+                                alt={
+                                  project.featured_image_alt ?? project.title
+                                }
                                 className="h-full w-full object-cover"
                                 loading="lazy"
                               />
@@ -611,7 +614,11 @@ export default function ProjectManager() {
                           </p>
                           <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                             <img
-                              src={displayPreviewUrl ?? editingProject?.featured_image_thumbnail ?? ""}
+                              src={
+                                displayPreviewUrl ??
+                                editingProject?.featured_image_thumbnail ??
+                                ""
+                              }
                               alt={
                                 form.featuredImageAlt ||
                                 editingProject?.featured_image_alt ||
