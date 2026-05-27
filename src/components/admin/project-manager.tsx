@@ -276,7 +276,23 @@ export default function ProjectManager() {
     key: K,
     value: ProjectFormState[K],
   ) {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((current) => {
+      if (key === "startDate" && typeof value === "string") {
+        const nextStartDate = value;
+        const nextEndDate =
+          current.endDate && current.endDate < nextStartDate
+            ? ""
+            : current.endDate;
+
+        return {
+          ...current,
+          startDate: nextStartDate,
+          endDate: nextEndDate,
+        };
+      }
+
+      return { ...current, [key]: value };
+    });
   }
 
   function resetMediaFields() {
@@ -365,6 +381,11 @@ export default function ProjectManager() {
 
     if (!form.title || !form.description || !form.location || !form.client) {
       setError("Please complete the required project fields.");
+      return;
+    }
+
+    if (form.startDate && form.endDate && form.endDate < form.startDate) {
+      setError("The end date must be on or after the start date.");
       return;
     }
 

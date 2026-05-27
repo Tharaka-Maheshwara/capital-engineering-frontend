@@ -283,6 +283,7 @@ export default function ProjectFormModal({
                   <input
                     className={fieldInputClass}
                     type="date"
+                    min={form.startDate || undefined}
                     value={form.endDate}
                     onChange={(event) =>
                       onFieldChange("endDate", event.target.value)
