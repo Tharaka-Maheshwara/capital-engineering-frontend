@@ -190,6 +190,7 @@ const initialFormState: ProjectFormState = {
   title: "",
   description: "",
   status: "planning",
+  type: "commercial",
   location: "",
   client: "",
   area: "",
@@ -332,6 +333,7 @@ export default function ProjectManager() {
       title: project.title,
       description: project.description,
       status: project.status as ProjectFormState["status"],
+      type: (project as any).type ?? "commercial",
       location: project.location,
       client: project.client,
       area: project.area ?? "",
@@ -405,6 +407,7 @@ export default function ProjectManager() {
       formData.append("status", form.status);
       formData.append("location", form.location);
       formData.append("client", form.client);
+      formData.append("type", form.type);
       if (form.area) {
         formData.append("area", form.area);
       }

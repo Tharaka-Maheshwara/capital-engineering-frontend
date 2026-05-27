@@ -1,6 +1,7 @@
 export type ProjectRecord = {
   id: number;
   title: string;
+  type?: string | null;
   status: string;
   status_label: string;
   location: string;
@@ -21,6 +22,7 @@ export type ProjectFormState = {
   title: string;
   description: string;
   status: "planning" | "ongoing" | "completed";
+  type: "commercial" | "residential" | "industrial";
   location: string;
   client: string;
   area: string;

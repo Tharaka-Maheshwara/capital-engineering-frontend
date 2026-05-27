@@ -212,6 +212,21 @@ export default function ProjectFormModal({
               </select>
             </Field>
 
+            <Field label="Type *">
+              <select
+                className={fieldInputClass}
+                value={form.type}
+                onChange={(event) =>
+                  onFieldChange("type", event.target.value as ProjectFormState["type"])
+                }
+                required
+              >
+                <option value="commercial">Commercial</option>
+                <option value="residential">Residential</option>
+                <option value="industrial">Industrial</option>
+              </select>
+            </Field>
+
             <Field label="Location *">
               <input
                 className={fieldInputClass}
