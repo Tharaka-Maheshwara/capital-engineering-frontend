@@ -32,6 +32,160 @@ const navigationItems: NavigationItem[] = [
   { label: "Settings", href: "#", icon: SettingsIcon },
 ];
 
+const sriLankaLocations = [
+  "Colombo",
+  "Dehiwala",
+  "Mount Lavinia",
+  "Moratuwa",
+  "Sri Jayawardenepura Kotte",
+  "Maharagama",
+  "Nugegoda",
+  "Malabe",
+  "Battaramulla",
+  "Homagama",
+  "Kaduwela",
+  "Avissawella",
+  "Gampaha",
+  "Negombo",
+  "Wattala",
+  "Ja-Ela",
+  "Kadawatha",
+  "Kiribathgoda",
+  "Kelaniya",
+  "Minuwangoda",
+  "Nittambuwa",
+  "Veyangoda",
+  "Kalutara",
+  "Panadura",
+  "Horana",
+  "Beruwala",
+  "Matugama",
+  "Aluthgama",
+  "Bandaragama",
+  "Kandy",
+  "Peradeniya",
+  "Gampola",
+  "Katugastota",
+  "Kundasale",
+  "Digana",
+  "Nawalapitiya",
+  "Galagedara",
+  "Matale",
+  "Dambulla",
+  "Sigiriya",
+  "Ukuwela",
+  "Raththota",
+  "Pallepola",
+  "Nuwara Eliya",
+  "Hatton",
+  "Talawakelle",
+  "Ginigathena",
+  "Maskeliya",
+  "Ragala",
+  "Galle",
+  "Hikkaduwa",
+  "Ambalangoda",
+  "Karapitiya",
+  "Elpitiya",
+  "Baddegama",
+  "Ahangama",
+  "Bentota",
+  "Matara",
+  "Weligama",
+  "Akuressa",
+  "Deniyaya",
+  "Dikwella",
+  "Kamburupitiya",
+  "Hakmana",
+  "Hambantota",
+  "Tangalle",
+  "Ambalantota",
+  "Tissamaharama",
+  "Beliatta",
+  "Middeniya",
+  "Ratnapura",
+  "Embilipitiya",
+  "Balangoda",
+  "Pelmadulla",
+  "Kuruwita",
+  "Kahawatta",
+  "Nivitigala",
+  "Kegalle",
+  "Mawanella",
+  "Warakapola",
+  "Rambukkana",
+  "Ruwanwella",
+  "Dehiowita",
+  "Yatiyantota",
+  "Kurunegala",
+  "Kuliyapitiya",
+  "Narammala",
+  "Wariyapola",
+  "Polgahawela",
+  "Pannala",
+  "Ibbagamuwa",
+  "Mawatagama",
+  "Puttalam",
+  "Chilaw",
+  "Marawila",
+  "Wennappuwa",
+  "Kalpitiya",
+  "Madampe",
+  "Anamaduwa",
+  "Anuradhapura",
+  "Mihintale",
+  "Thambuththegama",
+  "Eppawala",
+  "Kekirawa",
+  "Medawachchiya",
+  "Nochchiyagama",
+  "Polonnaruwa",
+  "Kaduruwela",
+  "Hingurakgoda",
+  "Medirigiriya",
+  "Welikanda",
+  "Badulla",
+  "Bandarawela",
+  "Diyatalawa",
+  "Ella",
+  "Welimada",
+  "Mahiyanganaya",
+  "Hali-Ela",
+  "Passara",
+  "Monaragala",
+  "Wellawaya",
+  "Kataragama",
+  "Bibile",
+  "Buttala",
+  "Thanamalwila",
+  "Trincomalee",
+  "Mutur",
+  "Kinniya",
+  "Kantale",
+  "Batticaloa",
+  "Kattankudy",
+  "Eravur",
+  "Valaichchenai",
+  "Ampara",
+  "Kalmunai",
+  "Akkaraipattu",
+  "Sainthamaruthu",
+  "Pottuvil",
+  "Jaffna",
+  "Chavakachcheri",
+  "Point Pedro",
+  "Kopay",
+  "Kayts",
+  "Kilinochchi",
+  "Pallai",
+  "Mannar",
+  "Murunkan",
+  "Vavuniya",
+  "Cheddikulam",
+  "Mullaitivu",
+  "Puthukudiyiruppu",
+];
+
 const initialFormState: ProjectFormState = {
   title: "",
   description: "",
@@ -39,8 +193,9 @@ const initialFormState: ProjectFormState = {
   location: "",
   client: "",
   area: "",
-  metaDescription: "",
-  featuredImageAlt: "",
+  price: "",
+  startDate: "",
+  endDate: "",
 };
 
 const apiBaseUrl =
@@ -164,8 +319,9 @@ export default function ProjectManager() {
       location: project.location,
       client: project.client,
       area: project.area ?? "",
-      metaDescription: project.meta_description ?? "",
-      featuredImageAlt: project.featured_image_alt ?? "",
+      price: project.price ?? "",
+      startDate: project.start_date ?? "",
+      endDate: project.end_date ?? "",
     });
     resetMediaFields();
     setError(null);
@@ -231,11 +387,14 @@ export default function ProjectManager() {
       if (form.area) {
         formData.append("area", form.area);
       }
-      if (form.metaDescription) {
-        formData.append("meta_description", form.metaDescription);
+      if (form.price) {
+        formData.append("price", form.price);
       }
-      if (form.featuredImageAlt) {
-        formData.append("featured_image_alt", form.featuredImageAlt);
+      if (form.startDate) {
+        formData.append("start_date", form.startDate);
+      }
+      if (form.endDate) {
+        formData.append("end_date", form.endDate);
       }
       if (displayImageFile) {
         formData.append("featured_image", displayImageFile);
@@ -481,6 +640,7 @@ export default function ProjectManager() {
               submitting={submitting}
               form={form}
               fieldInputClass={fieldInputClass}
+              districts={sriLankaLocations}
               mediaResetKey={mediaResetKey}
               displayImageFile={displayImageFile}
               displayPreviewUrl={displayPreviewUrl}

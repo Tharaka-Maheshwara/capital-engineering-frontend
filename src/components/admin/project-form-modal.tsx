@@ -12,6 +12,7 @@ type ProjectFormModalProps = {
   submitting: boolean;
   form: ProjectFormState;
   fieldInputClass: string;
+  districts: string[];
   mediaResetKey: number;
   displayImageFile: File | null;
   displayPreviewUrl: string | null;
@@ -34,6 +35,7 @@ export default function ProjectFormModal({
   submitting,
   form,
   fieldInputClass,
+  districts,
   mediaResetKey,
   displayImageFile,
   displayPreviewUrl,
@@ -96,7 +98,6 @@ export default function ProjectFormModal({
                       ""
                     }
                     alt={
-                      form.featuredImageAlt ||
                       editingProject?.featured_image_alt ||
                       form.title ||
                       "Project image"
@@ -184,17 +185,6 @@ export default function ProjectFormModal({
           </section>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Image Alt Text">
-              <input
-                className={fieldInputClass}
-                value={form.featuredImageAlt}
-                onChange={(event) =>
-                  onFieldChange("featuredImageAlt", event.target.value)
-                }
-                placeholder="Short description for accessibility"
-              />
-            </Field>
-
             <Field label="Title *">
               <input
                 className={fieldInputClass}
@@ -223,15 +213,23 @@ export default function ProjectFormModal({
             </Field>
 
             <Field label="Location *">
-              <input
+              <select
                 className={fieldInputClass}
                 value={form.location}
                 onChange={(event) =>
                   onFieldChange("location", event.target.value)
                 }
-                placeholder="Colombo, Sri Lanka"
                 required
-              />
+              >
+                <option value="" disabled>
+                  Select location
+                </option>
+                {districts.map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
             </Field>
 
             <Field label="Client *">
@@ -255,16 +253,45 @@ export default function ProjectFormModal({
               />
             </Field>
 
-            <Field label="Meta Description" fullWidth>
-              <textarea
-                className={`${fieldInputClass} min-h-28 resize-y`}
-                value={form.metaDescription}
-                onChange={(event) =>
-                  onFieldChange("metaDescription", event.target.value)
-                }
-                maxLength={160}
-                placeholder="Short SEO summary for search snippets"
+            <Field label="Project Price">
+              <input
+                className={fieldInputClass}
+                value={form.price}
+                onChange={(event) => onFieldChange("price", event.target.value)}
+                placeholder="15000000"
+                inputMode="decimal"
               />
+            </Field>
+
+            <Field label="Project Duration" fullWidth>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                    Start date
+                  </span>
+                  <input
+                    className={fieldInputClass}
+                    type="date"
+                    value={form.startDate}
+                    onChange={(event) =>
+                      onFieldChange("startDate", event.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                    End date
+                  </span>
+                  <input
+                    className={fieldInputClass}
+                    type="date"
+                    value={form.endDate}
+                    onChange={(event) =>
+                      onFieldChange("endDate", event.target.value)
+                    }
+                  />
+                </div>
+              </div>
             </Field>
 
             <Field label="Description *" fullWidth>

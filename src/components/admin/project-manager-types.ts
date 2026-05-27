@@ -8,6 +8,9 @@ export type ProjectRecord = {
   area: string | null;
   description: string;
   meta_description: string | null;
+  price: string | null;
+  start_date: string | null;
+  end_date: string | null;
   featured_image_url: string | null;
   featured_image_thumbnail: string | null;
   featured_image_alt: string | null;
@@ -21,6 +24,7 @@ export type ProjectFormState = {
   location: string;
   client: string;
   area: string;
-  metaDescription: string;
-  featuredImageAlt: string;
+  price: string;
+  startDate: string;
+  endDate: string;
 };
