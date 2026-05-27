@@ -4,38 +4,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactNode } from "react";
 
+import ProjectFormModal from "@/components/admin/project-form-modal";
+import ProjectRecordsSection from "@/components/admin/project-records-section";
+import type {
+  ProjectFormState,
+  ProjectRecord,
+} from "@/components/admin/project-manager-types";
+
 type NavigationItem = {
   label: string;
   href: string;
   active?: boolean;
   icon: () => ReactNode;
-};
-
-type ProjectRecord = {
-  id: number;
-  title: string;
-  status: string;
-  status_label: string;
-  location: string;
-  client: string;
-  area: string | null;
-  description: string;
-  meta_description: string | null;
-  featured_image_url: string | null;
-  featured_image_thumbnail: string | null;
-  featured_image_alt: string | null;
-  published_at: string | null;
-};
-
-type ProjectFormState = {
-  title: string;
-  description: string;
-  status: "planning" | "ongoing" | "completed";
-  location: string;
-  client: string;
-  area: string;
-  metaDescription: string;
-  featuredImageAlt: string;
 };
 
 const navigationItems: NavigationItem[] = [
@@ -486,389 +466,36 @@ export default function ProjectManager() {
             )}
 
             <div className="mt-6">
-              <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      Project records
-                    </p>
-                    <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                      Saved projects
-                    </h2>
-                  </div>
-                  <span className="text-sm font-medium text-slate-500">
-                    {loadingProjects
-                      ? "Loading..."
-                      : `${projects.length} items`}
-                  </span>
-                </div>
-
-                <div className="mt-5 space-y-3">
-                  {projects.map((project) => (
-                    <article
-                      key={project.id}
-                      className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4"
-                    >
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div className="flex items-start gap-4">
-                          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                            {project.featured_image_thumbnail ? (
-                              <img
-                                src={project.featured_image_thumbnail}
-                                alt={
-                                  project.featured_image_alt ?? project.title
-                                }
-                                className="h-full w-full object-cover"
-                                loading="lazy"
-                              />
-                            ) : (
-                              <span className="text-sm font-semibold text-slate-400">
-                                N/A
-                              </span>
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="text-[1rem] font-semibold text-slate-900">
-                              {project.title}
-                            </h3>
-                            <p className="mt-1 text-sm text-slate-600">
-                              {project.location} · {project.client}
-                            </p>
-                            {project.area && (
-                              <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
-                                Area: {project.area}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <span className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 shadow-sm">
-                          {project.status_label}
-                        </span>
-                      </div>
-
-                      <div className="mt-4 flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(project)}
-                          className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 transition-colors hover:bg-slate-100"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(project.id)}
-                          disabled={deletingProjectId === project.id}
-                          className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {deletingProjectId === project.id
-                            ? "Deleting..."
-                            : "Delete"}
-                        </button>
-                      </div>
-                    </article>
-                  ))}
-
-                  {!loadingProjects && projects.length === 0 && (
-                    <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-                      No projects yet. Click Add New Project to create the first
-                      entry.
-                    </div>
-                  )}
-                </div>
-              </section>
+              <ProjectRecordsSection
+                projects={projects}
+                loadingProjects={loadingProjects}
+                deletingProjectId={deletingProjectId}
+                onEdit={openEditModal}
+                onDelete={handleDelete}
+              />
             </div>
-
-            {isModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm">
-                <div className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-slate-200/90 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.25)] sm:p-6">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Project form
-                      </p>
-                      <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                        {editingProjectId === null
-                          ? "Add new project"
-                          : "Edit project"}
-                      </h2>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={closeModal}
-                      className="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-                    >
-                      Close
-                    </button>
-                  </div>
-
-                  <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-                    <section className="rounded-3xl border border-slate-200/80 bg-slate-50/80 p-4 sm:p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                            Project Media
-                          </p>
-                        </div>
-                      </div>
-
-                      {(editingProject?.featured_image_thumbnail ||
-                        displayPreviewUrl) && (
-                        <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                            {displayPreviewUrl
-                              ? "Selected image preview"
-                              : "Current image"}
-                          </p>
-                          <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                            <img
-                              src={
-                                displayPreviewUrl ??
-                                editingProject?.featured_image_thumbnail ??
-                                ""
-                              }
-                              alt={
-                                form.featuredImageAlt ||
-                                editingProject?.featured_image_alt ||
-                                form.title ||
-                                "Project image"
-                              }
-                              className="h-48 w-full object-cover"
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                        <label className="block rounded-3xl border border-dashed border-sky-200 bg-white p-4">
-                          <span className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                            Display Image *
-                          </span>
-                          <span className="mt-2 block text-sm leading-6 text-slate-500">
-                            Select one primary image for the project card or
-                            hero area.
-                          </span>
-                          <input
-                            key={`display-${mediaResetKey}`}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleDisplayImageChange}
-                            className="mt-4 block w-full cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:bg-slate-100"
-                          />
-                          <div className="mt-3 min-h-12 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                            {displayImageFile ? (
-                              <span className="inline-flex items-center rounded-full bg-sky-100 px-3 py-1 text-sm font-medium text-sky-700">
-                                {displayImageFile.name}
-                              </span>
-                            ) : (
-                              "No display image selected yet."
-                            )}
-                          </div>
-                        </label>
-
-                        <label className="block rounded-3xl border border-dashed border-slate-300 bg-white p-4">
-                          <span className="block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                            Gallery Images
-                          </span>
-                          <span className="mt-2 block text-sm leading-6 text-slate-500">
-                            Select multiple images for the project gallery.
-                          </span>
-                          <input
-                            key={`gallery-${mediaResetKey}`}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleGalleryImagesChange}
-                            className="mt-4 block w-full cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:bg-slate-100"
-                          />
-                          <div className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                            {galleryImageFiles.length > 0 ? (
-                              <>
-                                <div className="mb-2 text-sm font-medium text-slate-700">
-                                  {galleryImageFiles.length} images selected
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                  {galleryImageFiles.map((file, index) => (
-                                    <span
-                                      key={`${file.name}-${index}`}
-                                      className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm"
-                                    >
-                                      <span className="max-w-48 truncate">
-                                        {file.name}
-                                      </span>
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          removeGalleryImage(index)
-                                        }
-                                        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-rose-100 hover:text-rose-700"
-                                        aria-label={`Remove ${file.name}`}
-                                      >
-                                        ×
-                                      </button>
-                                    </span>
-                                  ))}
-                                </div>
-                              </>
-                            ) : (
-                              "No gallery images selected yet."
-                            )}
-                          </div>
-                        </label>
-                      </div>
-                    </section>
-
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <Field label="Image Alt Text">
-                        <input
-                          className={fieldInputClass}
-                          value={form.featuredImageAlt}
-                          onChange={(event) =>
-                            updateField("featuredImageAlt", event.target.value)
-                          }
-                          placeholder="Short description for accessibility"
-                        />
-                      </Field>
-
-                      <Field label="Title *">
-                        <input
-                          className={fieldInputClass}
-                          value={form.title}
-                          onChange={(event) =>
-                            updateField("title", event.target.value)
-                          }
-                          placeholder="Central Plaza Tower"
-                          required
-                        />
-                      </Field>
-
-                      <Field label="Status *">
-                        <select
-                          className={fieldInputClass}
-                          value={form.status}
-                          onChange={(event) =>
-                            updateField(
-                              "status",
-                              event.target.value as ProjectFormState["status"],
-                            )
-                          }
-                        >
-                          <option value="planning">Planning</option>
-                          <option value="ongoing">Ongoing</option>
-                          <option value="completed">Completed</option>
-                        </select>
-                      </Field>
-
-                      <Field label="Location *">
-                        <input
-                          className={fieldInputClass}
-                          value={form.location}
-                          onChange={(event) =>
-                            updateField("location", event.target.value)
-                          }
-                          placeholder="Colombo, Sri Lanka"
-                          required
-                        />
-                      </Field>
-
-                      <Field label="Client *">
-                        <input
-                          className={fieldInputClass}
-                          value={form.client}
-                          onChange={(event) =>
-                            updateField("client", event.target.value)
-                          }
-                          placeholder="Capital Holdings"
-                          required
-                        />
-                      </Field>
-
-                      <Field label="Area">
-                        <input
-                          className={fieldInputClass}
-                          value={form.area}
-                          onChange={(event) =>
-                            updateField("area", event.target.value)
-                          }
-                          placeholder="24,000 sq ft"
-                        />
-                      </Field>
-
-                      <Field label="Meta Description" fullWidth>
-                        <textarea
-                          className={`${fieldInputClass} min-h-28 resize-y`}
-                          value={form.metaDescription}
-                          onChange={(event) =>
-                            updateField("metaDescription", event.target.value)
-                          }
-                          maxLength={160}
-                          placeholder="Short SEO summary for search snippets"
-                        />
-                      </Field>
-
-                      <Field label="Description *" fullWidth>
-                        <textarea
-                          className={`${fieldInputClass} min-h-44 resize-y`}
-                          value={form.description}
-                          onChange={(event) =>
-                            updateField("description", event.target.value)
-                          }
-                          placeholder="Write the full project brief, scope, and delivery notes."
-                          required
-                        />
-                      </Field>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2">
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className="inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(3,15,31,0.2)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {submitting
-                          ? editingProjectId === null
-                            ? "Saving project..."
-                            : "Updating project..."
-                          : editingProjectId === null
-                            ? "Save project"
-                            : "Update project"}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={closeModal}
-                        className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
+            <ProjectFormModal
+              isOpen={isModalOpen}
+              editingProjectId={editingProjectId}
+              editingProject={editingProject}
+              submitting={submitting}
+              form={form}
+              fieldInputClass={fieldInputClass}
+              mediaResetKey={mediaResetKey}
+              displayImageFile={displayImageFile}
+              displayPreviewUrl={displayPreviewUrl}
+              galleryImageFiles={galleryImageFiles}
+              onClose={closeModal}
+              onSubmit={handleSubmit}
+              onDisplayImageChange={handleDisplayImageChange}
+              onGalleryImagesChange={handleGalleryImagesChange}
+              onRemoveGalleryImage={removeGalleryImage}
+              onFieldChange={updateField}
+            />
           </section>
         </div>
       </div>
     </main>
-  );
-}
-
-function Field({
-  label,
-  children,
-  fullWidth,
-}: {
-  label: string;
-  children: React.ReactNode;
-  fullWidth?: boolean;
-}) {
-  return (
-    <label className={fullWidth ? "md:col-span-2" : ""}>
-      <span className="mb-2 block text-[0.85rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
-        {label}
-      </span>
-      {children}
-    </label>
   );
 }
 
