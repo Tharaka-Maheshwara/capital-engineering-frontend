@@ -31,9 +31,9 @@ export default async function ProjectsPage() {
             Projects That Define Modern Construction Standards
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg">
-            Explore Capital Engineering projects across commercial,
-            residential, and industrial sectors with a focus on quality,
-            innovation, and lasting value.
+            Explore Capital Engineering projects across commercial, residential,
+            and industrial sectors with a focus on quality, innovation, and
+            lasting value.
           </p>
         </div>
       </section>
