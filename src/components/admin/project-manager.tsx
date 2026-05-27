@@ -210,21 +210,28 @@ export default function ProjectManager() {
       const endpoint = isEditing
         ? `${apiBaseUrl}/api/v1/projects/${editingProjectId}`
         : `${apiBaseUrl}/api/v1/projects`;
+      const formData = new FormData();
+      formData.append("title", form.title);
+      formData.append("description", form.description);
+      formData.append("status", form.status);
+      formData.append("location", form.location);
+      formData.append("client", form.client);
+      if (form.area) {
+        formData.append("area", form.area);
+      }
+      if (form.metaDescription) {
+        formData.append("meta_description", form.metaDescription);
+      }
+      if (displayImageFile) {
+        formData.append("featured_image", displayImageFile);
+      }
+
       const response = await fetch(endpoint, {
         method: isEditing ? "PUT" : "POST",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          title: form.title,
-          description: form.description,
-          status: form.status,
-          location: form.location,
-          client: form.client,
-          area: form.area || null,
-          meta_description: form.metaDescription || null,
-        }),
+        body: formData,
       });
 
       const payload = await readResponsePayload(response);
