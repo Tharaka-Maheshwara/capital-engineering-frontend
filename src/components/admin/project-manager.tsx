@@ -240,6 +240,9 @@ export default function ProjectManager() {
         ? `${apiBaseUrl}/api/v1/projects/${editingProjectId}`
         : `${apiBaseUrl}/api/v1/projects`;
       const formData = new FormData();
+      if (isEditing) {
+        formData.append("_method", "PUT");
+      }
       formData.append("title", form.title);
       formData.append("description", form.description);
       formData.append("status", form.status);
@@ -257,9 +260,14 @@ export default function ProjectManager() {
       if (displayImageFile) {
         formData.append("featured_image", displayImageFile);
       }
+      if (galleryImageFiles.length > 0) {
+        galleryImageFiles.forEach((file) => {
+          formData.append("gallery_images[]", file);
+        });
+      }
 
       const response = await fetch(endpoint, {
-        method: isEditing ? "PUT" : "POST",
+        method: "POST",
         headers: {
           Accept: "application/json",
         },
