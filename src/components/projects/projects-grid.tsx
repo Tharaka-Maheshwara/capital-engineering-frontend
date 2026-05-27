@@ -21,20 +21,22 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   }
 
   return (
-    <div className="py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center gap-4">
-          <h2 className="text-2xl font-semibold text-slate-900">Projects</h2>
-          <nav className="flex gap-3 text-sm text-slate-600">
-            <button className="rounded-full bg-slate-100 px-4 py-1.5 text-slate-900">
+    <section className="bg-white pb-12 pt-0">
+      <div className="mb-8 bg-[#1f3f6f]">
+        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-5 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold text-white">Projects</h2>
+          <nav className="flex gap-3 text-sm text-slate-200">
+            <button className="rounded-full bg-white/20 px-4 py-1.5 text-white">
               All Projects
             </button>
-            <button className="px-3 py-1.5">Commercial</button>
-            <button className="px-3 py-1.5">Residential</button>
-            <button className="px-3 py-1.5">Industrial</button>
+            <button className="px-3 py-1.5 text-slate-100">Commercial</button>
+            <button className="px-3 py-1.5 text-slate-100">Residential</button>
+            <button className="px-3 py-1.5 text-slate-100">Industrial</button>
           </nav>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => {
             const year = p.end_date
@@ -155,6 +157,6 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
