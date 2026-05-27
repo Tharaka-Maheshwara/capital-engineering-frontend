@@ -21,6 +21,9 @@ type ProjectRecord = {
   area: string | null;
   description: string;
   meta_description: string | null;
+  featured_image_url: string | null;
+  featured_image_thumbnail: string | null;
+  featured_image_alt: string | null;
   published_at: string | null;
 };
 
@@ -32,6 +35,7 @@ type ProjectFormState = {
   client: string;
   area: string;
   metaDescription: string;
+  featuredImageAlt: string;
 };
 
 const navigationItems: NavigationItem[] = [
@@ -56,6 +60,7 @@ const initialFormState: ProjectFormState = {
   client: "",
   area: "",
   metaDescription: "",
+  featuredImageAlt: "",
 };
 
 const apiBaseUrl =
@@ -70,10 +75,15 @@ export default function ProjectManager() {
   const [submitting, setSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
+  const [editingProject, setEditingProject] =
+    useState<ProjectRecord | null>(null);
   const [deletingProjectId, setDeletingProjectId] = useState<number | null>(
     null,
   );
   const [displayImageFile, setDisplayImageFile] = useState<File | null>(null);
+  const [displayPreviewUrl, setDisplayPreviewUrl] = useState<string | null>(
+    null,
+  );
   const [galleryImageFiles, setGalleryImageFiles] = useState<File[]>([]);
   const [mediaResetKey, setMediaResetKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -82,6 +92,20 @@ export default function ProjectManager() {
   useEffect(() => {
     void loadProjects();
   }, []);
+
+  useEffect(() => {
+    if (!displayImageFile) {
+      setDisplayPreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(displayImageFile);
+    setDisplayPreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [displayImageFile]);
 
   async function loadProjects() {
     setLoadingProjects(true);
@@ -141,6 +165,7 @@ export default function ProjectManager() {
 
   function openCreateModal() {
     setEditingProjectId(null);
+    setEditingProject(null);
     setForm(initialFormState);
     resetMediaFields();
     setError(null);
@@ -150,6 +175,7 @@ export default function ProjectManager() {
 
   function openEditModal(project: ProjectRecord) {
     setEditingProjectId(project.id);
+    setEditingProject(project);
     setForm({
       title: project.title,
       description: project.description,
@@ -158,6 +184,7 @@ export default function ProjectManager() {
       client: project.client,
       area: project.area ?? "",
       metaDescription: project.meta_description ?? "",
+      featuredImageAlt: project.featured_image_alt ?? "",
     });
     resetMediaFields();
     setError(null);
@@ -172,6 +199,7 @@ export default function ProjectManager() {
 
     setIsModalOpen(false);
     setEditingProjectId(null);
+    setEditingProject(null);
     setForm(initialFormState);
     resetMediaFields();
   }
@@ -221,6 +249,9 @@ export default function ProjectManager() {
       }
       if (form.metaDescription) {
         formData.append("meta_description", form.metaDescription);
+      }
+      if (form.featuredImageAlt) {
+        formData.append("featured_image_alt", form.featuredImageAlt);
       }
       if (displayImageFile) {
         formData.append("featured_image", displayImageFile);
@@ -470,18 +501,34 @@ export default function ProjectManager() {
                       className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div>
-                          <h3 className="text-[1rem] font-semibold text-slate-900">
-                            {project.title}
-                          </h3>
-                          <p className="mt-1 text-sm text-slate-600">
-                            {project.location} · {project.client}
-                          </p>
-                          {project.area && (
-                            <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
-                              Area: {project.area}
+                        <div className="flex items-start gap-4">
+                          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                            {project.featured_image_thumbnail ? (
+                              <img
+                                src={project.featured_image_thumbnail}
+                                alt={project.featured_image_alt ?? project.title}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <span className="text-sm font-semibold text-slate-400">
+                                N/A
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="text-[1rem] font-semibold text-slate-900">
+                              {project.title}
+                            </h3>
+                            <p className="mt-1 text-sm text-slate-600">
+                              {project.location} · {project.client}
                             </p>
-                          )}
+                            {project.area && (
+                              <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
+                                Area: {project.area}
+                              </p>
+                            )}
+                          </div>
                         </div>
 
                         <span className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 shadow-sm">
@@ -553,6 +600,29 @@ export default function ProjectManager() {
                           </p>
                         </div>
                       </div>
+
+                      {(editingProject?.featured_image_thumbnail ||
+                        displayPreviewUrl) && (
+                        <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            {displayPreviewUrl
+                              ? "Selected image preview"
+                              : "Current image"}
+                          </p>
+                          <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                            <img
+                              src={displayPreviewUrl ?? editingProject?.featured_image_thumbnail ?? ""}
+                              alt={
+                                form.featuredImageAlt ||
+                                editingProject?.featured_image_alt ||
+                                form.title ||
+                                "Project image"
+                              }
+                              className="h-48 w-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      )}
 
                       <div className="mt-4 grid gap-4 lg:grid-cols-2">
                         <label className="block rounded-3xl border border-dashed border-sky-200 bg-white p-4">
@@ -634,6 +704,17 @@ export default function ProjectManager() {
                     </section>
 
                     <div className="grid gap-4 md:grid-cols-2">
+                      <Field label="Image Alt Text">
+                        <input
+                          className={fieldInputClass}
+                          value={form.featuredImageAlt}
+                          onChange={(event) =>
+                            updateField("featuredImageAlt", event.target.value)
+                          }
+                          placeholder="Short description for accessibility"
+                        />
+                      </Field>
+
                       <Field label="Title *">
                         <input
                           className={fieldInputClass}
