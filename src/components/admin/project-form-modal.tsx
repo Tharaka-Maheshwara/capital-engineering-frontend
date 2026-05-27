@@ -213,23 +213,21 @@ export default function ProjectFormModal({
             </Field>
 
             <Field label="Location *">
-              <select
+              <input
                 className={fieldInputClass}
+                list="project-location-options"
                 value={form.location}
                 onChange={(event) =>
                   onFieldChange("location", event.target.value)
                 }
+                placeholder="Start typing a location"
                 required
-              >
-                <option value="" disabled>
-                  Select location
-                </option>
+              />
+              <datalist id="project-location-options">
                 {districts.map((district) => (
-                  <option key={district} value={district}>
-                    {district}
-                  </option>
+                  <option key={district} value={district} />
                 ))}
-              </select>
+              </datalist>
             </Field>
 
             <Field label="Client *">
