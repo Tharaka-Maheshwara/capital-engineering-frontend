@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { buildProjectSlug, extractProjectIdFromSlug } from "@/lib/project-url";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -69,10 +70,16 @@ async function getProject(id: string): Promise<ProjectDetail | null> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = await getProject(slug);
+  const projectId = extractProjectIdFromSlug(slug) ?? slug;
+  const project = await getProject(projectId);
 
   if (!project) {
     notFound();
+  }
+
+  const canonicalSlug = buildProjectSlug(project);
+  if (slug !== canonicalSlug) {
+    redirect(`/projects/${canonicalSlug}`);
   }
 
   const heroImage =

@@ -1,11 +1,13 @@
 import React from "react";
 import Link from "next/link";
+import { buildProjectUrl } from "@/lib/project-url";
 
 type Project = {
   id: number;
   title: string;
   description: string;
   location: string;
+  client: string;
   price: string | null;
   start_date: string | null;
   end_date: string | null;
@@ -157,7 +159,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
                   <div className="mt-6 flex justify-end">
                     <Link
-                      href={`/projects/${p.id}`}
+                      href={buildProjectUrl(p)}
                       className="inline-flex items-center rounded-md bg-[#1f3f6f] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#163154]"
                     >
                       More details
