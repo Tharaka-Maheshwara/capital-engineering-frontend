@@ -85,6 +85,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -95,7 +96,17 @@ export default function Navbar() {
     updateHash();
     window.addEventListener("hashchange", updateHash);
 
-    return () => window.removeEventListener("hashchange", updateHash);
+    const updateScrollState = () => {
+      setIsScrolled(window.scrollY > 24);
+    };
+
+    updateScrollState();
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+
+    return () => {
+      window.removeEventListener("hashchange", updateHash);
+      window.removeEventListener("scroll", updateScrollState);
+    };
   }, []);
 
   const isActiveLink = (href: string) => {
@@ -115,7 +126,7 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="border-b border-white/10 bg-slate-950/95">
-        <div className="grid w-full grid-cols-1 gap-2 px-4 py-4 text-center text-[1rem] text-slate-100 sm:min-h-20 sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[1.08rem] md:text-[1.18rem] lg:px-8">
+        <div className={`grid w-full grid-cols-1 gap-2 px-4 text-center text-[1rem] text-slate-100 transition-all duration-300 ease-out sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[1.08rem] md:text-[1.18rem] lg:px-8 ${isScrolled ? "py-2 sm:min-h-14" : "py-4 sm:min-h-20"}`}>
           <a
             href="tel:+94777434403"
             className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-start sm:text-left"
@@ -139,19 +150,19 @@ export default function Navbar() {
 
       <div className="relative overflow-hidden border-b border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,37,58,0.9),rgba(18,37,58,0.64)),linear-gradient(135deg,transparent_0_76%,rgba(255,255,255,0.05)_76%_78%,transparent_78%_100%),radial-gradient(circle_at_72%_26%,rgba(255,255,255,0.05),transparent_18%)] backdrop-blur-md" />
-        <div className="relative w-full px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex min-h-23 w-full items-center justify-between gap-3 lg:gap-8">
+        <div className={`relative w-full px-4 transition-all duration-300 ease-out sm:px-6 lg:px-8 ${isScrolled ? "py-2.5" : "py-4"}`}>
+          <div className={`flex w-full items-center justify-between gap-3 transition-all duration-300 ease-out lg:gap-8 ${isScrolled ? "min-h-16" : "min-h-23"}`}>
             <Link href="/" className="inline-flex min-w-0 items-center gap-3">
               <Image
                 src="/images/logo.png"
                 alt="Capital Engineering Logo"
                 width={74}
                 height={74}
-                className="h-16 w-16 flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)] sm:h-18.5 sm:w-18.5"
+                className={`flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out ${isScrolled ? "h-12 w-12 sm:h-14 sm:w-14" : "h-16 w-16 sm:h-18.5 sm:w-18.5"}`}
                 priority
               />
-              <span className="hidden min-w-0 flex-col leading-tight sm:flex">
-                <span className="truncate text-[1.2rem] font-bold tracking-[-0.03em] text-slate-50 lg:text-[1.55rem]">
+              <span className={`hidden min-w-0 flex-col leading-tight transition-all duration-300 ease-out sm:flex ${isScrolled ? "opacity-90" : "opacity-100"}`}>
+                <span className={`truncate font-bold tracking-[-0.03em] text-slate-50 transition-all duration-300 ease-out ${isScrolled ? "text-[1.05rem] lg:text-[1.28rem]" : "text-[1.2rem] lg:text-[1.55rem]"}`}>
                   Capital Engineering (PVT) LTD
                 </span>
               </span>
