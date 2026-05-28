@@ -50,38 +50,40 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             return (
               <article
                 key={p.id}
-                className="rounded-2xl bg-white shadow-sm overflow-hidden"
+                className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.10)] ring-1 ring-transparent transition-all duration-300 hover:-translate-y-1 hover:border-slate-200 hover:ring-blue-200/60 hover:shadow-[0_24px_70px_rgba(15,23,42,0.18)]"
               >
                 <div className="relative">
-                  <div className="aspect-[16/10] w-full bg-slate-100">
+                  <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">
                     {img ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={img}
                         alt={p.title}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       />
                     ) : null}
+
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
 
                   {p.type ? (
-                    <div className="absolute left-4 top-4 inline-flex items-center rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800">
+                    <div className="absolute left-4 top-4 inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-sky-800 shadow-[0_6px_18px_rgba(15,23,42,0.12)] backdrop-blur-sm">
                       {p.type.charAt(0).toUpperCase() + p.type.slice(1)}
                     </div>
                   ) : null}
 
                   {year ? (
-                    <div className="absolute right-4 top-4 inline-flex items-center rounded-full bg-slate-800/75 px-3 py-1 text-xs font-semibold text-white">
+                    <div className="absolute right-4 top-4 inline-flex items-center rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold text-white shadow-[0_6px_18px_rgba(15,23,42,0.18)] backdrop-blur-sm">
                       {year}
                     </div>
                   ) : null}
                 </div>
 
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-slate-900">
+                <div className="border-t border-slate-100/80 bg-linear-to-b from-white to-slate-50/60 p-6">
+                  <h3 className="text-lg font-semibold text-slate-900 transition-colors duration-300 group-hover:text-[#1f3f6f]">
                     {p.title}
                   </h3>
-                  <p className="mt-3 text-sm text-slate-600 line-clamp-3">
+                  <p className="mt-3 line-clamp-3 text-sm text-slate-600">
                     {p.description}
                   </p>
 
