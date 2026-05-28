@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 type Project = {
   id: number;
@@ -153,6 +154,15 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                       </span>
                     </li>
                   </ul>
+
+                  <div className="mt-6 flex justify-end">
+                    <Link
+                      href={`/projects/${p.id}`}
+                      className="inline-flex items-center rounded-md bg-[#1f3f6f] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[#163154]"
+                    >
+                      More details
+                    </Link>
+                  </div>
                 </div>
               </article>
             );
