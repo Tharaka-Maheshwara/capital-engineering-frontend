@@ -141,14 +141,6 @@ export default async function ProjectPage({ params }: Props) {
                 {projectType}
               </div>
 
-              <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-slate-950/72 p-4 text-white shadow-[0_18px_40px_rgba(15,23,42,0.22)] backdrop-blur-sm sm:max-w-88">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200/80">
-                  Overview
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-100/90">
-                  {project.meta_description ?? project.description ?? project.title}
-                </p>
-              </div>
             </div>
 
             <div className="border-t border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,1)_0%,rgba(241,245,249,1)_100%)] p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
@@ -216,42 +208,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Client
-            </p>
-            <p className="mt-2 text-base font-semibold text-slate-900">
-              {project.client}
-            </p>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Completion Date
-            </p>
-            <p className="mt-2 text-base font-semibold text-slate-900">
-              {completionDate}
-            </p>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Location
-            </p>
-            <p className="mt-2 text-base font-semibold text-slate-900">
-              {project.location}
-            </p>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Project Type
-            </p>
-            <p className="mt-2 text-base font-semibold text-slate-900">
-              {projectType}
-            </p>
-          </article>
-        </div>
-
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
+        <div className="mt-6">
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_12px_35px_rgba(15,23,42,0.06)] sm:p-8">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
               Project Description
@@ -263,46 +220,6 @@ export default async function ProjectPage({ params }: Props) {
               }}
             />
           </section>
-
-          <aside className="rounded-3xl border border-slate-200 bg-[linear-gradient(180deg,rgba(31,63,111,0.06)_0%,rgba(255,255,255,1)_48%)] p-6 shadow-[0_12px_35px_rgba(15,23,42,0.06)] sm:p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Project Facts
-            </p>
-            <dl className="mt-4 space-y-4">
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  Status
-                </dt>
-                <dd className="mt-2 text-sm font-semibold text-slate-900">
-                  {project.status_label}
-                </dd>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  Start Date
-                </dt>
-                <dd className="mt-2 text-sm font-semibold text-slate-900">
-                  {formatDate(project.start_date)}
-                </dd>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  Project Value
-                </dt>
-                <dd className="mt-2 text-sm font-semibold text-slate-900">
-                  {project.price ? project.price : "Not specified"}
-                </dd>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  Area
-                </dt>
-                <dd className="mt-2 text-sm font-semibold text-slate-900">
-                  {project.area ?? "Not specified"}
-                </dd>
-              </div>
-            </dl>
-          </aside>
         </div>
 
         {gallery.length > 0 ? (
