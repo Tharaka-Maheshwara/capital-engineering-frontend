@@ -15,8 +15,13 @@ type PricingStep = 1 | 2;
 
 export default function PricingEstimator() {
   const [currentStep, setCurrentStep] = useState<PricingStep>(1);
-  const [selectedProjectType, setSelectedProjectType] = useState<ProjectTypeId>("house");
-  const [contact, setContact] = useState<ContactState>({ name: "", phone: "", email: "" });
+  const [selectedProjectType, setSelectedProjectType] =
+    useState<ProjectTypeId>("house");
+  const [contact, setContact] = useState<ContactState>({
+    name: "",
+    phone: "",
+    email: "",
+  });
   const [location, setLocation] = useState<LocationState>({
     district: "Colombo",
     divisionalSecretariat: "Urban",
