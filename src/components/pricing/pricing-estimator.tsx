@@ -73,7 +73,8 @@ export default function PricingEstimator() {
     buildingSize.bedrooms.trim().length > 0 &&
     buildingSize.bathrooms.trim().length > 0;
 
-  const stepFourComplete = (finishing as any).grade && (finishing as any).grade.length > 0;
+  const stepFourComplete =
+    (finishing as any).grade && (finishing as any).grade.length > 0;
 
   return (
     <main className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
