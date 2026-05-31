@@ -79,8 +79,7 @@ export default function PricingEstimator() {
     location.district.trim().length > 0 &&
     location.divisionalSecretariat.trim().length > 0 &&
     location.plotSize.trim().length > 0 &&
-    location.plotShape.trim().length > 0 &&
-    location.utilities.trim().length > 0;
+    location.plotShape.trim().length > 0;
 
   const stepThreeComplete =
     buildingSize.builtUpArea.trim().length > 0 &&

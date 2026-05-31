@@ -239,32 +239,7 @@ export default function LocationStep({
             </select>
           </label>
 
-          <div className="space-y-2">
-            <span className="text-sm font-medium text-slate-300/90">
-              Utilities connection
-            </span>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: "Connected", value: "Connected" },
-                { label: "No utilities", value: "No utilities" },
-              ].map((option) => {
-                const isSelected = location.utilities === option.value;
-
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() =>
-                      onLocationChange({ ...location, utilities: option.value })
-                    }
-                    className={`h-12 rounded-xl border px-4 text-[0.95rem] font-medium transition duration-150 ${isSelected ? "border-[#4d87c8] bg-[#17395d] text-slate-50 shadow-[0_0_0_1px_rgba(77,135,200,0.4)]" : "border-white/10 bg-white/4 text-slate-300/80 hover:border-white/16 hover:bg-white/5 hover:text-white"}`}
-                  >
-                    {option.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {/* Utilities connection removed per requirements */}
         </div>
       </section>
 
