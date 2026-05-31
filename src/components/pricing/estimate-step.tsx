@@ -1,6 +1,11 @@
 "use client";
 
-import type { ContactState, BuildingSizeState, FinishingState, SpecialFeaturesState } from "./pricing-types";
+import type {
+  ContactState,
+  BuildingSizeState,
+  FinishingState,
+  SpecialFeaturesState,
+} from "./pricing-types";
 
 type EstimateStepProps = {
   contact: ContactState;
@@ -15,7 +20,14 @@ function format(n: number) {
   return `රු${Math.round(n).toLocaleString()}`;
 }
 
-export default function EstimateStep({ contact, projectType, buildingSize, finishing, features, onBack }: EstimateStepProps) {
+export default function EstimateStep({
+  contact,
+  projectType,
+  buildingSize,
+  finishing,
+  features,
+  onBack,
+}: EstimateStepProps) {
   const area = Number(buildingSize.builtUpArea) || 0;
 
   const gradeRates: Record<string, [number, number]> = {
@@ -69,17 +81,30 @@ export default function EstimateStep({ contact, projectType, buildingSize, finis
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-50 sm:text-[2.2rem]">Estimated construction cost · 2026</h1>
-        <p className="text-sm text-slate-400">{format(totalLow)} - {format(totalHigh)}</p>
-        <p className="text-sm text-slate-400">{format(perSqLow)} - {format(perSqHigh)} per sq.ft</p>
+        <h1 className="text-3xl font-semibold tracking-[-0.04em] text-slate-50 sm:text-[2.2rem]">
+          Estimated construction cost · 2026
+        </h1>
+        <p className="text-sm text-slate-400">
+          {format(totalLow)} - {format(totalHigh)}
+        </p>
+        <p className="text-sm text-slate-400">
+          {format(perSqLow)} - {format(perSqHigh)} per sq.ft
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {comps.map((c) => (
-          <div key={c.title} className="p-4 rounded-xl border border-white/8 bg-white/3">
+          <div
+            key={c.title}
+            className="p-4 rounded-xl border border-white/8 bg-white/3"
+          >
             <div className="text-sm text-slate-300">{c.title}</div>
-            <div className="mt-2 text-lg font-semibold">{format(totalLow * c.pct)} - {format(totalHigh * c.pct)}</div>
-            <div className="text-xs text-slate-400 mt-1">{Math.round(c.pct * 100)}% of structure</div>
+            <div className="mt-2 text-lg font-semibold">
+              {format(totalLow * c.pct)} - {format(totalHigh * c.pct)}
+            </div>
+            <div className="text-xs text-slate-400 mt-1">
+              {Math.round(c.pct * 100)}% of structure
+            </div>
           </div>
         ))}
       </div>
@@ -113,13 +138,21 @@ export default function EstimateStep({ contact, projectType, buildingSize, finis
               </tr>
               <tr>
                 <td className="py-2">Servant quarters</td>
-                <td className="py-2 text-right">{format(features.servantQuarters ? 350000 : 0)}</td>
-                <td className="py-2 text-right">{format(features.servantQuarters ? 700000 : 0)}</td>
+                <td className="py-2 text-right">
+                  {format(features.servantQuarters ? 350000 : 0)}
+                </td>
+                <td className="py-2 text-right">
+                  {format(features.servantQuarters ? 700000 : 0)}
+                </td>
               </tr>
               <tr className="border-t border-white/10">
                 <td className="py-2 font-semibold">Total estimate</td>
-                <td className="py-2 font-semibold text-right">{format(totalLow)}</td>
-                <td className="py-2 font-semibold text-right">{format(totalHigh)}</td>
+                <td className="py-2 font-semibold text-right">
+                  {format(totalLow)}
+                </td>
+                <td className="py-2 font-semibold text-right">
+                  {format(totalHigh)}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -127,10 +160,20 @@ export default function EstimateStep({ contact, projectType, buildingSize, finis
       </div>
 
       <div className="flex justify-between">
-        <button type="button" onClick={onBack} className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/12 bg-transparent px-6 text-[0.95rem] font-medium text-slate-100">← Back</button>
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/12 bg-transparent px-6 text-[0.95rem] font-medium text-slate-100"
+        >
+          ← Back
+        </button>
         <div className="space-x-3">
-          <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80">Free site visit & BOQ</button>
-          <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80">Cost estimate — Word document download</button>
+          <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80">
+            Free site visit & BOQ
+          </button>
+          <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80">
+            Cost estimate — Word document download
+          </button>
         </div>
       </div>
     </div>
