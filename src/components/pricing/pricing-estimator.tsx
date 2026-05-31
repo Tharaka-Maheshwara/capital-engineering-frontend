@@ -6,6 +6,7 @@ import ProjectTypeStep from "./project-type-step";
 import LocationStep from "./location-step";
 import BuildingSizeStep from "./building-size-step";
 import FinishingGradeStep from "./finishing-grade-step";
+import SpecialFeaturesStep from "./special-features-step";
 import {
   type ContactState,
   type LocationState,
@@ -14,7 +15,7 @@ import {
   projectTypes,
 } from "./pricing-types";
 
-type PricingStep = 1 | 2 | 3 | 4;
+type PricingStep = 1 | 2 | 3 | 4 | 5 | 6;
 
 export default function PricingEstimator() {
   const [currentStep, setCurrentStep] = useState<PricingStep>(1);
@@ -54,6 +55,19 @@ export default function PricingEstimator() {
     kitchen: "Modern kitchen (+රු200k)",
   });
 
+  const [specialFeatures, setSpecialFeatures] = useState({
+    garage: false,
+    swimmingPool: false,
+    boundaryWall: false,
+    solar: false,
+    landscaping: false,
+    generator: false,
+    cctv: false,
+    acPreWiring: false,
+    servantQuarters: false,
+    waterTank: false,
+  });
+
   const stepOneComplete =
     contact.name.trim().length > 0 &&
     contact.phone.trim().length > 0 &&
@@ -75,6 +89,7 @@ export default function PricingEstimator() {
 
   const stepFourComplete =
     (finishing as any).grade && (finishing as any).grade.length > 0;
+  const stepFiveComplete = true;
 
   return (
     <main className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -119,6 +134,14 @@ export default function PricingEstimator() {
                   onFinishingChange={setFinishing as any}
                   onBack={() => setCurrentStep(3)}
                   onNext={() => setCurrentStep(5)}
+                />
+              ) : currentStep === 5 ? (
+                <SpecialFeaturesStep
+                  features={specialFeatures as any}
+                  stepFiveComplete={stepFiveComplete}
+                  onFeaturesChange={setSpecialFeatures as any}
+                  onBack={() => setCurrentStep(4)}
+                  onNext={() => setCurrentStep(6)}
                 />
               ) : null}
             </div>

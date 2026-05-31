@@ -35,6 +35,19 @@ export type FinishingState = {
   kitchen: string;
 };
 
+export type SpecialFeaturesState = {
+  garage: boolean;
+  swimmingPool: boolean;
+  boundaryWall: boolean;
+  solar: boolean;
+  landscaping: boolean;
+  generator: boolean;
+  cctv: boolean;
+  acPreWiring: boolean;
+  servantQuarters: boolean;
+  waterTank: boolean;
+};
+
 export type PricingStep = {
   number: 1 | 2 | 3 | 4 | 5 | 6;
   label: string;
