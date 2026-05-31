@@ -4,14 +4,16 @@ import { useState } from "react";
 import PricingSidebar from "./pricing-sidebar";
 import ProjectTypeStep from "./project-type-step";
 import LocationStep from "./location-step";
+import BuildingSizeStep from "./building-size-step";
 import {
   type ContactState,
   type LocationState,
+  type BuildingSizeState,
   type ProjectTypeId,
   projectTypes,
 } from "./pricing-types";
 
-type PricingStep = 1 | 2;
+type PricingStep = 1 | 2 | 3;
 
 export default function PricingEstimator() {
   const [currentStep, setCurrentStep] = useState<PricingStep>(1);
@@ -30,6 +32,17 @@ export default function PricingEstimator() {
     utilities: "Connected",
   });
 
+  const [buildingSize, setBuildingSize] = useState<BuildingSizeState>({
+    builtUpArea: "1500",
+    floors: "2",
+    bedrooms: "3",
+    bathrooms: "2",
+    ceilingHeight: "9 ft (standard)",
+    roofType: "Pitched / Gable",
+    foundationType: "Strip foundation",
+    designComplexity: "Simple (rectangular)",
+  });
+
   const stepOneComplete =
     contact.name.trim().length > 0 &&
     contact.phone.trim().length > 0 &&
@@ -42,6 +55,12 @@ export default function PricingEstimator() {
     location.plotSize.trim().length > 0 &&
     location.plotShape.trim().length > 0 &&
     location.utilities.trim().length > 0;
+
+  const stepThreeComplete =
+    buildingSize.builtUpArea.trim().length > 0 &&
+    buildingSize.floors.trim().length > 0 &&
+    buildingSize.bedrooms.trim().length > 0 &&
+    buildingSize.bathrooms.trim().length > 0;
 
   return (
     <main className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -63,12 +82,21 @@ export default function PricingEstimator() {
                   onProjectTypeChange={setSelectedProjectType}
                   onNext={() => setCurrentStep(2)}
                 />
-              ) : (
+              ) : currentStep === 2 ? (
                 <LocationStep
                   location={location}
                   stepTwoComplete={stepTwoComplete}
                   onLocationChange={setLocation}
                   onBack={() => setCurrentStep(1)}
+                  onNext={() => setCurrentStep(3)}
+                />
+              ) : (
+                <BuildingSizeStep
+                  buildingSize={buildingSize}
+                  stepThreeComplete={stepThreeComplete}
+                  onBuildingSizeChange={setBuildingSize}
+                  onBack={() => setCurrentStep(2)}
+                  onNext={() => setCurrentStep(1)}
                 />
               )}
             </div>

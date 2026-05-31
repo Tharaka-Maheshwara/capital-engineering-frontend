@@ -7,6 +7,7 @@ type LocationStepProps = {
   stepTwoComplete: boolean;
   onLocationChange: (nextLocation: LocationState) => void;
   onBack: () => void;
+  onNext?: () => void;
 };
 
 function PinIcon() {
@@ -118,6 +119,7 @@ export default function LocationStep({
   stepTwoComplete,
   onLocationChange,
   onBack,
+  onNext,
 }: LocationStepProps) {
   return (
     <div className="space-y-8">
@@ -282,6 +284,7 @@ export default function LocationStep({
           <button
             type="button"
             disabled={!stepTwoComplete}
+            onClick={() => onNext && onNext()}
             className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80 transition duration-150 hover:border-white/16 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/2 disabled:text-slate-500"
           >
             <span>Next</span>

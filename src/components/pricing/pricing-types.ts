@@ -14,6 +14,17 @@ export type LocationState = {
   utilities: string;
 };
 
+export type BuildingSizeState = {
+  builtUpArea: string; // sq ft
+  floors: string;
+  bedrooms: string;
+  bathrooms: string;
+  ceilingHeight: string;
+  roofType: string;
+  foundationType: string;
+  designComplexity: string;
+};
+
 export type PricingStep = {
   number: 1 | 2 | 3 | 4 | 5 | 6;
   label: string;
