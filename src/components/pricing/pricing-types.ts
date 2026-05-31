@@ -25,6 +25,16 @@ export type BuildingSizeState = {
   designComplexity: string;
 };
 
+export type FinishingState = {
+  grade: "Budget" | "Standard" | "Luxury" | "";
+  flooring: string;
+  windows: string;
+  electrical: string;
+  plumbing: string;
+  ceiling: string;
+  kitchen: string;
+};
+
 export type PricingStep = {
   number: 1 | 2 | 3 | 4 | 5 | 6;
   label: string;

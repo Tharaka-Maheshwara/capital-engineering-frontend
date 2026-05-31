@@ -5,6 +5,7 @@ import PricingSidebar from "./pricing-sidebar";
 import ProjectTypeStep from "./project-type-step";
 import LocationStep from "./location-step";
 import BuildingSizeStep from "./building-size-step";
+import FinishingGradeStep from "./finishing-grade-step";
 import {
   type ContactState,
   type LocationState,
@@ -13,7 +14,7 @@ import {
   projectTypes,
 } from "./pricing-types";
 
-type PricingStep = 1 | 2 | 3;
+type PricingStep = 1 | 2 | 3 | 4;
 
 export default function PricingEstimator() {
   const [currentStep, setCurrentStep] = useState<PricingStep>(1);
@@ -43,6 +44,16 @@ export default function PricingEstimator() {
     designComplexity: "Simple (rectangular)",
   });
 
+  const [finishing, setFinishing] = useState({
+    grade: "Standard",
+    flooring: "Cement / Terrazzo",
+    windows: "Aluminium frames",
+    electrical: "Standard",
+    plumbing: "Local fittings",
+    ceiling: "Plaster",
+    kitchen: "Modern kitchen (+රු200k)",
+  });
+
   const stepOneComplete =
     contact.name.trim().length > 0 &&
     contact.phone.trim().length > 0 &&
@@ -61,6 +72,8 @@ export default function PricingEstimator() {
     buildingSize.floors.trim().length > 0 &&
     buildingSize.bedrooms.trim().length > 0 &&
     buildingSize.bathrooms.trim().length > 0;
+
+  const stepFourComplete = (finishing as any).grade && (finishing as any).grade.length > 0;
 
   return (
     <main className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -90,15 +103,23 @@ export default function PricingEstimator() {
                   onBack={() => setCurrentStep(1)}
                   onNext={() => setCurrentStep(3)}
                 />
-              ) : (
+              ) : currentStep === 3 ? (
                 <BuildingSizeStep
                   buildingSize={buildingSize}
                   stepThreeComplete={stepThreeComplete}
                   onBuildingSizeChange={setBuildingSize}
                   onBack={() => setCurrentStep(2)}
-                  onNext={() => setCurrentStep(1)}
+                  onNext={() => setCurrentStep(4)}
                 />
-              )}
+              ) : currentStep === 4 ? (
+                <FinishingGradeStep
+                  finishing={finishing as any}
+                  stepFourComplete={stepFourComplete}
+                  onFinishingChange={setFinishing as any}
+                  onBack={() => setCurrentStep(3)}
+                  onNext={() => setCurrentStep(5)}
+                />
+              ) : null}
             </div>
           </div>
         </div>
