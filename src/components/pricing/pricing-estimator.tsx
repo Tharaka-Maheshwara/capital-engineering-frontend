@@ -7,6 +7,7 @@ import LocationStep from "./location-step";
 import BuildingSizeStep from "./building-size-step";
 import FinishingGradeStep from "./finishing-grade-step";
 import SpecialFeaturesStep from "./special-features-step";
+import EstimateStep from "./estimate-step";
 import {
   type ContactState,
   type LocationState,
@@ -142,6 +143,15 @@ export default function PricingEstimator() {
                   onFeaturesChange={setSpecialFeatures as any}
                   onBack={() => setCurrentStep(4)}
                   onNext={() => setCurrentStep(6)}
+                />
+              ) : currentStep === 6 ? (
+                <EstimateStep
+                  contact={contact}
+                  projectType={selectedProjectType}
+                  buildingSize={buildingSize}
+                  finishing={finishing as any}
+                  features={specialFeatures as any}
+                  onBack={() => setCurrentStep(5)}
                 />
               ) : null}
             </div>
