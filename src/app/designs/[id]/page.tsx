@@ -23,7 +23,15 @@ async function loadDesign(id: string): Promise<DesignDetail | null> {
     return null;
   }
 
-  return (await response.json()) as DesignDetail;
+  const payload = (await response.json()) as {
+    data?: DesignDetail;
+  } | DesignDetail;
+
+  if ("data" in payload && payload.data) {
+    return payload.data;
+  }
+
+  return payload as DesignDetail;
 }
 
 export default async function DesignDetailPage({
