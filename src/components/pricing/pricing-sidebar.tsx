@@ -1,7 +1,7 @@
 import { pricingSteps } from "./pricing-types";
 
 type PricingSidebarProps = {
-  activeStep: 1 | 2;
+  activeStep: number;
 };
 
 function BuildingIcon() {

@@ -1,24 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FormEvent, ReactNode } from "react";
 
-type DesignStatus = "Draft" | "Published";
-
-type DesignRecord = {
-  id: number;
-  title: string;
-  category: string;
-  style: string;
-  status: DesignStatus;
-  displayOrder: number;
-  description: string;
-  imageUrl: string | null;
-  imageAlt: string;
-  galleryCount: number;
-  createdAt: string;
-};
+import DesignFormModal from "@/components/admin/design-form-modal";
+import DesignRecordsSection from "@/components/admin/design-records-section";
+import type {
+  DesignFormState,
+  DesignRecord,
+  DesignStatus,
+} from "@/components/admin/design-manager-types";
 
 const defaultRecords: DesignRecord[] = [
   {
@@ -62,390 +54,330 @@ const categoryOptions = [
 
 const styleOptions = ["Minimal", "Contemporary", "Luxury", "Industrial", "Tropical"];
 
+const initialFormState: DesignFormState = {
+  title: "",
+  category: categoryOptions[0],
+  style: styleOptions[0],
+  status: "Draft",
+  displayOrder: "1",
+  description: "",
+  imageAlt: "",
+};
+
+const navigationItems = [
+  { label: "Dashboard", href: "/admin/admin-dashboard", icon: DashboardIcon },
+  { label: "Services", href: "#", icon: LayersIcon },
+  { label: "Projects", href: "/admin/projects", icon: FolderIcon },
+  { label: "Designs", href: "/admin/designs", active: true, icon: PaletteIcon },
+  { label: "Team", href: "#", icon: TeamIcon },
+  { label: "Users", href: "#", icon: UsersIcon },
+  { label: "Settings", href: "#", icon: SettingsIcon },
+];
+
 export default function DesignManager() {
   const [records, setRecords] = useState<DesignRecord[]>(defaultRecords);
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(categoryOptions[0]);
-  const [style, setStyle] = useState(styleOptions[0]);
-  const [status, setStatus] = useState<DesignStatus>("Draft");
-  const [displayOrder, setDisplayOrder] = useState("1");
-  const [description, setDescription] = useState("");
-  const [altText, setAltText] = useState("");
+  const [form, setForm] = useState<DesignFormState>(initialFormState);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingDesignId, setEditingDesignId] = useState<number | null>(null);
+  const [editingDesign, setEditingDesign] = useState<DesignRecord | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [selectedImageName, setSelectedImageName] = useState<string | null>(null);
   const [galleryNames, setGalleryNames] = useState<string[]>([]);
-  const previewUrlRef = useRef<string | null>(null);
-
+  
   const stats = [
-    { label: "Total Concepts", value: String(records.length).padStart(2, "0") },
-    {
-      label: "Published",
-      value: String(records.filter((record) => record.status === "Published").length).padStart(2, "0"),
-    },
-    {
-      label: "Drafts",
-      value: String(records.filter((record) => record.status === "Draft").length).padStart(2, "0"),
-    },
+    { label: "Total Concepts", value: String(records.length).padStart(2, "0"), tone: "from-slate-900 via-slate-800 to-slate-700" },
+    { label: "Published", value: String(records.filter((r) => r.status === "Published").length).padStart(2, "0"), tone: "from-emerald-900 via-emerald-800 to-slate-800" },
+    { label: "Drafts", value: String(records.filter((r) => r.status === "Draft").length).padStart(2, "0"), tone: "from-sky-900 via-sky-800 to-slate-800" },
   ];
 
-  function updatePreview(file: File | null) {
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current);
-      previewUrlRef.current = null;
-    }
+  function updateField<K extends keyof DesignFormState>(
+    key: K,
+    value: DesignFormState[K]
+  ) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
 
+  function updatePreview(file: File | null) {
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
     if (!file) {
       setImagePreviewUrl(null);
       setSelectedImageName(null);
       return;
     }
-
     const objectUrl = URL.createObjectURL(file);
-    previewUrlRef.current = objectUrl;
     setImagePreviewUrl(objectUrl);
     setSelectedImageName(file.name);
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const nextRecord: DesignRecord = {
-      id: Date.now(),
-      title: title.trim() || "Untitled concept",
-      category,
-      style,
-      status,
-      displayOrder: Number(displayOrder) || records.length + 1,
-      description: description.trim() || "No description provided yet.",
-      imageUrl: imagePreviewUrl,
-      imageAlt: altText.trim() || title.trim() || "Design preview",
-      galleryCount: galleryNames.length,
-      createdAt: "Just now",
-    };
-
-    setRecords((current) => [nextRecord, ...current]);
-    setTitle("");
-    setCategory(categoryOptions[0]);
-    setStyle(styleOptions[0]);
-    setStatus("Draft");
-    setDisplayOrder(String(records.length + 1));
-    setDescription("");
-    setAltText("");
-    setGalleryNames([]);
-    updatePreview(null);
+  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+    updatePreview(event.target.files?.[0] ?? null);
   }
 
-  function handleReset() {
-    setTitle("");
-    setCategory(categoryOptions[0]);
-    setStyle(styleOptions[0]);
-    setStatus("Draft");
-    setDisplayOrder("1");
-    setDescription("");
-    setAltText("");
+  function handleGalleryImagesChange(event: ChangeEvent<HTMLInputElement>) {
+    setGalleryNames(Array.from(event.target.files ?? []).map((file) => file.name));
+  }
+
+  function openCreateModal() {
+    setEditingDesignId(null);
+    setEditingDesign(null);
+    setForm({ ...initialFormState, displayOrder: String(records.length + 1) });
+    setImagePreviewUrl(null);
+    setSelectedImageName(null);
     setGalleryNames([]);
-    updatePreview(null);
+    setIsModalOpen(true);
+  }
+
+  function openEditModal(design: DesignRecord) {
+    setEditingDesignId(design.id);
+    setEditingDesign(design);
+    setForm({
+      title: design.title,
+      category: design.category,
+      style: design.style,
+      status: design.status,
+      displayOrder: String(design.displayOrder),
+      description: design.description,
+      imageAlt: design.imageAlt,
+    });
+    setImagePreviewUrl(design.imageUrl);
+    setSelectedImageName(null);
+    setGalleryNames(Array.from({ length: design.galleryCount }).map((_, i) => `Existing Image ${i + 1}`));
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+    setEditingDesignId(null);
+    setEditingDesign(null);
+    setForm(initialFormState);
+    setImagePreviewUrl(null);
+    setSelectedImageName(null);
+    setGalleryNames([]);
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (editingDesignId !== null) {
+      // Edit
+      setRecords((current) =>
+        current.map((rec) =>
+          rec.id === editingDesignId
+            ? {
+                ...rec,
+                title: form.title.trim() || "Untitled concept",
+                category: form.category,
+                style: form.style,
+                status: form.status,
+                displayOrder: Number(form.displayOrder) || records.length,
+                description: form.description.trim() || "No description provided yet.",
+                imageUrl: imagePreviewUrl || rec.imageUrl,
+                imageAlt: form.imageAlt.trim() || form.title.trim() || "Design preview",
+                galleryCount: galleryNames.length,
+              }
+            : rec
+        )
+      );
+    } else {
+      // Create
+      const nextRecord: DesignRecord = {
+        id: Date.now(),
+        title: form.title.trim() || "Untitled concept",
+        category: form.category,
+        style: form.style,
+        status: form.status,
+        displayOrder: Number(form.displayOrder) || records.length + 1,
+        description: form.description.trim() || "No description provided yet.",
+        imageUrl: imagePreviewUrl,
+        imageAlt: form.imageAlt.trim() || form.title.trim() || "Design preview",
+        galleryCount: galleryNames.length,
+        createdAt: "Just now",
+      };
+      setRecords((current) => [nextRecord, ...current]);
+    }
+    
+    closeModal();
+  }
+
+  function handleDelete(designId: number) {
+    if (!confirm("Delete this concept? This action cannot be undone.")) {
+      return;
+    }
+    setRecords((current) => current.filter((rec) => rec.id !== designId));
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="border-b border-slate-200 bg-white/90 backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.22em] text-slate-500">
-              Admin / Designs
-            </p>
-            <h1 className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-[2.15rem]">
-              Add a new design concept
-            </h1>
-          </div>
-
-          <Link
-            href="/admin/admin-dashboard"
-            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
-          >
-            Back to dashboard
-          </Link>
-        </div>
-      </div>
-
-      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section className="grid gap-4 sm:grid-cols-3">
-          {stats.map((stat) => (
-            <article
-              key={stat.label}
-              className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]"
-            >
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
-                {stat.label}
-              </p>
-              <div className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-slate-900">
-                {stat.value}
+    <main className="min-h-screen bg-[#f3f5f9] text-slate-900">
+      <div className="flex min-h-screen flex-col lg:flex-row">
+        <aside className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#0c1d33_0%,#10284a_46%,#0a1627_100%)] text-slate-100 lg:sticky lg:top-0 lg:h-screen lg:w-70 lg:border-r lg:border-white/10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(92,153,190,0.18),transparent_18%),radial-gradient(circle_at_50%_80%,rgba(255,255,255,0.06),transparent_22%)]" />
+          <div className="relative flex h-full flex-col px-5 py-6 sm:px-6 lg:px-5 lg:py-7">
+            <div className="flex items-center gap-3 rounded-[22px] border border-white/10 bg-white/5 px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
+                <span className="text-lg font-black tracking-[-0.06em]">
+                  CE
+                </span>
               </div>
-            </article>
-          ))}
-        </section>
-
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-6">
-            <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Design form
-                </p>
-                <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                  Create concept details
-                </h2>
+                <div className="text-[0.96rem] font-semibold uppercase tracking-[0.24em] text-slate-200/70">
+                  Capital Engineering
+                </div>
+                <div className="text-[1.08rem] font-bold tracking-[-0.03em] text-white">
+                  Design Manager
+                </div>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Design only
-              </span>
             </div>
 
-            <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Design title">
-                  <input
-                    value={title}
-                    onChange={(event) => setTitle(event.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors focus:border-sky-300 focus:bg-white"
-                    placeholder="Villa concept with pool court"
-                  />
-                </Field>
+            <nav
+              className="mt-8 flex flex-1 flex-col gap-2"
+              aria-label="Admin navigation"
+            >
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
 
-                <Field label="Category">
-                  <select
-                    value={category}
-                    onChange={(event) => setCategory(event.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors focus:border-sky-300 focus:bg-white"
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    aria-current={item.active ? "page" : undefined}
+                    className={`group flex items-center gap-3 rounded-[18px] px-4 py-3 text-[1rem] font-medium transition-colors duration-150 ${item.active ? "bg-white/14 text-white shadow-[0_14px_30px_rgba(0,0,0,0.16)]" : "text-slate-200/72 hover:bg-white/7 hover:text-white"}`}
                   >
-                    {categoryOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <Field label="Style">
-                  <select
-                    value={style}
-                    onChange={(event) => setStyle(event.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors focus:border-sky-300 focus:bg-white"
-                  >
-                    {styleOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <Field label="Display order">
-                  <input
-                    type="number"
-                    min="1"
-                    value={displayOrder}
-                    onChange={(event) => setDisplayOrder(event.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors focus:border-sky-300 focus:bg-white"
-                    placeholder="1"
-                  />
-                </Field>
-              </div>
-
-              <Field label="Status">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {(["Draft", "Published"] as DesignStatus[]).map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => setStatus(option)}
-                      className={`rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-colors ${status === option ? "border-sky-300 bg-sky-50 text-sky-700" : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-white"}`}
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${item.active ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}
                     >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </Field>
-
-              <Field label="Description">
-                <textarea
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  rows={5}
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-sky-300 focus:bg-white"
-                  placeholder="Explain the concept, mood, materials, or client brief."
-                />
-              </Field>
-
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Image alt text">
-                  <input
-                    value={altText}
-                    onChange={(event) => setAltText(event.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors focus:border-sky-300 focus:bg-white"
-                    placeholder="Exterior concept preview"
-                  />
-                </Field>
-
-                <Field label="Main concept image">
-                  <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600 transition-colors hover:border-sky-300 hover:bg-sky-50/40">
-                    <span>{selectedImageName ?? "Choose an image"}</span>
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                      Upload
+                      <Icon />
                     </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="sr-only"
-                      onChange={(event) => updatePreview(event.target.files?.[0] ?? null)}
-                    />
-                  </label>
-                </Field>
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="mt-6 rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
+              <div className="text-sm font-semibold text-white">
+                Design Concepts
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-200/70">
+                Manage all your residential, commercial, and other architectural design concepts here.
+              </p>
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-sm text-sky-200">
+                <span>Connected</span>
+                <span className="h-2.5 w-2.5 rounded-full bg-sky-300 shadow-[0_0_0_6px_rgba(56,189,248,0.12)]" />
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div className="flex-1 bg-[radial-gradient(circle_at_top_right,rgba(42,91,136,0.12),transparent_26%),linear-gradient(180deg,#f8fafc_0%,#edf2f7_100%)]">
+          <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/88 backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.22em] text-slate-500">
+                  Concept Management
+                </p>
+                <h1 className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-[2.15rem]">
+                  Designs
+                </h1>
               </div>
 
-              <Field label="Gallery images">
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(event) =>
-                    setGalleryNames(Array.from(event.target.files ?? []).map((file) => file.name))
-                  }
-                  className="block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white"
-                />
-                <p className="mt-2 text-sm text-slate-500">
-                  {galleryNames.length > 0
-                    ? `${galleryNames.length} file(s) selected`
-                    : "Add multiple supporting renders or mood-board images."}
-                </p>
-              </Field>
-
-              <div className="flex flex-wrap gap-3 pt-2">
-                <button
-                  type="submit"
-                  className="inline-flex items-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
-                >
-                  Save design concept
-                </button>
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={handleReset}
-                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                  onClick={openCreateModal}
+                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-4 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] transition-transform duration-150 hover:-translate-y-0.5"
                 >
-                  Clear form
+                  Add New Design
                 </button>
+                <Link
+                  href="/admin/admin-dashboard"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition-transform duration-150 hover:-translate-y-0.5 hover:text-slate-800"
+                >
+                  Back to dashboard
+                </Link>
               </div>
-            </form>
-          </section>
+            </div>
+          </header>
 
-          <aside className="space-y-6">
-            <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-              <div className="border-b border-slate-200 px-5 py-4 sm:px-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Preview
-                </p>
-                <h2 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-slate-900">
-                  Live concept card
-                </h2>
-              </div>
-
-              <div className="p-5 sm:p-6">
-                <div className="relative overflow-hidden rounded-[24px] bg-slate-100">
-                  <div
-                    className="h-72 bg-cover bg-center"
-                    style={{
-                      backgroundImage: imagePreviewUrl
-                        ? `url(${imagePreviewUrl})`
-                        : "linear-gradient(135deg, rgba(15,23,42,0.08), rgba(15,23,42,0.02))",
-                    }}
-                    aria-label={altText || title || "Concept preview"}
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-slate-900/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                    <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
-                      {category}
-                    </span>
-                    <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em]">
-                      {title || "Untitled concept"}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-white/80">
-                      {description || "Concept description will appear here."}
-                    </p>
+          <section className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            <div className="grid gap-5 md:grid-cols-3">
+              {stats.map((stat) => (
+                <article
+                  key={stat.label}
+                  className={`rounded-3xl bg-linear-to-br ${stat.tone} p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)]`}
+                >
+                  <p className="text-sm font-medium text-white/80">{stat.label}</p>
+                  <div className="mt-3 text-5xl font-semibold tracking-[-0.08em] text-white">
+                    {stat.value}
                   </div>
-                </div>
-              </div>
-            </section>
+                </article>
+              ))}
+            </div>
 
-            <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Recent concepts
-              </p>
-              <div className="mt-4 space-y-4">
-                {records.map((record) => (
-                  <article
-                    key={record.id}
-                    className="flex gap-4 rounded-[20px] border border-slate-200 bg-slate-50 p-3"
-                  >
-                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-slate-200">
-                      {record.imageUrl ? (
-                        <Image
-                          src={record.imageUrl}
-                          alt={record.imageAlt}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      ) : null}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h4 className="truncate text-sm font-semibold text-slate-900">
-                            {record.title}
-                          </h4>
-                          <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">
-                            {record.category} / {record.style}
-                          </p>
-                        </div>
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-semibold ${record.status === "Published" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}
-                        >
-                          {record.status}
-                        </span>
-                      </div>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
-                        {record.description}
-                      </p>
-                      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                        <span>Order {record.displayOrder}</span>
-                        <span>{record.createdAt}</span>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </aside>
+            <div className="mt-6">
+              <DesignRecordsSection
+                designs={records}
+                onEdit={openEditModal}
+                onDelete={handleDelete}
+              />
+            </div>
+            
+            <DesignFormModal
+              isOpen={isModalOpen}
+              editingDesignId={editingDesignId}
+              editingDesign={editingDesign}
+              form={form}
+              categoryOptions={categoryOptions}
+              styleOptions={styleOptions}
+              imagePreviewUrl={imagePreviewUrl}
+              selectedImageName={selectedImageName}
+              galleryNames={galleryNames}
+              onClose={closeModal}
+              onSubmit={handleSubmit}
+              onImageChange={handleImageChange}
+              onGalleryImagesChange={handleGalleryImagesChange}
+              onFieldChange={updateField}
+            />
+          </section>
         </div>
       </div>
     </main>
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function DashboardIcon() {
+  return <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />;
+}
+
+function LayersIcon() {
+  return <GlyphIcon path="M12 3l9 5-9 5-9-5 9-5zm0 9l9 5-9 5-9-5 9-5z" />;
+}
+
+function FolderIcon() {
+  return <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />;
+}
+
+function PaletteIcon() {
+  return <GlyphIcon path="M12 3a9 9 0 1 0 9 9c0-2.2-1.8-4-4-4h-1.2a1.8 1.8 0 0 1 0-3.6H17A5 5 0 0 0 12 3Zm-4 9.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm2.8-3.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm4.4 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" />;
+}
+
+function TeamIcon() {
+  return <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />;
+}
+
+function UsersIcon() {
+  return <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />;
+}
+
+function SettingsIcon() {
+  return <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />;
+}
+
+function GlyphIcon({ path }: { path: string }) {
   return (
-    <label className="block text-sm font-semibold text-slate-700">
-      <span className="mb-2 block uppercase tracking-[0.14em] text-slate-500">
-        {label}
-      </span>
-      {children}
-    </label>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden="true">
+      <path d={path} />
+    </svg>
   );
 }
