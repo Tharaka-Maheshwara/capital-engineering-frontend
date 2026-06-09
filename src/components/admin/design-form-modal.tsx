@@ -8,6 +8,7 @@ type DesignFormModalProps = {
   form: DesignFormState;
   imagePreviewUrls: string[];
   imageNames: string[];
+  isSubmitting: boolean;
   onClose: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onImagesChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -24,6 +25,7 @@ export default function DesignFormModal({
   form,
   imagePreviewUrls,
   imageNames,
+  isSubmitting,
   onClose,
   onSubmit,
   onImagesChange,
@@ -101,7 +103,7 @@ export default function DesignFormModal({
                   {availableSubcategories.map((subCat) => (
                     <label
                       key={subCat}
-                      className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:bg-white has-[:checked]:border-sky-300 has-[:checked]:bg-sky-50"
+                      className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:bg-white has-checked:border-sky-300 has-checked:bg-sky-50"
                     >
                       <input
                         type="checkbox"
@@ -117,6 +119,16 @@ export default function DesignFormModal({
                 </div>
               </Field>
             )}
+
+            <Field label="Short Description">
+              <textarea
+                value={form.description}
+                onChange={(event) => onFieldChange("description", event.target.value)}
+                className={`${fieldInputClass} min-h-28 resize-y`}
+                placeholder="Write a short description for this design concept"
+                maxLength={255}
+              />
+            </Field>
 
             <section className="mt-5 rounded-3xl border border-slate-200/80 bg-slate-50/80 p-4 sm:p-5">
                <div className="mb-4">
@@ -160,9 +172,13 @@ export default function DesignFormModal({
               <button
                 type="submit"
                 className="inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(3,15,31,0.2)] transition-transform duration-150 hover:-translate-y-0.5"
-                disabled={!form.mainCategory || form.subCategories.length === 0}
+                disabled={isSubmitting || !form.mainCategory || form.subCategories.length === 0}
               >
-                {editingDesignId === null ? "Save design concept" : "Update design concept"}
+                {isSubmitting
+                  ? "Saving..."
+                  : editingDesignId === null
+                    ? "Save design concept"
+                    : "Update design concept"}
               </button>
               <button
                 type="button"
@@ -186,7 +202,7 @@ export default function DesignFormModal({
               </div>
 
               <div className="p-5">
-                <div className="relative overflow-hidden rounded-[24px] bg-slate-100">
+                <div className="relative overflow-hidden rounded-3xl bg-slate-100">
                   <div
                     className="h-96 bg-cover bg-center"
                     style={{
@@ -201,9 +217,14 @@ export default function DesignFormModal({
                     <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
                       {form.mainCategory || "Select Category"}
                     </span>
+                    {form.description && (
+                      <p className="mt-3 max-w-full text-sm leading-6 text-white/80">
+                        {form.description}
+                      </p>
+                    )}
                     <div className="mt-4 flex flex-wrap gap-2">
                       {form.subCategories.map((subCat) => (
-                        <span key={subCat} className="inline-flex items-center rounded-[12px] bg-white/10 px-3 py-1.5 text-sm font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
+                        <span key={subCat} className="inline-flex items-center rounded-xl bg-white/10 px-3 py-1.5 text-sm font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
                           {subCat}
                         </span>
                       ))}

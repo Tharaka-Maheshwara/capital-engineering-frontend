@@ -56,6 +56,11 @@ export default function DesignRecordsSection({
                     <h3 className="text-lg font-semibold text-slate-900">
                       {design.mainCategory}
                     </h3>
+                    {design.description && (
+                      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                        {design.description}
+                      </p>
+                    )}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {design.subCategories.map((subCat) => (
                         <span key={subCat} className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">

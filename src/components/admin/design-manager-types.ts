@@ -2,6 +2,7 @@ export type DesignRecord = {
   id: number;
   mainCategory: string;
   subCategories: string[];
+  description: string;
   imageUrls: string[];
   createdAt: string;
 };
@@ -9,6 +10,7 @@ export type DesignRecord = {
 export type DesignFormState = {
   mainCategory: string;
   subCategories: string[];
+  description: string;
 };
 
 export const designCategoryMap: Record<string, string[]> = {

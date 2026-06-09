@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 
 import DesignFormModal from "@/components/admin/design-form-modal";
@@ -11,11 +11,24 @@ import {
   type DesignRecord,
 } from "@/components/admin/design-manager-types";
 
+type DesignApiRecord = {
+  id: number;
+  main_category?: string | null;
+  description?: string | null;
+  sub_categories?: string[] | null;
+  image_urls?: string[] | null;
+  created_at?: string | null;
+};
+
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+
 const defaultRecords: DesignRecord[] = [
   {
     id: 1,
     mainCategory: "Residential Designs",
     subCategories: ["Modern Single-Story Houses", "Luxury Two-Story / Multi-Story Houses"],
+    description: "A clean residential concept focused on modern family living with efficient spatial flow.",
     imageUrls: ["/images/slider-3.png"],
     createdAt: "Today",
   },
@@ -23,6 +36,7 @@ const defaultRecords: DesignRecord[] = [
     id: 2,
     mainCategory: "Commercial Designs",
     subCategories: ["Office Buildings / Corporate Spaces"],
+    description: "A commercial concept designed for flexible office planning and corporate branding.",
     imageUrls: ["/images/slider-4.png"],
     createdAt: "Yesterday",
   },
@@ -31,6 +45,7 @@ const defaultRecords: DesignRecord[] = [
 const initialFormState: DesignFormState = {
   mainCategory: "",
   subCategories: [],
+  description: "",
 };
 
 const navigationItems = [
@@ -44,13 +59,74 @@ const navigationItems = [
 ];
 
 export default function DesignManager() {
-  const [records, setRecords] = useState<DesignRecord[]>(defaultRecords);
+  const [records, setRecords] = useState<DesignRecord[]>([]);
   const [form, setForm] = useState<DesignFormState>(initialFormState);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDesignId, setEditingDesignId] = useState<number | null>(null);
   const [editingDesign, setEditingDesign] = useState<DesignRecord | null>(null);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
+  const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    void loadDesigns();
+  }, []);
+
+  function mapApiRecord(record: DesignApiRecord): DesignRecord {
+    return {
+      id: record.id,
+      mainCategory: record.main_category ?? "",
+      subCategories: Array.isArray(record.sub_categories) ? record.sub_categories : [],
+      description: record.description ?? "",
+      imageUrls: Array.isArray(record.image_urls) ? record.image_urls : [],
+      createdAt: record.created_at ?? "",
+    };
+  }
+
+  async function readResponsePayload(response: Response): Promise<Record<string, unknown> | null> {
+    const contentType = response.headers.get("content-type") ?? "";
+    const bodyText = await response.text();
+
+    if (!contentType.includes("application/json") || !bodyText) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(bodyText) as Record<string, unknown>;
+    } catch {
+      return null;
+    }
+  }
+
+  async function loadDesigns() {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/v1/designs?per_page=12`, {
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load designs");
+      }
+
+      const payload = (await response.json()) as { data?: DesignApiRecord[] };
+      setRecords(Array.isArray(payload.data) ? payload.data.map(mapApiRecord) : []);
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : "Failed to load designs");
+      setRecords([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
   
   const stats = [
     { label: "Total Concepts", value: String(records.length).padStart(2, "0"), tone: "from-slate-900 via-slate-800 to-slate-700" },
@@ -73,12 +149,14 @@ export default function DesignManager() {
     if (files.length === 0) {
       setImagePreviewUrls([]);
       setImageNames([]);
+      setSelectedImageFiles([]);
       return;
     }
 
     const urls = files.map((file) => URL.createObjectURL(file));
     setImagePreviewUrls(urls);
     setImageNames(files.map((file) => file.name));
+    setSelectedImageFiles(files);
   }
 
   function openCreateModal() {
@@ -87,6 +165,9 @@ export default function DesignManager() {
     setForm(initialFormState);
     setImagePreviewUrls([]);
     setImageNames([]);
+    setSelectedImageFiles([]);
+    setError(null);
+    setSuccess(null);
     setIsModalOpen(true);
   }
 
@@ -96,9 +177,13 @@ export default function DesignManager() {
     setForm({
       mainCategory: design.mainCategory,
       subCategories: [...design.subCategories],
+      description: design.description,
     });
     setImagePreviewUrls([]); // We don't recreate blob URLs for existing images
     setImageNames(design.imageUrls.map((_, idx) => `Existing Image ${idx + 1}`));
+    setSelectedImageFiles([]);
+    setError(null);
+    setSuccess(null);
     setIsModalOpen(true);
   }
 
@@ -110,50 +195,106 @@ export default function DesignManager() {
     imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
     setImagePreviewUrls([]);
     setImageNames([]);
+    setSelectedImageFiles([]);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!form.mainCategory || form.subCategories.length === 0) {
-      alert("Please select a main category and at least one subcategory.");
+      setError("Please select a main category and at least one subcategory.");
       return;
     }
 
-    if (editingDesignId !== null) {
-      // Edit
-      setRecords((current) =>
-        current.map((rec) =>
-          rec.id === editingDesignId
-            ? {
-                ...rec,
-                mainCategory: form.mainCategory,
-                subCategories: [...form.subCategories],
-                imageUrls: imagePreviewUrls.length > 0 ? imagePreviewUrls : rec.imageUrls,
-              }
-            : rec
-        )
-      );
-    } else {
-      // Create
-      const nextRecord: DesignRecord = {
-        id: Date.now(),
-        mainCategory: form.mainCategory,
-        subCategories: [...form.subCategories],
-        imageUrls: imagePreviewUrls,
-        createdAt: "Just now",
-      };
-      setRecords((current) => [nextRecord, ...current]);
+    if (editingDesignId === null && selectedImageFiles.length === 0) {
+      setError("Please upload at least one image.");
+      return;
     }
-    
-    closeModal();
+
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const isEditing = editingDesignId !== null;
+      const endpoint = isEditing
+        ? `${apiBaseUrl}/api/v1/designs/${editingDesignId}`
+        : `${apiBaseUrl}/api/v1/designs`;
+      const formData = new FormData();
+
+      if (isEditing) {
+        formData.append("_method", "PUT");
+      }
+
+      formData.append("main_category", form.mainCategory);
+      formData.append("description", form.description);
+      form.subCategories.forEach((subCategory) => {
+        formData.append("sub_categories[]", subCategory);
+      });
+
+      selectedImageFiles.forEach((file) => {
+        formData.append("images[]", file);
+      });
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
+      });
+
+      const payload = await readResponsePayload(response);
+
+      if (!response.ok) {
+        const message =
+          (payload?.message as string | undefined) ||
+          (payload?.error as string | undefined) ||
+          "Design could not be saved";
+        throw new Error(message);
+      }
+
+      setSuccess(isEditing ? "Design updated successfully." : "Design saved successfully.");
+      setForm(initialFormState);
+      closeModal();
+      await loadDesigns();
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Design could not be saved");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
-  function handleDelete(designId: number) {
+  async function handleDelete(designId: number) {
     if (!confirm("Delete this concept? This action cannot be undone.")) {
       return;
     }
-    setRecords((current) => current.filter((rec) => rec.id !== designId));
+
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/v1/designs/${designId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const payload = await readResponsePayload(response);
+        const message =
+          (payload?.message as string | undefined) ||
+          (payload?.error as string | undefined) ||
+          "Design could not be deleted";
+        throw new Error(message);
+      }
+
+      setSuccess("Design deleted successfully.");
+      await loadDesigns();
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "Design could not be deleted");
+    }
   }
 
   return (
@@ -249,6 +390,12 @@ export default function DesignManager() {
           </header>
 
           <section className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            {(error || success) && (
+              <div className={`mb-5 rounded-2xl px-4 py-3 text-sm ${error ? "border border-rose-200 bg-rose-50 text-rose-700" : "border border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
+                {error ?? success}
+              </div>
+            )}
+
             <div className="grid gap-5 md:grid-cols-3">
               {stats.map((stat) => (
                 <article
@@ -270,6 +417,12 @@ export default function DesignManager() {
                 onDelete={handleDelete}
               />
             </div>
+
+            {isLoading && (
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
+                Loading designs...
+              </div>
+            )}
             
             <DesignFormModal
               isOpen={isModalOpen}
@@ -278,6 +431,7 @@ export default function DesignManager() {
               form={form}
               imagePreviewUrls={imagePreviewUrls}
               imageNames={imageNames}
+              isSubmitting={isSubmitting}
               onClose={closeModal}
               onSubmit={handleSubmit}
               onImagesChange={handleImagesChange}
