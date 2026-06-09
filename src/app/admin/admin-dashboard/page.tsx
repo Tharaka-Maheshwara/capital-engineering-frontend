@@ -5,6 +5,7 @@ const navigationItems = [
   { label: "Dashboard", href: "/admin/admin-dashboard", active: true, icon: DashboardIcon },
   { label: "Services", href: "#", icon: LayersIcon },
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
+  { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
   { label: "Team", href: "#", icon: TeamIcon },
   { label: "Users", href: "#", icon: UsersIcon },
   { label: "Settings", href: "#", icon: SettingsIcon },
@@ -35,6 +36,14 @@ const metricCards = [
     action: "Manage Admins",
     icon: UsersIcon,
   },
+  {
+    title: "Design Concepts",
+    value: "18",
+    tone: "from-slate-700/95 via-slate-600/90 to-slate-800/85",
+    image: "/images/slider-3.png",
+    action: "Add Design",
+    icon: PaletteIcon,
+  },
 ];
 
 const activityItems = [
@@ -58,6 +67,7 @@ const activityItems = [
 ];
 
 const quickActions = [
+  "Add new design concept",
   "Add new project",
   "Publish service",
   "Invite team member",
@@ -160,7 +170,7 @@ export default function AdminDashboardPage() {
                   Capital Engineering Command Center
                 </div>
                 <h2 className="mt-5 text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
-                  Manage services, projects, and team operations from one place.
+                  Manage designs, services, projects, and team operations from one place.
                 </h2>
                 <p className="mt-4 max-w-2xl text-[1rem] leading-7 text-slate-100/78 sm:text-[1.05rem]">
                   This dashboard is set up to match the professional admin style
@@ -376,6 +386,12 @@ function ArrowRightIcon() {
 function LogoutIcon() {
   return (
     <GlyphIcon path="M10 17l5-5-5-5M15 12H3m12-7h3a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-3" />
+  );
+}
+
+function PaletteIcon() {
+  return (
+    <GlyphIcon path="M12 3a9 9 0 1 0 9 9c0-2.2-1.8-4-4-4h-1.2a1.8 1.8 0 0 1 0-3.6H17A5 5 0 0 0 12 3Zm-4 9.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm2.8-3.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm4.4 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" />
   );
 }
 
