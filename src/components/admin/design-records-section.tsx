@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { DesignRecord } from "@/components/admin/design-manager-types";
 
 type DesignRecordsSectionProps = {
@@ -28,68 +27,72 @@ export default function DesignRecordsSection({
         </span>
       </div>
 
-      <div className="mt-5 space-y-3">
-        {designs.map((design) => (
-          <article
-            key={design.id}
-            className="rounded-[18px] border border-slate-200 bg-slate-50/80 px-4 py-4"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                  {design.imageUrl ? (
-                    <img
-                      src={design.imageUrl}
-                      alt={design.imageAlt ?? design.title}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="text-sm font-semibold text-slate-400">
-                      N/A
-                    </span>
-                  )}
+      <div className="mt-5 space-y-4">
+        {designs.map((design) => {
+          const mainImage = design.imageUrls && design.imageUrls.length > 0 ? design.imageUrls[0] : null;
+
+          return (
+            <article
+              key={design.id}
+              className="rounded-[18px] border border-slate-200 bg-slate-50/80 p-4"
+            >
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                  <div className="flex h-24 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    {mainImage ? (
+                      <img
+                        src={mainImage}
+                        alt={design.mainCategory}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="text-sm font-semibold text-slate-400">
+                        N/A
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-900">
+                      {design.mainCategory}
+                    </h3>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {design.subCategories.map((subCat) => (
+                        <span key={subCat} className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">
+                          {subCat}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-3 text-xs uppercase tracking-[0.12em] text-slate-500">
+                      Images: {design.imageUrls?.length || 0}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-[1rem] font-semibold text-slate-900">
-                    {design.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-600">
-                    {design.category} · {design.style}
-                  </p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
-                    Order: {design.displayOrder} · Gallery: {design.galleryCount} images
-                  </p>
+
+                <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
+                  <button
+                    type="button"
+                    onClick={() => onEdit(design)}
+                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 transition-colors hover:bg-slate-100 sm:w-auto"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(design.id)}
+                    className="inline-flex w-full items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700 transition-colors hover:bg-rose-100 sm:w-auto"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
-
-              <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] shadow-sm ${design.status === "Published" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
-                {design.status}
-              </span>
-            </div>
-
-            <div className="mt-4 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => onEdit(design)}
-                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 transition-colors hover:bg-slate-100"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(design.id)}
-                className="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700 transition-colors hover:bg-rose-100"
-              >
-                Delete
-              </button>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
 
         {designs.length === 0 && (
-          <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-            No designs yet. Click Add New Design to create the first concept.
+          <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-center text-sm text-slate-500">
+            No designs yet. Click "Add New Design" to create the first concept.
           </div>
         )}
       </div>

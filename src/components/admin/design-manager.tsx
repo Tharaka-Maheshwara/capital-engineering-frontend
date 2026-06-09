@@ -1,67 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import type { ChangeEvent, FormEvent, ReactNode } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 
 import DesignFormModal from "@/components/admin/design-form-modal";
 import DesignRecordsSection from "@/components/admin/design-records-section";
-import type {
-  DesignFormState,
-  DesignRecord,
-  DesignStatus,
+import {
+  type DesignFormState,
+  type DesignRecord,
 } from "@/components/admin/design-manager-types";
 
 const defaultRecords: DesignRecord[] = [
   {
     id: 1,
-    title: "Modern Residence Concept",
-    category: "Residential",
-    style: "Minimal",
-    status: "Published",
-    displayOrder: 1,
-    description:
-      "A clean residential concept with open volumes, soft lighting, and natural textures.",
-    imageUrl: "/images/slider-3.png",
-    imageAlt: "Modern residence concept preview",
-    galleryCount: 4,
+    mainCategory: "Residential Designs",
+    subCategories: ["Modern Single-Story Houses", "Luxury Two-Story / Multi-Story Houses"],
+    imageUrls: ["/images/slider-3.png"],
     createdAt: "Today",
   },
   {
     id: 2,
-    title: "Commercial Facade Study",
-    category: "Commercial",
-    style: "Contemporary",
-    status: "Draft",
-    displayOrder: 2,
-    description:
-      "A façade study prepared for client review with multiple material variations.",
-    imageUrl: "/images/slider-4.png",
-    imageAlt: "Commercial facade study preview",
-    galleryCount: 6,
+    mainCategory: "Commercial Designs",
+    subCategories: ["Office Buildings / Corporate Spaces"],
+    imageUrls: ["/images/slider-4.png"],
     createdAt: "Yesterday",
   },
 ];
 
-const categoryOptions = [
-  "Residential",
-  "Commercial",
-  "Hospitality",
-  "Interior",
-  "Exterior",
-  "Landscape",
-];
-
-const styleOptions = ["Minimal", "Contemporary", "Luxury", "Industrial", "Tropical"];
-
 const initialFormState: DesignFormState = {
-  title: "",
-  category: categoryOptions[0],
-  style: styleOptions[0],
-  status: "Draft",
-  displayOrder: "1",
-  description: "",
-  imageAlt: "",
+  mainCategory: "",
+  subCategories: [],
 };
 
 const navigationItems = [
@@ -80,14 +49,13 @@ export default function DesignManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDesignId, setEditingDesignId] = useState<number | null>(null);
   const [editingDesign, setEditingDesign] = useState<DesignRecord | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const [selectedImageName, setSelectedImageName] = useState<string | null>(null);
-  const [galleryNames, setGalleryNames] = useState<string[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [imageNames, setImageNames] = useState<string[]>([]);
   
   const stats = [
     { label: "Total Concepts", value: String(records.length).padStart(2, "0"), tone: "from-slate-900 via-slate-800 to-slate-700" },
-    { label: "Published", value: String(records.filter((r) => r.status === "Published").length).padStart(2, "0"), tone: "from-emerald-900 via-emerald-800 to-slate-800" },
-    { label: "Drafts", value: String(records.filter((r) => r.status === "Draft").length).padStart(2, "0"), tone: "from-sky-900 via-sky-800 to-slate-800" },
+    { label: "Residential", value: String(records.filter((r) => r.mainCategory === "Residential Designs").length).padStart(2, "0"), tone: "from-emerald-900 via-emerald-800 to-slate-800" },
+    { label: "Commercial", value: String(records.filter((r) => r.mainCategory === "Commercial Designs").length).padStart(2, "0"), tone: "from-sky-900 via-sky-800 to-slate-800" },
   ];
 
   function updateField<K extends keyof DesignFormState>(
@@ -97,35 +65,28 @@ export default function DesignManager() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
-  function updatePreview(file: File | null) {
-    if (imagePreviewUrl) {
-      URL.revokeObjectURL(imagePreviewUrl);
-    }
-    if (!file) {
-      setImagePreviewUrl(null);
-      setSelectedImageName(null);
+  function handleImagesChange(event: ChangeEvent<HTMLInputElement>) {
+    // Revoke previous object URLs
+    imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) {
+      setImagePreviewUrls([]);
+      setImageNames([]);
       return;
     }
-    const objectUrl = URL.createObjectURL(file);
-    setImagePreviewUrl(objectUrl);
-    setSelectedImageName(file.name);
-  }
 
-  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
-    updatePreview(event.target.files?.[0] ?? null);
-  }
-
-  function handleGalleryImagesChange(event: ChangeEvent<HTMLInputElement>) {
-    setGalleryNames(Array.from(event.target.files ?? []).map((file) => file.name));
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setImagePreviewUrls(urls);
+    setImageNames(files.map((file) => file.name));
   }
 
   function openCreateModal() {
     setEditingDesignId(null);
     setEditingDesign(null);
-    setForm({ ...initialFormState, displayOrder: String(records.length + 1) });
-    setImagePreviewUrl(null);
-    setSelectedImageName(null);
-    setGalleryNames([]);
+    setForm(initialFormState);
+    setImagePreviewUrls([]);
+    setImageNames([]);
     setIsModalOpen(true);
   }
 
@@ -133,17 +94,11 @@ export default function DesignManager() {
     setEditingDesignId(design.id);
     setEditingDesign(design);
     setForm({
-      title: design.title,
-      category: design.category,
-      style: design.style,
-      status: design.status,
-      displayOrder: String(design.displayOrder),
-      description: design.description,
-      imageAlt: design.imageAlt,
+      mainCategory: design.mainCategory,
+      subCategories: [...design.subCategories],
     });
-    setImagePreviewUrl(design.imageUrl);
-    setSelectedImageName(null);
-    setGalleryNames(Array.from({ length: design.galleryCount }).map((_, i) => `Existing Image ${i + 1}`));
+    setImagePreviewUrls([]); // We don't recreate blob URLs for existing images
+    setImageNames(design.imageUrls.map((_, idx) => `Existing Image ${idx + 1}`));
     setIsModalOpen(true);
   }
 
@@ -152,13 +107,18 @@ export default function DesignManager() {
     setEditingDesignId(null);
     setEditingDesign(null);
     setForm(initialFormState);
-    setImagePreviewUrl(null);
-    setSelectedImageName(null);
-    setGalleryNames([]);
+    imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+    setImagePreviewUrls([]);
+    setImageNames([]);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!form.mainCategory || form.subCategories.length === 0) {
+      alert("Please select a main category and at least one subcategory.");
+      return;
+    }
 
     if (editingDesignId !== null) {
       // Edit
@@ -167,15 +127,9 @@ export default function DesignManager() {
           rec.id === editingDesignId
             ? {
                 ...rec,
-                title: form.title.trim() || "Untitled concept",
-                category: form.category,
-                style: form.style,
-                status: form.status,
-                displayOrder: Number(form.displayOrder) || records.length,
-                description: form.description.trim() || "No description provided yet.",
-                imageUrl: imagePreviewUrl || rec.imageUrl,
-                imageAlt: form.imageAlt.trim() || form.title.trim() || "Design preview",
-                galleryCount: galleryNames.length,
+                mainCategory: form.mainCategory,
+                subCategories: [...form.subCategories],
+                imageUrls: imagePreviewUrls.length > 0 ? imagePreviewUrls : rec.imageUrls,
               }
             : rec
         )
@@ -184,15 +138,9 @@ export default function DesignManager() {
       // Create
       const nextRecord: DesignRecord = {
         id: Date.now(),
-        title: form.title.trim() || "Untitled concept",
-        category: form.category,
-        style: form.style,
-        status: form.status,
-        displayOrder: Number(form.displayOrder) || records.length + 1,
-        description: form.description.trim() || "No description provided yet.",
-        imageUrl: imagePreviewUrl,
-        imageAlt: form.imageAlt.trim() || form.title.trim() || "Design preview",
-        galleryCount: galleryNames.length,
+        mainCategory: form.mainCategory,
+        subCategories: [...form.subCategories],
+        imageUrls: imagePreviewUrls,
         createdAt: "Just now",
       };
       setRecords((current) => [nextRecord, ...current]);
@@ -328,15 +276,11 @@ export default function DesignManager() {
               editingDesignId={editingDesignId}
               editingDesign={editingDesign}
               form={form}
-              categoryOptions={categoryOptions}
-              styleOptions={styleOptions}
-              imagePreviewUrl={imagePreviewUrl}
-              selectedImageName={selectedImageName}
-              galleryNames={galleryNames}
+              imagePreviewUrls={imagePreviewUrls}
+              imageNames={imageNames}
               onClose={closeModal}
               onSubmit={handleSubmit}
-              onImageChange={handleImageChange}
-              onGalleryImagesChange={handleGalleryImagesChange}
+              onImagesChange={handleImagesChange}
               onFieldChange={updateField}
             />
           </section>
