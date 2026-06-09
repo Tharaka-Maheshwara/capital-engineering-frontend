@@ -29,7 +29,10 @@ export default function DesignRecordsSection({
 
       <div className="mt-5 space-y-4">
         {designs.map((design) => {
-          const mainImage = design.imageUrls && design.imageUrls.length > 0 ? design.imageUrls[0] : null;
+          const mainImage =
+            design.imageUrls && design.imageUrls.length > 0
+              ? design.imageUrls[0]
+              : null;
 
           return (
             <article
@@ -63,7 +66,10 @@ export default function DesignRecordsSection({
                     )}
                     <div className="mt-2 flex flex-wrap gap-2">
                       {design.subCategories.map((subCat) => (
-                        <span key={subCat} className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">
+                        <span
+                          key={subCat}
+                          className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm"
+                        >
                           {subCat}
                         </span>
                       ))}

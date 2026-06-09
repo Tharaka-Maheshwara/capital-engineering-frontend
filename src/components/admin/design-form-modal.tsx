@@ -1,5 +1,9 @@
 import type { ChangeEvent, FormEvent, ReactNode } from "react";
-import { designCategoryMap, type DesignFormState, type DesignRecord } from "@/components/admin/design-manager-types";
+import {
+  designCategoryMap,
+  type DesignFormState,
+  type DesignRecord,
+} from "@/components/admin/design-manager-types";
 
 type DesignFormModalProps = {
   isOpen: boolean;
@@ -14,7 +18,7 @@ type DesignFormModalProps = {
   onImagesChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onFieldChange: <K extends keyof DesignFormState>(
     key: K,
-    value: DesignFormState[K]
+    value: DesignFormState[K],
   ) => void;
 };
 
@@ -51,8 +55,8 @@ export default function DesignFormModal({
     imagePreviewUrls.length > 0
       ? imagePreviewUrls[0]
       : editingDesign?.imageUrls && editingDesign.imageUrls.length > 0
-      ? editingDesign.imageUrls[0]
-      : null;
+        ? editingDesign.imageUrls[0]
+        : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm">
@@ -77,7 +81,6 @@ export default function DesignFormModal({
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <form className="space-y-5" onSubmit={onSubmit}>
-            
             <Field label="Main Category *">
               <select
                 value={form.mainCategory}
@@ -88,7 +91,9 @@ export default function DesignFormModal({
                 className={fieldInputClass}
                 required
               >
-                <option value="" disabled>Select a category</option>
+                <option value="" disabled>
+                  Select a category
+                </option>
                 {Object.keys(designCategoryMap).map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -123,7 +128,9 @@ export default function DesignFormModal({
             <Field label="Short Description">
               <textarea
                 value={form.description}
-                onChange={(event) => onFieldChange("description", event.target.value)}
+                onChange={(event) =>
+                  onFieldChange("description", event.target.value)
+                }
                 className={`${fieldInputClass} min-h-28 resize-y`}
                 placeholder="Write a short description for this design concept"
                 maxLength={255}
@@ -131,48 +138,55 @@ export default function DesignFormModal({
             </Field>
 
             <section className="mt-5 rounded-3xl border border-slate-200/80 bg-slate-50/80 p-4 sm:p-5">
-               <div className="mb-4">
-                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                   Design Media
-                 </p>
-               </div>
-               
-               <Field label="Upload Images (One or more)">
-                 <label className="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-dashed border-sky-200 bg-white px-4 py-4 text-sm text-slate-600 transition-colors hover:border-sky-300 hover:bg-sky-50/40">
-                   <span className="truncate">
-                     {imageNames.length > 0
-                       ? `${imageNames.length} image(s) selected`
-                       : "Choose image(s)"}
-                   </span>
-                   <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                     Browse
-                   </span>
-                   <input
-                     type="file"
-                     accept="image/*"
-                     multiple
-                     className="sr-only"
-                     onChange={onImagesChange}
-                   />
-                 </label>
-               </Field>
-               
-               {imageNames.length > 0 && (
-                 <div className="mt-3 flex flex-wrap gap-2">
-                   {imageNames.map((name, i) => (
-                     <span key={i} className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm border border-slate-200">
-                       {name}
-                     </span>
-                   ))}
-                 </div>
-               )}
+              <div className="mb-4">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                  Design Media
+                </p>
+              </div>
+
+              <Field label="Upload Images (One or more)">
+                <label className="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-dashed border-sky-200 bg-white px-4 py-4 text-sm text-slate-600 transition-colors hover:border-sky-300 hover:bg-sky-50/40">
+                  <span className="truncate">
+                    {imageNames.length > 0
+                      ? `${imageNames.length} image(s) selected`
+                      : "Choose image(s)"}
+                  </span>
+                  <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    Browse
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="sr-only"
+                    onChange={onImagesChange}
+                  />
+                </label>
+              </Field>
+
+              {imageNames.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {imageNames.map((name, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm border border-slate-200"
+                    >
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              )}
             </section>
 
             <div className="flex flex-wrap items-center gap-2 pt-2">
               <button
                 type="submit"
                 className="inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(3,15,31,0.2)] transition-transform duration-150 hover:-translate-y-0.5"
-                disabled={isSubmitting || !form.mainCategory || form.subCategories.length === 0}
+                disabled={
+                  isSubmitting ||
+                  !form.mainCategory ||
+                  form.subCategories.length === 0
+                }
               >
                 {isSubmitting
                   ? "Saving..."
@@ -224,12 +238,17 @@ export default function DesignFormModal({
                     )}
                     <div className="mt-4 flex flex-wrap gap-2">
                       {form.subCategories.map((subCat) => (
-                        <span key={subCat} className="inline-flex items-center rounded-xl bg-white/10 px-3 py-1.5 text-sm font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
+                        <span
+                          key={subCat}
+                          className="inline-flex items-center rounded-xl bg-white/10 px-3 py-1.5 text-sm font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md"
+                        >
                           {subCat}
                         </span>
                       ))}
                       {form.subCategories.length === 0 && (
-                        <span className="text-sm text-white/60 italic">No subcategories selected</span>
+                        <span className="text-sm text-white/60 italic">
+                          No subcategories selected
+                        </span>
                       )}
                     </div>
                   </div>

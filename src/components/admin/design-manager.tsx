@@ -27,8 +27,12 @@ const defaultRecords: DesignRecord[] = [
   {
     id: 1,
     mainCategory: "Residential Designs",
-    subCategories: ["Modern Single-Story Houses", "Luxury Two-Story / Multi-Story Houses"],
-    description: "A clean residential concept focused on modern family living with efficient spatial flow.",
+    subCategories: [
+      "Modern Single-Story Houses",
+      "Luxury Two-Story / Multi-Story Houses",
+    ],
+    description:
+      "A clean residential concept focused on modern family living with efficient spatial flow.",
     imageUrls: ["/images/slider-3.png"],
     createdAt: "Today",
   },
@@ -36,7 +40,8 @@ const defaultRecords: DesignRecord[] = [
     id: 2,
     mainCategory: "Commercial Designs",
     subCategories: ["Office Buildings / Corporate Spaces"],
-    description: "A commercial concept designed for flexible office planning and corporate branding.",
+    description:
+      "A commercial concept designed for flexible office planning and corporate branding.",
     imageUrls: ["/images/slider-4.png"],
     createdAt: "Yesterday",
   },
@@ -80,14 +85,18 @@ export default function DesignManager() {
     return {
       id: record.id,
       mainCategory: record.main_category ?? "",
-      subCategories: Array.isArray(record.sub_categories) ? record.sub_categories : [],
+      subCategories: Array.isArray(record.sub_categories)
+        ? record.sub_categories
+        : [],
       description: record.description ?? "",
       imageUrls: Array.isArray(record.image_urls) ? record.image_urls : [],
       createdAt: record.created_at ?? "",
     };
   }
 
-  async function readResponsePayload(response: Response): Promise<Record<string, unknown> | null> {
+  async function readResponsePayload(
+    response: Response,
+  ): Promise<Record<string, unknown> | null> {
     const contentType = response.headers.get("content-type") ?? "";
     const bodyText = await response.text();
 
@@ -119,24 +128,46 @@ export default function DesignManager() {
       }
 
       const payload = (await response.json()) as { data?: DesignApiRecord[] };
-      setRecords(Array.isArray(payload.data) ? payload.data.map(mapApiRecord) : []);
+      setRecords(
+        Array.isArray(payload.data) ? payload.data.map(mapApiRecord) : [],
+      );
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Failed to load designs");
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "Failed to load designs",
+      );
       setRecords([]);
     } finally {
       setIsLoading(false);
     }
   }
-  
+
   const stats = [
-    { label: "Total Concepts", value: String(records.length).padStart(2, "0"), tone: "from-slate-900 via-slate-800 to-slate-700" },
-    { label: "Residential", value: String(records.filter((r) => r.mainCategory === "Residential Designs").length).padStart(2, "0"), tone: "from-emerald-900 via-emerald-800 to-slate-800" },
-    { label: "Commercial", value: String(records.filter((r) => r.mainCategory === "Commercial Designs").length).padStart(2, "0"), tone: "from-sky-900 via-sky-800 to-slate-800" },
+    {
+      label: "Total Concepts",
+      value: String(records.length).padStart(2, "0"),
+      tone: "from-slate-900 via-slate-800 to-slate-700",
+    },
+    {
+      label: "Residential",
+      value: String(
+        records.filter((r) => r.mainCategory === "Residential Designs").length,
+      ).padStart(2, "0"),
+      tone: "from-emerald-900 via-emerald-800 to-slate-800",
+    },
+    {
+      label: "Commercial",
+      value: String(
+        records.filter((r) => r.mainCategory === "Commercial Designs").length,
+      ).padStart(2, "0"),
+      tone: "from-sky-900 via-sky-800 to-slate-800",
+    },
   ];
 
   function updateField<K extends keyof DesignFormState>(
     key: K,
-    value: DesignFormState[K]
+    value: DesignFormState[K],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
   }
@@ -180,7 +211,9 @@ export default function DesignManager() {
       description: design.description,
     });
     setImagePreviewUrls([]); // We don't recreate blob URLs for existing images
-    setImageNames(design.imageUrls.map((_, idx) => `Existing Image ${idx + 1}`));
+    setImageNames(
+      design.imageUrls.map((_, idx) => `Existing Image ${idx + 1}`),
+    );
     setSelectedImageFiles([]);
     setError(null);
     setSuccess(null);
@@ -254,12 +287,20 @@ export default function DesignManager() {
         throw new Error(message);
       }
 
-      setSuccess(isEditing ? "Design updated successfully." : "Design saved successfully.");
+      setSuccess(
+        isEditing
+          ? "Design updated successfully."
+          : "Design saved successfully.",
+      );
       setForm(initialFormState);
       closeModal();
       await loadDesigns();
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Design could not be saved");
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Design could not be saved",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -293,7 +334,11 @@ export default function DesignManager() {
       setSuccess("Design deleted successfully.");
       await loadDesigns();
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : "Design could not be deleted");
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Design could not be deleted",
+      );
     }
   }
 
@@ -349,7 +394,8 @@ export default function DesignManager() {
                 Design Concepts
               </div>
               <p className="mt-2 text-sm leading-6 text-slate-200/70">
-                Manage all your residential, commercial, and other architectural design concepts here.
+                Manage all your residential, commercial, and other architectural
+                design concepts here.
               </p>
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-sm text-sky-200">
                 <span>Connected</span>
@@ -391,7 +437,9 @@ export default function DesignManager() {
 
           <section className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             {(error || success) && (
-              <div className={`mb-5 rounded-2xl px-4 py-3 text-sm ${error ? "border border-rose-200 bg-rose-50 text-rose-700" : "border border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
+              <div
+                className={`mb-5 rounded-2xl px-4 py-3 text-sm ${error ? "border border-rose-200 bg-rose-50 text-rose-700" : "border border-emerald-200 bg-emerald-50 text-emerald-700"}`}
+              >
                 {error ?? success}
               </div>
             )}
@@ -402,7 +450,9 @@ export default function DesignManager() {
                   key={stat.label}
                   className={`rounded-3xl bg-linear-to-br ${stat.tone} p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)]`}
                 >
-                  <p className="text-sm font-medium text-white/80">{stat.label}</p>
+                  <p className="text-sm font-medium text-white/80">
+                    {stat.label}
+                  </p>
                   <div className="mt-3 text-5xl font-semibold tracking-[-0.08em] text-white">
                     {stat.value}
                   </div>
@@ -423,7 +473,7 @@ export default function DesignManager() {
                 Loading designs...
               </div>
             )}
-            
+
             <DesignFormModal
               isOpen={isModalOpen}
               editingDesignId={editingDesignId}
@@ -445,7 +495,9 @@ export default function DesignManager() {
 }
 
 function DashboardIcon() {
-  return <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />;
+  return (
+    <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />
+  );
 }
 
 function LayersIcon() {
@@ -453,28 +505,47 @@ function LayersIcon() {
 }
 
 function FolderIcon() {
-  return <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />;
+  return (
+    <GlyphIcon path="M3.5 7.5h6l2 2H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" />
+  );
 }
 
 function PaletteIcon() {
-  return <GlyphIcon path="M12 3a9 9 0 1 0 9 9c0-2.2-1.8-4-4-4h-1.2a1.8 1.8 0 0 1 0-3.6H17A5 5 0 0 0 12 3Zm-4 9.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm2.8-3.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm4.4 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" />;
+  return (
+    <GlyphIcon path="M12 3a9 9 0 1 0 9 9c0-2.2-1.8-4-4-4h-1.2a1.8 1.8 0 0 1 0-3.6H17A5 5 0 0 0 12 3Zm-4 9.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm2.8-3.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm4.4 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" />
+  );
 }
 
 function TeamIcon() {
-  return <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />;
+  return (
+    <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />
+  );
 }
 
 function UsersIcon() {
-  return <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />;
+  return (
+    <GlyphIcon path="M9 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 9 12zm8 1a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 17 13zM2.5 20a6.5 6.5 0 0 1 13 0m2-3a4.5 4.5 0 0 1 4.5 4.5" />
+  );
 }
 
 function SettingsIcon() {
-  return <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />;
+  return (
+    <GlyphIcon path="M12 8.5a3.5 3.5 0 1 0 3.5 3.5A3.5 3.5 0 0 0 12 8.5zm8 3.5l-2.1.8a6.9 6.9 0 0 1-.7 1.7l1 2-1.7 1.7-2-1a6.9 6.9 0 0 1-1.7.7L12 21l-1.8-.1a6.9 6.9 0 0 1-1.7-.7l-2 1-1.7-1.7 1-2a6.9 6.9 0 0 1-.7-1.7L3 12l.1-1.8a6.9 6.9 0 0 1 .7-1.7l-1-2L4.5 5l2 1a6.9 6.9 0 0 1 1.7-.7L12 3l1.8.1a6.9 6.9 0 0 1 1.7.7l2-1 1.7 1.7-1 2a6.9 6.9 0 0 1 .7 1.7L20 12z" />
+  );
 }
 
 function GlyphIcon({ path }: { path: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
       <path d={path} />
     </svg>
   );
