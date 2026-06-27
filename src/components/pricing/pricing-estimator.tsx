@@ -3,23 +3,17 @@
 import { useState } from "react";
 import PricingSidebar from "./pricing-sidebar";
 import ProjectTypeStep from "./project-type-step";
-import LocationStep from "./location-step";
-import BuildingSizeStep from "./building-size-step";
-import FinishingGradeStep from "./finishing-grade-step";
-import SpecialFeaturesStep from "./special-features-step";
+import ConfigurationStep from "./configuration-step";
 import EstimateStep from "./estimate-step";
 import {
   type ContactState,
-  type LocationState,
-  type BuildingSizeState,
   type ProjectTypeId,
+  type EstimatorConfigState,
   projectTypes,
 } from "./pricing-types";
 
-type PricingStep = 1 | 2 | 3 | 4 | 5 | 6;
-
 export default function PricingEstimator() {
-  const [currentStep, setCurrentStep] = useState<PricingStep>(1);
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const [selectedProjectType, setSelectedProjectType] =
     useState<ProjectTypeId>("house");
   const [contact, setContact] = useState<ContactState>({
@@ -27,46 +21,14 @@ export default function PricingEstimator() {
     phone: "",
     email: "",
   });
-  const [location, setLocation] = useState<LocationState>({
-    district: "Colombo",
-    divisionalSecretariat: "Urban",
-    plotSize: "20",
-    plotShape: "Rocky",
-    utilities: "Connected",
-  });
 
-  const [buildingSize, setBuildingSize] = useState<BuildingSizeState>({
-    builtUpArea: "1500",
-    floors: "2",
-    bedrooms: "3",
-    bathrooms: "2",
-    ceilingHeight: "9 ft (standard)",
-    roofType: "Pitched / Gable",
-    foundationType: "Strip foundation",
-    designComplexity: "Simple (rectangular)",
-  });
-
-  const [finishing, setFinishing] = useState({
-    grade: "Standard",
-    flooring: "Cement / Terrazzo",
-    windows: "Aluminium frames",
-    electrical: "Standard",
-    plumbing: "Local fittings",
-    ceiling: "Plaster",
-    kitchen: "Modern kitchen (+රු200k)",
-  });
-
-  const [specialFeatures, setSpecialFeatures] = useState({
-    garage: false,
-    swimmingPool: false,
-    boundaryWall: false,
-    solar: false,
-    landscaping: false,
-    generator: false,
-    cctv: false,
-    acPreWiring: false,
-    servantQuarters: false,
-    waterTank: false,
+  const [estimatorConfig, setEstimatorConfig] = useState<EstimatorConfigState>({
+    sqft: "",
+    budgetType: "budget-friendly",
+    soil: "normal",
+    design: "simple",
+    stories: "1",
+    roof: "slab",
   });
 
   const stepOneComplete =
@@ -76,20 +38,9 @@ export default function PricingEstimator() {
     selectedProjectType.length > 0;
 
   const stepTwoComplete =
-    location.district.trim().length > 0 &&
-    location.divisionalSecretariat.trim().length > 0 &&
-    location.plotSize.trim().length > 0 &&
-    location.plotShape.trim().length > 0;
-
-  const stepThreeComplete =
-    buildingSize.builtUpArea.trim().length > 0 &&
-    buildingSize.floors.trim().length > 0 &&
-    buildingSize.bedrooms.trim().length > 0 &&
-    buildingSize.bathrooms.trim().length > 0;
-
-  const stepFourComplete =
-    (finishing as any).grade && (finishing as any).grade.length > 0;
-  const stepFiveComplete = true;
+    estimatorConfig.sqft.trim().length > 0 &&
+    Number(estimatorConfig.sqft) > 0 &&
+    estimatorConfig.budgetType.length > 0;
 
   return (
     <main className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -112,45 +63,18 @@ export default function PricingEstimator() {
                   onNext={() => setCurrentStep(2)}
                 />
               ) : currentStep === 2 ? (
-                <LocationStep
-                  location={location}
-                  stepTwoComplete={stepTwoComplete}
-                  onLocationChange={setLocation}
+                <ConfigurationStep
+                  config={estimatorConfig}
+                  onConfigChange={setEstimatorConfig}
                   onBack={() => setCurrentStep(1)}
                   onNext={() => setCurrentStep(3)}
                 />
               ) : currentStep === 3 ? (
-                <BuildingSizeStep
-                  buildingSize={buildingSize}
-                  stepThreeComplete={stepThreeComplete}
-                  onBuildingSizeChange={setBuildingSize}
-                  onBack={() => setCurrentStep(2)}
-                  onNext={() => setCurrentStep(4)}
-                />
-              ) : currentStep === 4 ? (
-                <FinishingGradeStep
-                  finishing={finishing as any}
-                  stepFourComplete={stepFourComplete}
-                  onFinishingChange={setFinishing as any}
-                  onBack={() => setCurrentStep(3)}
-                  onNext={() => setCurrentStep(5)}
-                />
-              ) : currentStep === 5 ? (
-                <SpecialFeaturesStep
-                  features={specialFeatures as any}
-                  stepFiveComplete={stepFiveComplete}
-                  onFeaturesChange={setSpecialFeatures as any}
-                  onBack={() => setCurrentStep(4)}
-                  onNext={() => setCurrentStep(6)}
-                />
-              ) : currentStep === 6 ? (
                 <EstimateStep
                   contact={contact}
                   projectType={selectedProjectType}
-                  buildingSize={buildingSize}
-                  finishing={finishing as any}
-                  features={specialFeatures as any}
-                  onBack={() => setCurrentStep(5)}
+                  config={estimatorConfig}
+                  onBack={() => setCurrentStep(2)}
                 />
               ) : null}
             </div>
@@ -160,3 +84,4 @@ export default function PricingEstimator() {
     </main>
   );
 }
+
