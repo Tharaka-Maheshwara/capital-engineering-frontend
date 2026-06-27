@@ -4,18 +4,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 
-import DesignFormModal from "@/components/admin/design-form-modal";
-import DesignRecordsSection from "@/components/admin/design-records-section";
+import ArticleFormModal from "@/components/admin/article-form-modal";
+import ArticleRecordsSection from "@/components/admin/article-records-section";
 import {
-  type DesignFormState,
-  type DesignRecord,
-} from "@/components/admin/design-manager-types";
+  type ArticleFormState,
+  type ArticleRecord,
+} from "@/components/admin/article-manager-types";
 
-type DesignApiRecord = {
+type ArticleApiRecord = {
   id: number;
-  main_category?: string | null;
+  title?: string | null;
   description?: string | null;
-  sub_categories?: string[] | null;
+  youtube_link?: string | null;
   image_urls?: string[] | null;
   created_at?: string | null;
 };
@@ -23,53 +23,29 @@ type DesignApiRecord = {
 const apiBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
-const defaultRecords: DesignRecord[] = [
-  {
-    id: 1,
-    mainCategory: "Residential Designs",
-    subCategories: [
-      "Modern Single-Story Houses",
-      "Luxury Two-Story / Multi-Story Houses",
-    ],
-    description:
-      "A clean residential concept focused on modern family living with efficient spatial flow.",
-    imageUrls: ["/images/slider-3.png"],
-    createdAt: "Today",
-  },
-  {
-    id: 2,
-    mainCategory: "Commercial Designs",
-    subCategories: ["Office Buildings / Corporate Spaces"],
-    description:
-      "A commercial concept designed for flexible office planning and corporate branding.",
-    imageUrls: ["/images/slider-4.png"],
-    createdAt: "Yesterday",
-  },
-];
-
-const initialFormState: DesignFormState = {
-  mainCategory: "",
-  subCategories: [],
+const initialFormState: ArticleFormState = {
+  title: "",
   description: "",
+  youtubeLink: "",
 };
 
 const navigationItems = [
   { label: "Dashboard", href: "/admin/admin-dashboard", icon: DashboardIcon },
   { label: "Services", href: "#", icon: LayersIcon },
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
-  { label: "Designs", href: "/admin/designs", active: true, icon: PaletteIcon },
-  { label: "Articles", href: "/admin/articles", icon: ArticleIcon },
+  { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
+  { label: "Articles", href: "/admin/articles", active: true, icon: ArticleIcon },
   { label: "Team", href: "#", icon: TeamIcon },
   { label: "Users", href: "#", icon: UsersIcon },
   { label: "Settings", href: "#", icon: SettingsIcon },
 ];
 
-export default function DesignManager() {
-  const [records, setRecords] = useState<DesignRecord[]>([]);
-  const [form, setForm] = useState<DesignFormState>(initialFormState);
+export default function ArticleManager() {
+  const [records, setRecords] = useState<ArticleRecord[]>([]);
+  const [form, setForm] = useState<ArticleFormState>(initialFormState);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingDesignId, setEditingDesignId] = useState<number | null>(null);
-  const [editingDesign, setEditingDesign] = useState<DesignRecord | null>(null);
+  const [editingArticleId, setEditingArticleId] = useState<number | null>(null);
+  const [editingArticle, setEditingArticle] = useState<ArticleRecord | null>(null);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
   const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
@@ -79,17 +55,15 @@ export default function DesignManager() {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    void loadDesigns();
+    void loadArticles();
   }, []);
 
-  function mapApiRecord(record: DesignApiRecord): DesignRecord {
+  function mapApiRecord(record: ArticleApiRecord): ArticleRecord {
     return {
       id: record.id,
-      mainCategory: record.main_category ?? "",
-      subCategories: Array.isArray(record.sub_categories)
-        ? record.sub_categories
-        : [],
+      title: record.title ?? "",
       description: record.description ?? "",
+      youtubeLink: record.youtube_link ?? undefined,
       imageUrls: Array.isArray(record.image_urls) ? record.image_urls : [],
       createdAt: record.created_at ?? "",
     };
@@ -112,12 +86,12 @@ export default function DesignManager() {
     }
   }
 
-  async function loadDesigns() {
+  async function loadArticles() {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/designs?per_page=12`, {
+      const response = await fetch(`${apiBaseUrl}/api/v1/articles?per_page=50`, {
         cache: "no-store",
         headers: {
           Accept: "application/json",
@@ -125,10 +99,10 @@ export default function DesignManager() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to load designs");
+        throw new Error("Failed to load articles");
       }
 
-      const payload = (await response.json()) as { data?: DesignApiRecord[] };
+      const payload = (await response.json()) as { data?: ArticleApiRecord[] };
       setRecords(
         Array.isArray(payload.data) ? payload.data.map(mapApiRecord) : [],
       );
@@ -136,7 +110,7 @@ export default function DesignManager() {
       setError(
         loadError instanceof Error
           ? loadError.message
-          : "Failed to load designs",
+          : "Failed to load articles",
       );
       setRecords([]);
     } finally {
@@ -146,35 +120,34 @@ export default function DesignManager() {
 
   const stats = [
     {
-      label: "Total Concepts",
+      label: "Total Articles",
       value: String(records.length).padStart(2, "0"),
       tone: "from-slate-900 via-slate-800 to-slate-700",
     },
     {
-      label: "Residential",
+      label: "With Videos",
       value: String(
-        records.filter((r) => r.mainCategory === "Residential Designs").length,
+        records.filter((r) => r.youtubeLink && r.youtubeLink.length > 0).length,
       ).padStart(2, "0"),
-      tone: "from-emerald-900 via-emerald-800 to-slate-800",
+      tone: "from-rose-900 via-rose-800 to-slate-800",
     },
     {
-      label: "Commercial",
+      label: "With Images",
       value: String(
-        records.filter((r) => r.mainCategory === "Commercial Designs").length,
+        records.filter((r) => r.imageUrls && r.imageUrls.length > 0).length,
       ).padStart(2, "0"),
       tone: "from-sky-900 via-sky-800 to-slate-800",
     },
   ];
 
-  function updateField<K extends keyof DesignFormState>(
+  function updateField<K extends keyof ArticleFormState>(
     key: K,
-    value: DesignFormState[K],
+    value: ArticleFormState[K],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
   function handleImagesChange(event: ChangeEvent<HTMLInputElement>) {
-    // Revoke previous object URLs
     imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
 
     const files = Array.from(event.target.files ?? []);
@@ -192,8 +165,8 @@ export default function DesignManager() {
   }
 
   function openCreateModal() {
-    setEditingDesignId(null);
-    setEditingDesign(null);
+    setEditingArticleId(null);
+    setEditingArticle(null);
     setForm(initialFormState);
     setImagePreviewUrls([]);
     setImageNames([]);
@@ -203,17 +176,17 @@ export default function DesignManager() {
     setIsModalOpen(true);
   }
 
-  function openEditModal(design: DesignRecord) {
-    setEditingDesignId(design.id);
-    setEditingDesign(design);
+  function openEditModal(article: ArticleRecord) {
+    setEditingArticleId(article.id);
+    setEditingArticle(article);
     setForm({
-      mainCategory: design.mainCategory,
-      subCategories: [...design.subCategories],
-      description: design.description,
+      title: article.title,
+      description: article.description,
+      youtubeLink: article.youtubeLink ?? "",
     });
-    setImagePreviewUrls([]); // We don't recreate blob URLs for existing images
+    setImagePreviewUrls([]);
     setImageNames(
-      design.imageUrls.map((_, idx) => `Existing Image ${idx + 1}`),
+      article.imageUrls.map((_, idx) => `Existing Image ${idx + 1}`),
     );
     setSelectedImageFiles([]);
     setError(null);
@@ -223,8 +196,8 @@ export default function DesignManager() {
 
   function closeModal() {
     setIsModalOpen(false);
-    setEditingDesignId(null);
-    setEditingDesign(null);
+    setEditingArticleId(null);
+    setEditingArticle(null);
     setForm(initialFormState);
     imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
     setImagePreviewUrls([]);
@@ -235,13 +208,8 @@ export default function DesignManager() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!form.mainCategory || form.subCategories.length === 0) {
-      setError("Please select a main category and at least one subcategory.");
-      return;
-    }
-
-    if (editingDesignId === null && selectedImageFiles.length === 0) {
-      setError("Please upload at least one image.");
+    if (!form.title || !form.description) {
+      setError("Please fill in the title and description.");
       return;
     }
 
@@ -250,21 +218,22 @@ export default function DesignManager() {
     setSuccess(null);
 
     try {
-      const isEditing = editingDesignId !== null;
+      const isEditing = editingArticleId !== null;
       const endpoint = isEditing
-        ? `${apiBaseUrl}/api/v1/designs/${editingDesignId}`
-        : `${apiBaseUrl}/api/v1/designs`;
+        ? `${apiBaseUrl}/api/v1/articles/${editingArticleId}`
+        : `${apiBaseUrl}/api/v1/articles`;
       const formData = new FormData();
 
       if (isEditing) {
         formData.append("_method", "PUT");
       }
 
-      formData.append("main_category", form.mainCategory);
+      formData.append("title", form.title);
       formData.append("description", form.description);
-      form.subCategories.forEach((subCategory) => {
-        formData.append("sub_categories[]", subCategory);
-      });
+
+      if (form.youtubeLink && form.youtubeLink.trim().length > 0) {
+        formData.append("youtube_link", form.youtubeLink.trim());
+      }
 
       selectedImageFiles.forEach((file) => {
         formData.append("images[]", file);
@@ -284,31 +253,31 @@ export default function DesignManager() {
         const message =
           (payload?.message as string | undefined) ||
           (payload?.error as string | undefined) ||
-          "Design could not be saved";
+          "Article could not be saved";
         throw new Error(message);
       }
 
       setSuccess(
         isEditing
-          ? "Design updated successfully."
-          : "Design saved successfully.",
+          ? "Article updated successfully."
+          : "Article saved successfully.",
       );
       setForm(initialFormState);
       closeModal();
-      await loadDesigns();
+      await loadArticles();
     } catch (saveError) {
       setError(
         saveError instanceof Error
           ? saveError.message
-          : "Design could not be saved",
+          : "Article could not be saved",
       );
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  async function handleDelete(designId: number) {
-    if (!confirm("Delete this concept? This action cannot be undone.")) {
+  async function handleDelete(articleId: number) {
+    if (!confirm("Delete this article? This action cannot be undone.")) {
       return;
     }
 
@@ -316,7 +285,7 @@ export default function DesignManager() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/designs/${designId}`, {
+      const response = await fetch(`${apiBaseUrl}/api/v1/articles/${articleId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -328,17 +297,17 @@ export default function DesignManager() {
         const message =
           (payload?.message as string | undefined) ||
           (payload?.error as string | undefined) ||
-          "Design could not be deleted";
+          "Article could not be deleted";
         throw new Error(message);
       }
 
-      setSuccess("Design deleted successfully.");
-      await loadDesigns();
+      setSuccess("Article deleted successfully.");
+      await loadArticles();
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Design could not be deleted",
+          : "Article could not be deleted",
       );
     }
   }
@@ -346,6 +315,7 @@ export default function DesignManager() {
   return (
     <main className="min-h-screen bg-[#f3f5f9] text-slate-900">
       <div className="flex min-h-screen flex-col lg:flex-row">
+        {/* Sidebar */}
         <aside className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#0c1d33_0%,#10284a_46%,#0a1627_100%)] text-slate-100 lg:sticky lg:top-0 lg:h-screen lg:w-70 lg:border-r lg:border-white/10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(92,153,190,0.18),transparent_18%),radial-gradient(circle_at_50%_80%,rgba(255,255,255,0.06),transparent_22%)]" />
           <div className="relative flex h-full flex-col px-5 py-6 sm:px-6 lg:px-5 lg:py-7">
@@ -360,7 +330,7 @@ export default function DesignManager() {
                   Capital Engineering
                 </div>
                 <div className="text-[1.08rem] font-bold tracking-[-0.03em] text-white">
-                  Design Manager
+                  Article Manager
                 </div>
               </div>
             </div>
@@ -392,11 +362,10 @@ export default function DesignManager() {
 
             <div className="mt-6 rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
               <div className="text-sm font-semibold text-white">
-                Design Concepts
+                Article Publishing
               </div>
               <p className="mt-2 text-sm leading-6 text-slate-200/70">
-                Manage all your residential, commercial, and other architectural
-                design concepts here.
+                Create and manage articles with images, descriptions, and YouTube videos.
               </p>
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-sm text-sky-200">
                 <span>Connected</span>
@@ -406,15 +375,16 @@ export default function DesignManager() {
           </div>
         </aside>
 
+        {/* Main Content */}
         <div className="flex-1 bg-[radial-gradient(circle_at_top_right,rgba(42,91,136,0.12),transparent_26%),linear-gradient(180deg,#f8fafc_0%,#edf2f7_100%)]">
           <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/88 backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.22em] text-slate-500">
-                  Concept Management
+                  Content Management
                 </p>
                 <h1 className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-[2.15rem]">
-                  Designs
+                  Articles
                 </h1>
               </div>
 
@@ -424,7 +394,7 @@ export default function DesignManager() {
                   onClick={openCreateModal}
                   className="inline-flex h-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#10284a_0%,#23465e_100%)] px-4 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] transition-transform duration-150 hover:-translate-y-0.5"
                 >
-                  Add New Design
+                  Add New Article
                 </button>
                 <Link
                   href="/admin/admin-dashboard"
@@ -445,6 +415,7 @@ export default function DesignManager() {
               </div>
             )}
 
+            {/* Stats cards */}
             <div className="grid gap-5 md:grid-cols-3">
               {stats.map((stat) => (
                 <article
@@ -462,8 +433,8 @@ export default function DesignManager() {
             </div>
 
             <div className="mt-6">
-              <DesignRecordsSection
-                designs={records}
+              <ArticleRecordsSection
+                articles={records}
                 onEdit={openEditModal}
                 onDelete={handleDelete}
               />
@@ -471,14 +442,14 @@ export default function DesignManager() {
 
             {isLoading && (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
-                Loading designs...
+                Loading articles...
               </div>
             )}
 
-            <DesignFormModal
+            <ArticleFormModal
               isOpen={isModalOpen}
-              editingDesignId={editingDesignId}
-              editingDesign={editingDesign}
+              editingArticleId={editingArticleId}
+              editingArticle={editingArticle}
               form={form}
               imagePreviewUrls={imagePreviewUrls}
               imageNames={imageNames}
@@ -494,6 +465,8 @@ export default function DesignManager() {
     </main>
   );
 }
+
+// ─── Icons ───────────────────────────────────────────────────────────────────
 
 function DashboardIcon() {
   return (
@@ -518,12 +491,14 @@ function PaletteIcon() {
 }
 
 function ArticleIcon() {
-  return <GlyphIcon path="M4 6h16M4 10h16M4 14h10M4 18h7" />;
+  return (
+    <GlyphIcon path="M4 6h16M4 10h16M4 14h10M4 18h7" />
+  );
 }
 
 function TeamIcon() {
   return (
-    <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />
+    <GlyphIcon path="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 9 3zm6 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 15 11zM3.5 19a5.5 5.5 0 0 1 11 0" />
   );
 }
 

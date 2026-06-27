@@ -28,6 +28,7 @@ const navigationItems: NavigationItem[] = [
     icon: FolderIcon,
   },
   { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
+  { label: "Articles", href: "/admin/articles", icon: ArticleIcon },
   { label: "Team", href: "#", icon: TeamIcon },
   { label: "Users", href: "#", icon: UsersIcon },
   { label: "Settings", href: "#", icon: SettingsIcon },
@@ -725,6 +726,10 @@ function PaletteIcon() {
   return (
     <GlyphIcon path="M12 3a9 9 0 1 0 9 9c0-2.2-1.8-4-4-4h-1.2a1.8 1.8 0 0 1 0-3.6H17A5 5 0 0 0 12 3Zm-4 9.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm2.8-3.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Zm4.4 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" />
   );
+}
+
+function ArticleIcon() {
+  return <GlyphIcon path="M4 6h16M4 10h16M4 14h10M4 18h7" />;
 }
 
 function TeamIcon() {
