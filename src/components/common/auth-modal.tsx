@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 
+import { saveAuthSession } from "@/lib/auth";
+
 type AuthMode = "login" | "signup";
 
 type AuthModalProps = {
@@ -30,6 +32,14 @@ function CloseIcon() {
 
 export default function AuthModal({ open, onClose }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
   useEffect(() => {
     if (!open) return;
@@ -49,11 +59,81 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
     };
   }, [open, onClose]);
 
-  useEffect(() => {
-    if (open) {
-      setMode("login");
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (mode === "signup" && password !== confirmPassword) {
+      setError("Password confirmation does not match.");
+      return;
     }
-  }, [open]);
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const endpoint = mode === "login" ? "login" : "register";
+      const payload =
+        mode === "login"
+          ? { email, password }
+          : {
+              name,
+              email,
+              password,
+              password_confirmation: confirmPassword,
+            };
+
+      const response = await fetch(`${apiBaseUrl}/api/v1/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = (await response.json()) as {
+        message?: string;
+        data?: {
+          token: string;
+          user: {
+            id: number;
+            name: string;
+            email: string;
+            role: string;
+            created_at?: string | null;
+          };
+        };
+        errors?: Record<string, string[] | undefined>;
+      };
+
+      if (!response.ok) {
+        const validationMessage = result.errors
+          ? Object.values(result.errors)
+              .flat()
+              .filter(Boolean)
+              .join(" ")
+          : null;
+        throw new Error(validationMessage || result.message || "Authentication failed.");
+      }
+
+      if (!result.data?.token || !result.data.user) {
+        throw new Error("Authentication response was incomplete.");
+      }
+
+      saveAuthSession({
+        token: result.data.token,
+        user: result.data.user,
+      });
+
+      setSuccess(result.message ?? (mode === "login" ? "Signed in successfully." : "Account created successfully."));
+      onClose();
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Authentication failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   if (!open) {
     return null;
@@ -106,7 +186,91 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
           </div>
 
           <div className="mt-6">
-            {mode === "login" ? <LoginForm /> : <SignupForm />}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {mode === "signup" && (
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    autoComplete="name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="John Smith"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="john@example.com"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder={mode === "login" ? "Enter your password" : "Create a password"}
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
+                />
+              </div>
+
+              {mode === "signup" && (
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    placeholder="Repeat password"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
+                  />
+                </div>
+              )}
+
+              {error && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                  {success}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white shadow-[0_16px_34px_rgba(32,57,95,0.24)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {loading
+                  ? "Please wait..."
+                  : mode === "login"
+                    ? "Sign In"
+                    : "Create Account"}
+              </button>
+            </form>
           </div>
 
           <div className="mt-5 text-center text-sm text-slate-600">
@@ -126,141 +290,5 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
         </section>
       </div>
     </div>
-  );
-}
-
-function LoginForm() {
-  return (
-    <form className="space-y-4">
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">
-          Email Address
-        </label>
-        <input
-          type="email"
-          autoComplete="email"
-          placeholder="john@example.com"
-          className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">
-          Password
-        </label>
-        <input
-          type="password"
-          autoComplete="current-password"
-          placeholder="Enter your password"
-          className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-        />
-      </div>
-
-      <div className="flex items-center justify-between gap-4 pt-1 text-sm">
-        <label className="inline-flex items-center gap-2 text-slate-600">
-          <input
-            type="checkbox"
-            className="h-4 w-4 rounded border-slate-300 text-[#20395f] focus:ring-[#20395f]"
-          />
-          Remember me
-        </label>
-
-        <button type="button" className="font-semibold text-[#20395f]">
-          Forgot password?
-        </button>
-      </div>
-
-      <button
-        type="submit"
-        className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white shadow-[0_16px_34px_rgba(32,57,95,0.24)] transition-transform duration-150 hover:-translate-y-0.5"
-      >
-        Sign In
-      </button>
-    </form>
-  );
-}
-
-function SignupForm() {
-  return (
-    <form className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">
-            Full Name
-          </label>
-          <input
-            type="text"
-            autoComplete="name"
-            placeholder="John Smith"
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            autoComplete="tel"
-            placeholder="+94 77 123 4567"
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">
-          Email Address
-        </label>
-        <input
-          type="email"
-          autoComplete="email"
-          placeholder="john@example.com"
-          className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-        />
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">
-            Password
-          </label>
-          <input
-            type="password"
-            autoComplete="new-password"
-            placeholder="Create a password"
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            autoComplete="new-password"
-            placeholder="Repeat password"
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
-          />
-        </div>
-      </div>
-
-      <label className="flex items-start gap-3 pt-1 text-sm text-slate-600">
-        <input
-          type="checkbox"
-          className="mt-1 h-4 w-4 rounded border-slate-300 text-[#20395f] focus:ring-[#20395f]"
-        />
-        <span>I agree to the terms of service and privacy policy.</span>
-      </label>
-
-      <button
-        type="submit"
-        className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white shadow-[0_16px_34px_rgba(32,57,95,0.24)] transition-transform duration-150 hover:-translate-y-0.5"
-      >
-        Create Account
-      </button>
-    </form>
   );
 }
