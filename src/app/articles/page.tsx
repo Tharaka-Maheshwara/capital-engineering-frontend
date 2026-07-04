@@ -84,8 +84,9 @@ export default async function ArticlesPage() {
 
         <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
-            <Link href={`/articles/${article.id}`} key={article.id}>
-                <div className="flex flex-col overflow-hidden rounded-lg shadow-lg bg-slate-800/60 hover:bg-slate-800/90 transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+            <Link href={`/articles/${article.id}`} key={article.id} className="block group">
+                {/* 💡 Link එක ඇතුලත ඇති ප්‍රධාන Card එක div එකක් ලෙසම පවතින අතර Link එක block එකක් කර ඇත */}
+                <div className="flex flex-col h-full overflow-hidden rounded-lg shadow-lg bg-slate-800/60 group-hover:bg-slate-800/90 transition-all duration-300 ease-in-out transform group-hover:-translate-y-1">
                     <div className="flex-shrink-0">
                         <img 
                             className="h-48 w-full object-cover" 
@@ -95,15 +96,21 @@ export default async function ArticlesPage() {
                     </div>
                     <div className="flex flex-1 flex-col justify-between p-6">
                         <div className="flex-1">
-                            <p className="text-sm font-medium text-indigo-400">
+                            {/* 💡 පිටත තිබූ <p> tag එක <span> එකක් බවට පත් කරන ලදී */}
+                            <span className="text-sm font-medium text-indigo-400 block mb-2">
                                 Article
-                            </p>
-                            <div className="mt-2 block">
-                                <p className="text-xl font-semibold text-slate-50">
+                            </span>
+                            <div className="block">
+                                {/* 💡 <p> වෙනුවට සෙවුම් යන්ත්‍ර වලටද හිතකර <h3> tag එකක් යොදන ලදී */}
+                                <h3 className="text-xl font-semibold text-slate-50">
                                     {article.title}
-                                </p>
-                                <p className="mt-3 text-base text-slate-300 line-clamp-3" dangerouslySetInnerHTML={{ __html: article.description }}>
-                                </p>
+                                </h3>
+                                {/* 💡 <p> වෙනුවට <div> භාවිතා කර, Rich Text ගැටලු මඟහැරීමට suppressHydrationWarning එක් කරන ලදී */}
+                                <div 
+                                    suppressHydrationWarning={true}
+                                    className="mt-3 text-base text-slate-300 line-clamp-3 prose prose-invert prose-sm" 
+                                    dangerouslySetInnerHTML={{ __html: article.description }}
+                                />
                             </div>
                         </div>
                         <div className="mt-6 flex items-center">

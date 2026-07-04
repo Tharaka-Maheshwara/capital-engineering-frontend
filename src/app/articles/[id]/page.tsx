@@ -15,8 +15,8 @@ type Article = {
 };
 
 type SingleArticleResponse = {
-    data: Article;
-}
+  data: Article;
+};
 
 async function getArticle(id: string): Promise<SingleArticleResponse | null> {
   try {
@@ -44,24 +44,28 @@ async function getArticle(id: string): Promise<SingleArticleResponse | null> {
 // This tells Next.js which dynamic routes to pre-render at build time.
 // It's optional but good for performance.
 export async function generateStaticParams() {
-    try {
-        const res = await fetch(`${API_URL}/articles?per_page=20`); // Fetch first 20 articles
-        if (!res.ok) return [];
+  try {
+    const res = await fetch(`${API_URL}/articles?per_page=20`); // Fetch first 20 articles
+    if (!res.ok) return [];
 
-        const articlesResponse: { data: Article[] } = await res.json();
-        
-        return articlesResponse.data.map((article) => ({
-            id: article.id.toString(),
-        }));
-    } catch (error) {
-        console.error('Could not generate static params for articles:', error);
-        return [];
-    }
+    const articlesResponse: { data: Article[] } = await res.json();
+    
+    return articlesResponse.data.map((article) => ({
+      id: article.id.toString(),
+    }));
+  } catch (error) {
+    console.error('Could not generate static params for articles:', error);
+    return [];
+  }
 }
 
-
-export default async function SingleArticlePage({ params }: { params: { id: string } }) {
-  const articleResponse = await getArticle(params.id);
+// 💡 Next.js 15+ වලදී params යනු Promise එකක් බැවින් එහි Type එක Promise<{ id: string }> ලෙස වෙනස් කරන ලදී.
+export default async function SingleArticlePage({ params }: { params: Promise<{ id: string }> }) {
+  
+  // 💡 ප්‍රොජෙක්ට් එක Crash වීම වැළැක්වීමට මුලින්ම params එක await කර unwrap කරගත යුතුය.
+  const resolvedParams = await params;
+  
+  const articleResponse = await getArticle(resolvedParams.id);
 
   if (!articleResponse || !articleResponse.data) {
     notFound(); // Triggers the not-found.tsx page
