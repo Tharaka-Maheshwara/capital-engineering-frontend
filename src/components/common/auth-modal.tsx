@@ -152,7 +152,6 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
     <div
       className="fixed inset-0 z-80 flex items-center justify-center bg-slate-950/65 px-4 py-6 backdrop-blur-sm"
       role="presentation"
-      onClick={onClose}
     >
       <div
         role="dialog"
