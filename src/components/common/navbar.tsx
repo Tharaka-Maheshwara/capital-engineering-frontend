@@ -214,7 +214,9 @@ export default function Navbar() {
               onClick={() => setIsAuthOpen(true)}
               className="hidden ml-auto h-11 w-11 flex-none items-center justify-center rounded-[14px] bg-slate-400/95 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:flex"
             >
-              <span className="sr-only">{authSession ? "Account" : "Login"}</span>
+              <span className="sr-only">
+                {authSession ? "Account" : "Login"}
+              </span>
               <span className="h-5 w-5 shrink-0">
                 <UserIcon />
               </span>

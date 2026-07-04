@@ -39,7 +39,8 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
   useEffect(() => {
     if (!open) return;
@@ -109,12 +110,11 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
 
       if (!response.ok) {
         const validationMessage = result.errors
-          ? Object.values(result.errors)
-              .flat()
-              .filter(Boolean)
-              .join(" ")
+          ? Object.values(result.errors).flat().filter(Boolean).join(" ")
           : null;
-        throw new Error(validationMessage || result.message || "Authentication failed.");
+        throw new Error(
+          validationMessage || result.message || "Authentication failed.",
+        );
       }
 
       if (!result.data?.token || !result.data.user) {
@@ -126,10 +126,19 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
         user: result.data.user,
       });
 
-      setSuccess(result.message ?? (mode === "login" ? "Signed in successfully." : "Account created successfully."));
+      setSuccess(
+        result.message ??
+          (mode === "login"
+            ? "Signed in successfully."
+            : "Account created successfully."),
+      );
       onClose();
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Authentication failed.");
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Authentication failed.",
+      );
     } finally {
       setLoading(false);
     }
@@ -223,10 +232,16 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
                 </label>
                 <input
                   type="password"
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  autoComplete={
+                    mode === "login" ? "current-password" : "new-password"
+                  }
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  placeholder={mode === "login" ? "Enter your password" : "Create a password"}
+                  placeholder={
+                    mode === "login"
+                      ? "Enter your password"
+                      : "Create a password"
+                  }
                   className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-[#7e92ad] focus:bg-white"
                 />
               </div>
