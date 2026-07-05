@@ -56,16 +56,25 @@ function formatProjectType(type: string | null, statusLabel: string): string {
 }
 
 async function getProject(id: string): Promise<ProjectDetail | null> {
-  const response = await fetch(`${apiBase}/api/v1/projects/${id}`, {
-    cache: "no-store",
-  });
+  try {
+    const response = await fetch(`${apiBase}/api/v1/projects/${id}`, {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      console.error(`Failed to fetch project ${id}: ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    const payload = (await response.json()) as { data?: ProjectDetail };
+    return payload?.data ?? null;
+  } catch (error) {
+    console.error(`Error fetching project ${id}:`, error);
     return null;
   }
-
-  const payload = (await response.json()) as { data?: ProjectDetail };
-  return payload?.data ?? null;
 }
 
 export default async function ProjectPage({ params }: Props) {

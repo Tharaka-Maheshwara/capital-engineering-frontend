@@ -87,12 +87,12 @@ export default function Navbar() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const [authSession, setAuthSession] = useState<AuthSession | null>(() =>
-    getAuthSession(),
-  );
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
+    setAuthSession(getAuthSession());
+
     const updateHash = () => {
       setActiveHash(window.location.hash);
     };
@@ -110,6 +110,7 @@ export default function Navbar() {
     const updateAuthState = () => {
       setAuthSession(getAuthSession());
     };
+    window.dispatchEvent(new Event("auth-session-changed")); // sync initial load triggers
     window.addEventListener("auth-session-changed", updateAuthState);
 
     return () => {

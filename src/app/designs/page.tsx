@@ -9,23 +9,32 @@ type DesignApiRecord = {
 };
 
 export default async function DesignsPage() {
-  const response = await fetch(`${apiBase}/api/v1/designs?per_page=24`, {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  let designs: any[] = [];
+  try {
+    const response = await fetch(`${apiBase}/api/v1/designs?per_page=24`, {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-  const payload = (await response.json()) as { data?: DesignApiRecord[] };
-  const designs = Array.isArray(payload?.data)
-    ? payload.data
-        .filter((item) => typeof item.id === "number")
-        .map((item) => ({
-          id: item.id,
-          main_category: item.main_category ?? "Untitled design",
-          image_urls: Array.isArray(item.image_urls) ? item.image_urls : [],
-        }))
-    : [];
+    if (response.ok) {
+      const payload = (await response.json()) as { data?: DesignApiRecord[] };
+      designs = Array.isArray(payload?.data)
+        ? payload.data
+            .filter((item) => typeof item.id === "number")
+            .map((item) => ({
+              id: item.id,
+              main_category: item.main_category ?? "Untitled design",
+              image_urls: Array.isArray(item.image_urls) ? item.image_urls : [],
+            }))
+        : [];
+    } else {
+      console.error(`Failed to fetch designs: ${response.status} ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error("Error fetching designs:", error);
+  }
 
   return (
     <main>

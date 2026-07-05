@@ -12,28 +12,34 @@ type DesignDetail = {
 };
 
 async function loadDesign(id: string): Promise<DesignDetail | null> {
-  const response = await fetch(`${apiBase}/api/v1/designs/${id}`, {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  try {
+    const response = await fetch(`${apiBase}/api/v1/designs/${id}`, {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      console.error(`Failed to fetch design ${id}: ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    const payload = (await response.json()) as
+      | {
+          data?: DesignDetail;
+        }
+      | DesignDetail;
+
+    if ("data" in payload && payload.data) {
+      return payload.data;
+    }
+
+    return payload as DesignDetail;
+  } catch (error) {
+    console.error(`Error loading design ${id}:`, error);
     return null;
   }
-
-  const payload = (await response.json()) as
-    | {
-        data?: DesignDetail;
-      }
-    | DesignDetail;
-
-  if ("data" in payload && payload.data) {
-    return payload.data;
-  }
-
-  return payload as DesignDetail;
 }
 
 export default async function DesignDetailPage({
