@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { saveAuthSession } from "@/lib/auth";
 
 type AuthMode = "login" | "signup";
 
@@ -41,6 +40,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   const [success, setSuccess] = useState<string | null>(null);
   const apiBaseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+    
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
   useEffect(() => {
@@ -61,46 +61,11 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
     };
   }, [open, onClose]);
 
-  async function handleGoogleSuccess(credentialResponse: any) {
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/auth/google`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ id_token: credentialResponse.credential }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Google authentication failed.");
-      }
-
-      if (!result.data?.token || !result.data.user) {
-        throw new Error("Authentication response was incomplete.");
-      }
-
-      saveAuthSession({
-        token: result.data.token,
-        user: result.data.user,
-      });
-
-      setSuccess(result.message || "Signed in successfully with Google.");
-      onClose();
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Google authentication failed."
-      );
-    } finally {
-      setLoading(false);
+  // Session එක save කර ගැනීමට සරල function එකක් (ඔබේ පැරණි කේතයට අනුව)
+  function saveAuthSession(data: { token: string; user: any }) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
     }
   }
 
@@ -236,23 +201,29 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
               </p>
             </div>
           </div>
-
+          
           {googleClientId ? (
-            <GoogleOAuthProvider clientId={googleClientId}>
-              <div className="mt-6 flex flex-col items-center justify-center">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => {
-                    setError("Google authentication failed or was cancelled.");
-                  }}
-                  useOneTap
-                  theme="outline"
-                  shape="rectangular"
-                  text={mode === "login" ? "signin_with" : "signup_with"}
-                  width="100%"
-                />
+            <div className="mt-6 flex justify-center">
+              <div className="w-full max-w-[320px]">
+                {/* GoogleOAuthProvider එක මෙතැනට එකතු කර ඇත */}
+                <GoogleOAuthProvider clientId={googleClientId}>
+                  <GoogleLogin
+                    onSuccess={() => {
+                      // Redirect mode does not use the success callback.
+                    }}
+                    onError={() => {
+                      setError("Google authentication failed or was cancelled.");
+                    }}
+                    ux_mode="redirect"
+                    login_uri={`${apiBaseUrl}/api/v1/auth/google`}
+                    theme="outline"
+                    shape="rectangular"
+                    text="signin_with"
+                    width={320}
+                  />
+                </GoogleOAuthProvider>
               </div>
-            </GoogleOAuthProvider>
+            </div>
           ) : null}
 
           <div className="mt-6 flex items-center justify-center">
@@ -286,7 +257,7 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
                   Email Address
                 </label>
                 <input
-                  type="email"
+                  type="type"
                   autoComplete="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
