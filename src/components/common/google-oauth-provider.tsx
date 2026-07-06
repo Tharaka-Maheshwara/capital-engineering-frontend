@@ -7,12 +7,16 @@ type GoogleOAuthProviderShellProps = {
   children: ReactNode;
 };
 
-export default function GoogleOAuthProviderShell({ children }: GoogleOAuthProviderShellProps) {
+export default function GoogleOAuthProviderShell({
+  children,
+}: GoogleOAuthProviderShellProps) {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
   if (!clientId) {
     return <>{children}</>;
   }
 
-  return <GoogleOAuthProvider clientId={clientId}>{children}</GoogleOAuthProvider>;
+  return (
+    <GoogleOAuthProvider clientId={clientId}>{children}</GoogleOAuthProvider>
+  );
 }

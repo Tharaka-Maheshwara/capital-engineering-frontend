@@ -31,8 +31,18 @@ type AuthPayload = {
 function CloseIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M6 6l12 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path
+        d="M6 6l12 12"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18 6L6 18"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -46,8 +56,9 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
   useEffect(() => {
@@ -71,7 +82,9 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   }
 
   // Google ලොගින් එක සාර්ථක වූ විට ක්‍රියාත්මක වන කොටස
-  async function handleGoogleSuccess(credentialResponse: GoogleCredentialResponse) {
+  async function handleGoogleSuccess(
+    credentialResponse: GoogleCredentialResponse,
+  ) {
     setLoading(true);
     setError(null);
     try {
@@ -89,7 +102,9 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Google authentication failed on backend.");
+        throw new Error(
+          result.message || "Google authentication failed on backend.",
+        );
       }
 
       // Backend එකෙන් දෙන Token සහ User data සේව් කිරීම
@@ -122,19 +137,29 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
 
     try {
       const endpoint = mode === "login" ? "login" : "register";
-      const payload = mode === "login" ? { email, password } : { name, email, password, password_confirmation: confirmPassword };
+      const payload =
+        mode === "login"
+          ? { email, password }
+          : { name, email, password, password_confirmation: confirmPassword };
 
       const response = await fetch(`${apiBaseUrl}/api/v1/${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        const validationMessage = result.errors ? Object.values(result.errors).flat().filter(Boolean).join(" ") : null;
-        throw new Error(validationMessage || result.message || "Authentication failed.");
+        const validationMessage = result.errors
+          ? Object.values(result.errors).flat().filter(Boolean).join(" ")
+          : null;
+        throw new Error(
+          validationMessage || result.message || "Authentication failed.",
+        );
       }
 
       saveAuthSession({ token: result.data.token, user: result.data.user });
@@ -142,7 +167,11 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       onClose();
       window.location.reload();
     } catch (submitError: unknown) {
-      setError(submitError instanceof Error ? submitError.message : "Authentication failed.");
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Authentication failed.",
+      );
     } finally {
       setLoading(false);
     }
@@ -152,8 +181,15 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
 
   return (
     <div className="fixed inset-0 z-80 flex items-center justify-center bg-slate-950/65 px-4 py-6 backdrop-blur-sm">
-      <div className="relative w-full max-w-xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-[0_30px_90px_rgba(2,12,27,0.32)]" onClick={(e) => e.stopPropagation()}>
-        <button type="button" onClick={onClose} className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200">
+      <div
+        className="relative w-full max-w-xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-[0_30px_90px_rgba(2,12,27,0.32)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200"
+        >
           <CloseIcon />
         </button>
 
@@ -186,7 +222,9 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
 
           <div className="mt-6 flex items-center justify-center">
             <div className="h-px w-full bg-slate-200"></div>
-            <span className="px-4 text-xs font-medium uppercase tracking-wider text-slate-400">Or</span>
+            <span className="px-4 text-xs font-medium uppercase tracking-wider text-slate-400">
+              Or
+            </span>
             <div className="h-px w-full bg-slate-200"></div>
           </div>
 
@@ -194,40 +232,96 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
             <form className="space-y-4" onSubmit={handleSubmit}>
               {mode === "signup" && (
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700">Full Name</label>
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Smith" className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white" />
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Smith"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white"
+                  />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700">Email Address</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white" />
+                <label className="block text-sm font-semibold text-slate-700">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="john@example.com"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white"
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700">Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white" />
+                <label className="block text-sm font-semibold text-slate-700">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white"
+                />
               </div>
 
               {mode === "signup" && (
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700">Confirm Password</label>
-                  <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repeat password" className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white" />
+                  <label className="block text-sm font-semibold text-slate-700">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Repeat password"
+                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:bg-white"
+                  />
                 </div>
               )}
 
-              {error && <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-              {success && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{success}</div>}
+              {error && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                  {success}
+                </div>
+              )}
 
-              <button type="submit" disabled={loading} className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white disabled:opacity-70">
-                {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#20395f_0%,#16324a_100%)] px-4 py-3 font-semibold text-white disabled:opacity-70"
+              >
+                {loading
+                  ? "Please wait..."
+                  : mode === "login"
+                    ? "Sign In"
+                    : "Create Account"}
               </button>
             </form>
           </div>
 
           <div className="mt-5 text-center text-sm text-slate-600">
-            <span>{mode === "login" ? "Need an account? " : "Already have an account? "}</span>
-            <button type="button" onClick={() => setMode(mode === "login" ? "signup" : "login")} className="font-semibold text-[#20395f] hover:text-[#12263b]">
+            <span>
+              {mode === "login"
+                ? "Need an account? "
+                : "Already have an account? "}
+            </span>
+            <button
+              type="button"
+              onClick={() => setMode(mode === "login" ? "signup" : "login")}
+              className="font-semibold text-[#20395f] hover:text-[#12263b]"
+            >
               {mode === "login" ? "Sign up" : "Sign in"}
             </button>
           </div>
