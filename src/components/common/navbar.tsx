@@ -71,12 +71,14 @@ function CloseIcon() {
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M18 6L6 18"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -117,6 +119,7 @@ function getUserInitials(authSession: AuthSession | null): string {
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false); // Added for custom modal
   const [activeHash, setActiveHash] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [authSession, setAuthSession] = useState<AuthSession | null>(null);
@@ -165,11 +168,18 @@ export default function Navbar() {
     return pathname === cleanHref || pathname.startsWith(`${cleanHref}/`);
   };
 
-  const handleLogout = () => {
+  // Open custom confirmation instead of browser confirm
+  const handleLogoutClick = () => {
+    setIsLogoutConfirmOpen(true);
+  };
+
+  // Execute actual logout action
+  const confirmLogout = () => {
     clearAuthSession();
     setAuthSession(null);
     setIsMenuOpen(false);
     setIsAuthOpen(false);
+    setIsLogoutConfirmOpen(false);
   };
 
   return (
@@ -272,7 +282,7 @@ export default function Navbar() {
             {authSession ? (
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={handleLogoutClick}
                 className="hidden rounded-[14px] border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10 lg:inline-flex"
               >
                 Logout
@@ -336,7 +346,7 @@ export default function Navbar() {
             {authSession ? (
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={handleLogoutClick}
                 className="inline-flex items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10 lg:hidden"
               >
                 Logout
@@ -348,6 +358,44 @@ export default function Navbar() {
 
       {isAuthOpen ? (
         <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      ) : null}
+
+      {/* --- CUSTOM LOGOUT CONFIRMATION MODAL (NO LOCALHOST WORDING) --- */}
+      {isLogoutConfirmOpen ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          {/* Backdrop Blur Overlay */}
+          <div 
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
+            onClick={() => setIsLogoutConfirmOpen(false)} 
+          />
+          
+          {/* Modal Content Card */}
+          <div className="relative w-full max-w-md overflow-hidden rounded-[24px] border border-white/10 bg-slate-900 p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <h3 className="text-xl font-bold text-slate-50">
+              Confirm Logout
+            </h3>
+            <p className="mt-2 text-[1.02rem] text-slate-300">
+              Are you sure you want to log out of your account?
+            </p>
+            
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsLogoutConfirmOpen(false)}
+                className="rounded-[14px] border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 transition-colors hover:bg-white/10"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmLogout}
+                className="rounded-[14px] bg-red-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-600 shadow-[0_4px_12px_rgba(239,68,68,0.2)]"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </header>
   );
