@@ -242,7 +242,11 @@ export default function Navbar() {
 
             <button
               type="button"
-              aria-label={authSession ? `Signed in as ${getUserDisplayName(authSession)}` : "Open login form"}
+              aria-label={
+                authSession
+                  ? `Signed in as ${getUserDisplayName(authSession)}`
+                  : "Open login form"
+              }
               onClick={() => {
                 if (!authSession) {
                   setIsAuthOpen(true);
