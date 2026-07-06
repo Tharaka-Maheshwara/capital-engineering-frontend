@@ -82,6 +82,38 @@ function CloseIcon() {
   );
 }
 
+function getUserDisplayName(authSession: AuthSession | null): string {
+  if (!authSession) {
+    return "Login";
+  }
+
+  const name = authSession.user.name.trim();
+  if (name) {
+    return name;
+  }
+
+  return authSession.user.email.split("@")[0] || "Account";
+}
+
+function getUserInitials(authSession: AuthSession | null): string {
+  if (!authSession) {
+    return "U";
+  }
+
+  const name = authSession.user.name.trim();
+  if (name) {
+    const nameParts = name.split(/\s+/).filter(Boolean);
+    if (nameParts.length >= 2) {
+      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+    }
+
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  const emailName = authSession.user.email.split("@")[0];
+  return emailName.slice(0, 2).toUpperCase() || "U";
+}
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -91,8 +123,6 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    setAuthSession(getAuthSession());
-
     const updateHash = () => {
       setActiveHash(window.location.hash);
     };
@@ -110,13 +140,14 @@ export default function Navbar() {
     const updateAuthState = () => {
       setAuthSession(getAuthSession());
     };
-    window.dispatchEvent(new Event("auth-session-changed")); // sync initial load triggers
+    const authTimer = window.setTimeout(updateAuthState, 0);
     window.addEventListener("auth-session-changed", updateAuthState);
 
     return () => {
       window.removeEventListener("hashchange", updateHash);
       window.removeEventListener("scroll", updateScrollState);
       window.removeEventListener("auth-session-changed", updateAuthState);
+      window.clearTimeout(authTimer);
     };
   }, []);
 
@@ -211,15 +242,19 @@ export default function Navbar() {
 
             <button
               type="button"
-              aria-label="Open login form"
-              onClick={() => setIsAuthOpen(true)}
-              className="hidden ml-auto h-11 w-11 flex-none items-center justify-center rounded-[14px] bg-slate-400/95 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:flex"
+              aria-label={authSession ? `Signed in as ${getUserDisplayName(authSession)}` : "Open login form"}
+              onClick={() => {
+                if (!authSession) {
+                  setIsAuthOpen(true);
+                }
+              }}
+              className="hidden ml-auto items-center gap-3 rounded-[14px] bg-slate-400/95 px-4 py-2 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:flex"
             >
-              <span className="sr-only">
-                {authSession ? "Account" : "Login"}
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-950/25 text-sm font-bold tracking-[0.08em] text-white">
+                {authSession ? getUserInitials(authSession) : <UserIcon />}
               </span>
-              <span className="h-5 w-5 shrink-0">
-                <UserIcon />
+              <span className="min-w-0 text-left text-sm font-semibold leading-tight">
+                {getUserDisplayName(authSession)}
               </span>
             </button>
 
@@ -263,14 +298,18 @@ export default function Navbar() {
               type="button"
               onClick={() => {
                 setIsMenuOpen(false);
-                setIsAuthOpen(true);
+                if (!authSession) {
+                  setIsAuthOpen(true);
+                }
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-slate-400/95 px-5 py-3 text-sm font-bold text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95"
+              className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-slate-400/95 px-5 py-3 text-sm font-bold text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:hidden"
             >
-              <span className="h-5 w-5 shrink-0">
-                <UserIcon />
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-950/25 text-xs font-bold tracking-[0.08em] text-white">
+                {authSession ? getUserInitials(authSession) : <UserIcon />}
               </span>
-              <span>{authSession ? authSession.user.name : "Login"}</span>
+              <span className="max-w-[12rem] truncate">
+                {getUserDisplayName(authSession)}
+              </span>
             </button>
 
             {authSession ? (
@@ -293,7 +332,7 @@ export default function Navbar() {
                   clearAuthSession();
                   setAuthSession(null);
                 }}
-                className="inline-flex items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10 lg:hidden"
               >
                 Logout
               </button>

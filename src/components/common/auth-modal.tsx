@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
+import { saveAuthSession } from "@/lib/auth";
 
 type AuthMode = "login" | "signup";
 
@@ -12,20 +13,6 @@ type AuthModalProps = {
 
 type GoogleCredentialResponse = {
   credential?: string;
-};
-
-type AuthUser = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  avatar: string | null;
-  created_at: string | null;
-};
-
-type AuthPayload = {
-  token: string;
-  user: AuthUser;
 };
 
 function CloseIcon() {
@@ -73,13 +60,6 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       document.body.style.overflow = "";
     };
   }, [open, onClose]);
-
-  function saveAuthSession(data: AuthPayload) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-    }
-  }
 
   // Google ලොගින් එක සාර්ථක වූ විට ක්‍රියාත්මක වන කොටස
   async function handleGoogleSuccess(
