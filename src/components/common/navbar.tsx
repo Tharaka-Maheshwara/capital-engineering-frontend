@@ -165,6 +165,13 @@ export default function Navbar() {
     return pathname === cleanHref || pathname.startsWith(`${cleanHref}/`);
   };
 
+  const handleLogout = () => {
+    clearAuthSession();
+    setAuthSession(null);
+    setIsMenuOpen(false);
+    setIsAuthOpen(false);
+  };
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="border-b border-white/10 bg-slate-950/95">
@@ -262,6 +269,16 @@ export default function Navbar() {
               </span>
             </button>
 
+            {authSession ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="hidden rounded-[14px] border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10 lg:inline-flex"
+              >
+                Logout
+              </button>
+            ) : null}
+
             <button
               type="button"
               className="inline-flex h-11 w-11 flex-none items-center justify-center rounded-[14px] bg-slate-400/95 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:hidden"
@@ -319,23 +336,7 @@ export default function Navbar() {
             {authSession ? (
               <button
                 type="button"
-                onClick={() => {
-                  clearAuthSession();
-                  setAuthSession(null);
-                }}
-                className="hidden ml-2 rounded-[14px] border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10 lg:inline-flex"
-              >
-                Logout
-              </button>
-            ) : null}
-
-            {authSession ? (
-              <button
-                type="button"
-                onClick={() => {
-                  clearAuthSession();
-                  setAuthSession(null);
-                }}
+                onClick={handleLogout}
                 className="inline-flex items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10 lg:hidden"
               >
                 Logout
