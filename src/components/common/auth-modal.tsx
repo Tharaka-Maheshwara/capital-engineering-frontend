@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { saveAuthSession } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 type AuthMode = "login" | "signup";
 
@@ -35,6 +36,7 @@ function CloseIcon() {
 }
 
 export default function AuthModal({ open, onClose }: AuthModalProps) {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -96,7 +98,11 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       setSuccess("Signed in successfully with Google!");
       setTimeout(() => {
         onClose();
-        window.location.reload(); // දත්ත යාවත්කාලීන වීමට page එක reload කිරීම
+        if (result.data.user.role === "admin") {
+          router.push("/admin/admin-dashboard");
+        } else {
+          window.location.reload(); // දත්ත යාවත්කාලීන වීමට page එක reload කිරීම
+        }
       }, 1000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -145,7 +151,11 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
       saveAuthSession({ token: result.data.token, user: result.data.user });
       setSuccess(result.message ?? "Success!");
       onClose();
-      window.location.reload();
+      if (result.data.user.role === "admin") {
+        router.push("/admin/admin-dashboard");
+      } else {
+        window.location.reload();
+      }
     } catch (submitError: unknown) {
       setError(
         submitError instanceof Error
