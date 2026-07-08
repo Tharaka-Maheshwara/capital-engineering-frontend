@@ -1,5 +1,15 @@
 import React from "react";
 
+export const metadata = {
+  title: "Blog Post",
+  description:
+    "Construction stories and insights from Capital Engineering Ceylon.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 interface Props {
   params: { slug: string };
 }

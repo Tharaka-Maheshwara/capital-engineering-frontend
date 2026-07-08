@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { JSX } from "react";
 
 function FacebookIcon() {
   return (
@@ -67,7 +68,7 @@ export default function Footer(): JSX.Element {
               </div>
 
               <p className="text-lg leading-8 text-slate-300">
-                Excellence in engineering and construction — building the future
+                Excellence in engineering and construction building the future
                 of Sri Lanka with innovative solutions and professional
                 expertise.
               </p>
