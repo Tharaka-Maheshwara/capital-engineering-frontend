@@ -2,33 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const testimonials = [
-  {
-    name: "Robert Sterling",
-    role: "CEO, Sterling Holdings",
-    initials: "R",
-    quote:
-      "Capital Engineering Ceylon transformed our vision into a stunning commercial complex. Their professionalism and attention to detail is unmatched.",
-  },
-  {
-    name: "Amelia Chen",
-    role: "Property Developer",
-    initials: "A",
-    quote:
-      "Working with Capital Engineering Ceylon was seamless from start to finish. They delivered on time and within budget — an extraordinary result.",
-  },
-  {
-    name: "Marcus Davies",
-    role: "Director, Skyline Group",
-    initials: "M",
-    quote:
-      "The team’s expertise in large-scale industrial projects is remarkable. They exceeded every benchmark we set.",
-  },
-];
+import { fetchFeedbackEntries, type FeedbackEntry } from "@/lib/feedback";
 
-function StarIcon() {
+function FeedbackStarIcon({ filled }: { filled: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M12 3.6l2.9 5.88 6.5.95-4.7 4.58 1.1 6.48L12 18.46l-5.8 3.03 1.1-6.48-4.7-4.58 6.5-.95L12 3.6z" />
     </svg>
   );
@@ -55,18 +41,12 @@ function QuoteIcon() {
   );
 }
 
-function TestimonialCard({
-  name,
-  role,
-  initials,
-  quote,
+function FeedbackCard({
+  feedback,
   delayMs,
   isVisible,
 }: {
-  name: string;
-  role: string;
-  initials: string;
-  quote: string;
+  feedback: FeedbackEntry;
   delayMs: number;
   isVisible: boolean;
 }) {
@@ -81,21 +61,11 @@ function TestimonialCard({
       <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[#879bb6]/10 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
 
       <div className="flex items-center gap-1 text-[#7188a6]">
-        <span className="h-4 w-4">
-          <StarIcon />
-        </span>
-        <span className="h-4 w-4">
-          <StarIcon />
-        </span>
-        <span className="h-4 w-4">
-          <StarIcon />
-        </span>
-        <span className="h-4 w-4">
-          <StarIcon />
-        </span>
-        <span className="h-4 w-4">
-          <StarIcon />
-        </span>
+        {Array.from({ length: 5 }, (_, index) => (
+          <span key={index} className="h-4 w-4">
+            <FeedbackStarIcon filled={index < feedback.rating} />
+          </span>
+        ))}
       </div>
 
       <div className="mt-6 text-[0.98rem] leading-8 text-slate-600">
@@ -104,16 +74,22 @@ function TestimonialCard({
             <QuoteIcon />
           </span>
         </div>
-        <p>{quote}</p>
+        <p>{feedback.message}</p>
       </div>
 
       <div className="mt-7 flex items-center gap-4">
         <div className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-linear-to-br from-slate-700 to-slate-500 text-sm font-bold text-white shadow-[0_10px_20px_rgba(15,23,42,0.18)]">
-          {initials}
+          {feedback.name
+            .trim()
+            .split(/\s+/)
+            .map((part) => part[0])
+            .slice(0, 2)
+            .join("")
+            .toUpperCase() || "U"}
         </div>
         <div>
-          <h3 className="text-sm font-bold text-slate-900">{name}</h3>
-          <p className="text-xs text-slate-500">{role}</p>
+          <h3 className="text-sm font-bold text-slate-900">{feedback.name}</h3>
+          <p className="text-xs text-slate-500">Customer feedback</p>
         </div>
       </div>
     </article>
@@ -123,8 +99,29 @@ function TestimonialCard({
 export default function TestimonialsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [customerFeedback, setCustomerFeedback] = useState<FeedbackEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const loadFeedback = async () => {
+      setIsLoading(true);
+
+      try {
+        setCustomerFeedback(await fetchFeedbackEntries(6));
+      } catch {
+        setCustomerFeedback([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handleFeedbackUpdated = () => {
+      void loadFeedback();
+    };
+
+    void loadFeedback();
+    window.addEventListener("feedback-updated", handleFeedbackUpdated);
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -138,8 +135,13 @@ export default function TestimonialsSection() {
       observer.observe(sectionRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("feedback-updated", handleFeedbackUpdated);
+    };
   }, []);
+
+  const visibleCustomerFeedback = customerFeedback.slice(0, 6);
 
   return (
     <section
@@ -175,19 +177,48 @@ export default function TestimonialsSection() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-6 lg:grid-cols-3">
-            {testimonials.map((item, index) => (
-              <TestimonialCard
-                key={item.name}
-                name={item.name}
-                role={item.role}
-                initials={item.initials}
-                quote={item.quote}
-                delayMs={index * 120}
-                isVisible={isVisible}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="mt-12 rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.06)]">
+              Loading customer feedback...
+            </div>
+          ) : null}
+
+          {!isLoading && visibleCustomerFeedback.length > 0 ? (
+            <div className="mt-12">
+              <div className="mx-auto max-w-3xl text-center">
+                <h3 className="text-2xl font-bold tracking-[-0.03em] text-slate-900 sm:text-3xl">
+                  Latest Customer Feedback
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-slate-500">
+                  Newly submitted feedback from the About Us page appears here
+                  automatically.
+                </p>
+              </div>
+
+              <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                {visibleCustomerFeedback.map((feedback, index) => (
+                  <FeedbackCard
+                    key={feedback.id}
+                    feedback={feedback}
+                    delayMs={index * 120}
+                    isVisible={isVisible}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {!isLoading && visibleCustomerFeedback.length === 0 ? (
+            <div className="mt-12 rounded-3xl border border-slate-200 bg-white px-6 py-10 text-center shadow-[0_14px_40px_rgba(15,23,42,0.06)]">
+              <p className="text-lg font-semibold text-slate-900">
+                No customer feedback yet.
+              </p>
+              <p className="mt-2 text-sm leading-7 text-slate-500">
+                Logged-in customers can submit the first review from the About Us
+                page.
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

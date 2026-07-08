@@ -2,6 +2,8 @@ import type { ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import FeedbackFormSection from "@/components/common/feedback-form-section";
+
 const coreValues = [
   {
     title: "Quality First",
@@ -238,6 +240,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <FeedbackFormSection />
     </main>
   );
 }
