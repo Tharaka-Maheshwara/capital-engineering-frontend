@@ -56,9 +56,10 @@ export async function submitFeedback({
     body: JSON.stringify({ rating, message }),
   });
 
-  const payload = (await response.json().catch(() => null)) as
-    | { data?: FeedbackEntry; message?: string }
-    | null;
+  const payload = (await response.json().catch(() => null)) as {
+    data?: FeedbackEntry;
+    message?: string;
+  } | null;
 
   if (!response.ok) {
     throw new Error(payload?.message ?? "Failed to submit feedback");

@@ -214,8 +214,8 @@ export default function TestimonialsSection() {
                 No customer feedback yet.
               </p>
               <p className="mt-2 text-sm leading-7 text-slate-500">
-                Logged-in customers can submit the first review from the About Us
-                page.
+                Logged-in customers can submit the first review from the About
+                Us page.
               </p>
             </div>
           ) : null}
