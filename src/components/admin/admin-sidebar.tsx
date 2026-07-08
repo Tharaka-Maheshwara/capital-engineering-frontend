@@ -33,7 +33,10 @@ export default function AdminSidebar({ activeHref }: AdminSidebarProps) {
           </div>
         </div>
 
-        <nav className="mt-8 flex flex-1 flex-col gap-2" aria-label="Admin navigation">
+        <nav
+          className="mt-8 flex flex-1 flex-col gap-2"
+          aria-label="Admin navigation"
+        >
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.href === activeHref;
@@ -57,9 +60,12 @@ export default function AdminSidebar({ activeHref }: AdminSidebarProps) {
         </nav>
 
         <div className="mt-6 rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
-          <div className="text-sm font-semibold text-white">Security Status</div>
+          <div className="text-sm font-semibold text-white">
+            Security Status
+          </div>
           <p className="mt-2 text-sm leading-6 text-slate-200/70">
-            Secure session active with role-based access and dashboard monitoring.
+            Secure session active with role-based access and dashboard
+            monitoring.
           </p>
           <div className="mt-4 flex items-center justify-between rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">
             <span>Protected</span>
@@ -72,7 +78,9 @@ export default function AdminSidebar({ activeHref }: AdminSidebarProps) {
 }
 
 function DashboardIcon() {
-  return <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />;
+  return (
+    <GlyphIcon path="M4 13h7V4H4zm9 7h7v-12h-7zM4 20h7v-5H4zm9-14h7v-2h-7z" />
+  );
 }
 
 function FolderIcon() {

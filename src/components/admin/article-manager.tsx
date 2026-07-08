@@ -35,7 +35,12 @@ const navigationItems = [
   { label: "Services", href: "#", icon: LayersIcon },
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
   { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
-  { label: "Articles", href: "/admin/articles", active: true, icon: ArticleIcon },
+  {
+    label: "Articles",
+    href: "/admin/articles",
+    active: true,
+    icon: ArticleIcon,
+  },
   { label: "Team", href: "#", icon: TeamIcon },
   { label: "Users", href: "#", icon: UsersIcon },
   { label: "Settings", href: "#", icon: SettingsIcon },
@@ -46,7 +51,9 @@ export default function ArticleManager() {
   const [form, setForm] = useState<ArticleFormState>(initialFormState);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticleId, setEditingArticleId] = useState<number | null>(null);
-  const [editingArticle, setEditingArticle] = useState<ArticleRecord | null>(null);
+  const [editingArticle, setEditingArticle] = useState<ArticleRecord | null>(
+    null,
+  );
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
   const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
@@ -92,12 +99,15 @@ export default function ArticleManager() {
     setError(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/articles?per_page=50`, {
-        cache: "no-store",
-        headers: {
-          Accept: "application/json",
+      const response = await fetch(
+        `${apiBaseUrl}/api/v1/articles?per_page=50`,
+        {
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Failed to load articles");
@@ -286,12 +296,15 @@ export default function ArticleManager() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/v1/articles/${articleId}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
+      const response = await fetch(
+        `${apiBaseUrl}/api/v1/articles/${articleId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         const payload = await readResponsePayload(response);
@@ -434,9 +447,7 @@ function PaletteIcon() {
 }
 
 function ArticleIcon() {
-  return (
-    <GlyphIcon path="M4 6h16M4 10h16M4 14h10M4 18h7" />
-  );
+  return <GlyphIcon path="M4 6h16M4 10h16M4 14h10M4 18h7" />;
 }
 
 function TeamIcon() {
