@@ -4,11 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AdminSidebar from "@/components/admin/admin-sidebar";
-import {
-  clearAuthSession,
-  getAuthSession,
-  type AuthSession,
-} from "@/lib/auth";
+import { clearAuthSession, getAuthSession, type AuthSession } from "@/lib/auth";
 
 type ProjectApiRecord = {
   id: number;
@@ -63,7 +59,9 @@ export default function AdminDashboardPage() {
           throw new Error("Failed to load project totals");
         }
 
-        const payload = (await response.json()) as { data?: ProjectApiRecord[] };
+        const payload = (await response.json()) as {
+          data?: ProjectApiRecord[];
+        };
         const projects = Array.isArray(payload.data) ? payload.data : [];
 
         if (!isMounted) {
@@ -76,8 +74,9 @@ export default function AdminDashboardPage() {
             .length,
           ongoing: projects.filter((project) => project.status === "ongoing")
             .length,
-          completed: projects.filter((project) => project.status === "completed")
-            .length,
+          completed: projects.filter(
+            (project) => project.status === "completed",
+          ).length,
         });
       } catch {
         if (!isMounted) {
