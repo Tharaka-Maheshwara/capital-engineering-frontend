@@ -75,7 +75,7 @@ export default function FeedbackFormSection() {
 
       setMessage("");
       setRating(5);
-      setSuccess("Thanks. Your feedback has been published on the home page.");
+      setSuccess("Thanks You For Your Feedback .");
     } catch (submitError) {
       setError(
         submitError instanceof Error
@@ -95,29 +95,9 @@ export default function FeedbackFormSection() {
           <h2 className="mt-6 text-4xl font-extrabold tracking-[-0.04em] text-white sm:text-5xl lg:text-6xl">
             Share your experience with us
           </h2>
-          <p className="mt-5 max-w-2xl text-[1rem] leading-8 text-slate-300/80">
-            Logged-in customers can leave a star rating and message. Once you
-            submit it, the feedback appears immediately on the home page.
-          </p>
+        
 
-          <div className="mt-8 rounded-3xl border border-white/10 bg-white/6 p-5">
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-200/70">
-              Login Status
-            </div>
-            <p className="mt-2 text-[0.98rem] leading-7 text-slate-200/80">
-              {isLoggedIn
-                ? `Signed in as ${userName || "your account"}. Name is auto-filled below.`
-                : "Please sign in first to unlock the feedback form."}
-            </p>
-            {!isLoggedIn ? (
-              <Link
-                href="/"
-                className="mt-4 inline-flex rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition-transform duration-150 hover:-translate-y-0.5"
-              >
-                Go to Home and Sign In
-              </Link>
-            ) : null}
-          </div>
+          
         </div>
 
         <div className="rounded-[28px] border border-white/10 bg-white p-6 text-slate-900 shadow-[0_24px_60px_rgba(15,23,42,0.18)] sm:p-8">
