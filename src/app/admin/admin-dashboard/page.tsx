@@ -13,13 +13,10 @@ const navigationItems = [
     active: true,
     icon: DashboardIcon,
   },
-  { label: "Services", href: "#", icon: LayersIcon },
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
-  { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
   { label: "Articles", href: "/admin/articles", icon: ArticleIcon },
-  { label: "Team", href: "#", icon: TeamIcon },
-  { label: "Users", href: "#", icon: UsersIcon },
-  { label: "Settings", href: "#", icon: SettingsIcon },
+  { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
+  { label: "Feedback", href: "#", icon: FeedbackIcon },
 ];
 
 const metricCards = [
@@ -434,6 +431,12 @@ function PaletteIcon() {
 
 function ArticleIcon() {
   return <GlyphIcon path="M4 6h16M4 10h16M4 14h10M4 18h7" />;
+}
+
+function FeedbackIcon() {
+  return (
+    <GlyphIcon path="M5 6h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H10l-5 4v-4H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+  );
 }
 
 function GlyphIcon({ path }: { path: string }) {
