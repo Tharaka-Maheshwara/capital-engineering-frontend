@@ -7,7 +7,12 @@ import { useRouter } from "next/navigation";
 import { clearAuthSession, getAuthSession, type AuthSession } from "@/lib/auth";
 
 const navigationItems = [
-  { label: "Dashboard", href: "/admin/admin-dashboard", active: true, icon: DashboardIcon },
+  {
+    label: "Dashboard",
+    href: "/admin/admin-dashboard",
+    active: true,
+    icon: DashboardIcon,
+  },
   { label: "Services", href: "#", icon: LayersIcon },
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
   { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
@@ -201,7 +206,8 @@ export default function AdminDashboardPage() {
                   Capital Engineering Command Center
                 </div>
                 <h2 className="mt-5 text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
-                  Manage designs, services, projects, and team operations from one place.
+                  Manage designs, services, projects, and team operations from
+                  one place.
                 </h2>
                 <p className="mt-4 max-w-2xl text-[1rem] leading-7 text-slate-100/78 sm:text-[1.05rem]">
                   This dashboard is set up to match the professional admin style
