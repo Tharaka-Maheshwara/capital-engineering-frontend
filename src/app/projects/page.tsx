@@ -7,7 +7,9 @@ type ProjectsPageProps = {
   searchParams?: Promise<{ category?: string | string[] }>;
 };
 
-export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+export default async function ProjectsPage({
+  searchParams,
+}: ProjectsPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const category = Array.isArray(resolvedSearchParams?.category)
     ? resolvedSearchParams?.category[0]
@@ -25,7 +27,9 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
       const payload = (await res.json()) as { data?: any[] };
       projects = Array.isArray(payload?.data) ? payload.data : [];
     } else {
-      console.error(`Failed to fetch projects: ${res.status} ${res.statusText}`);
+      console.error(
+        `Failed to fetch projects: ${res.status} ${res.statusText}`,
+      );
     }
   } catch (error) {
     console.error("Error fetching projects:", error);

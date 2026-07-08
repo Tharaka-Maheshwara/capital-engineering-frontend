@@ -18,15 +18,35 @@ type Project = {
 
 type ProjectCategory = "all" | "commercial" | "residential" | "industrial";
 
-const filterTabs: Array<{ label: string; value: ProjectCategory; href: string }> = [
+const filterTabs: Array<{
+  label: string;
+  value: ProjectCategory;
+  href: string;
+}> = [
   { label: "All Projects", value: "all", href: "/projects" },
-  { label: "Commercial", value: "commercial", href: "/projects?category=commercial" },
-  { label: "Residential", value: "residential", href: "/projects?category=residential" },
-  { label: "Industrial", value: "industrial", href: "/projects?category=industrial" },
+  {
+    label: "Commercial",
+    value: "commercial",
+    href: "/projects?category=commercial",
+  },
+  {
+    label: "Residential",
+    value: "residential",
+    href: "/projects?category=residential",
+  },
+  {
+    label: "Industrial",
+    value: "industrial",
+    href: "/projects?category=industrial",
+  },
 ];
 
 function normalizeCategory(value?: string | null): ProjectCategory {
-  if (value === "commercial" || value === "residential" || value === "industrial") {
+  if (
+    value === "commercial" ||
+    value === "residential" ||
+    value === "industrial"
+  ) {
     return value;
   }
 
