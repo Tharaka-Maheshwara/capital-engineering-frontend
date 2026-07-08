@@ -103,7 +103,7 @@ export default function AboutPage() {
 
             <div className="mt-10">
               <Link
-                href="/services"
+                href="/contact"
                 className="inline-flex items-center gap-3 rounded-2xl bg-slate-500 px-6 py-4 text-[0.98rem] font-semibold text-white shadow-[0_12px_28px_rgba(15,23,42,0.12)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-600"
               >
                 Work With Us

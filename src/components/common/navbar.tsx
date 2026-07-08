@@ -232,7 +232,7 @@ export default function Navbar() {
                 <span
                   className={`truncate font-bold tracking-[-0.03em] text-slate-50 transition-all duration-300 ease-out ${isScrolled ? "text-[1.05rem] lg:text-[1.28rem]" : "text-[1.2rem] lg:text-[1.55rem]"}`}
                 >
-                  Capital Engineering (PVT) LTD
+                  Capital Engineering Ceylon (Pvt) Ltd
                 </span>
               </span>
             </Link>
