@@ -1,5 +1,14 @@
 import DesignsGrid from "@/components/designs/designs-grid";
 
+export const metadata = {
+  title: "Designs",
+  description:
+    "Browse architectural and interior design concepts from Capital Engineering Ceylon.",
+  alternates: {
+    canonical: "/designs",
+  },
+};
+
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 type DesignApiRecord = {

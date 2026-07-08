@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { defaultDescription, siteName, stripHtmlTags, truncateText } from "@/lib/seo";
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
@@ -40,6 +42,59 @@ async function loadDesign(id: string): Promise<DesignDetail | null> {
     console.error(`Error loading design ${id}:`, error);
     return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const design = await loadDesign(id);
+
+  if (!design) {
+    return {
+      title: "Design not found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const description = truncateText(
+    stripHtmlTags(design.description ?? design.main_category ?? "") || defaultDescription,
+    160,
+  );
+  const heroImage = Array.isArray(design.image_urls) && design.image_urls.length > 0 ? design.image_urls[0] : undefined;
+
+  return {
+    title: design.main_category ?? "Design Details",
+    description,
+    alternates: {
+      canonical: `/designs/${design.id}`,
+    },
+    openGraph: {
+      title: `${design.main_category ?? "Design Details"} | ${siteName}`,
+      description,
+      type: "article",
+      url: `/designs/${design.id}`,
+      images: heroImage
+        ? [
+            {
+              url: heroImage,
+              alt: design.main_category ?? "Design image",
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: heroImage ? "summary_large_image" : "summary",
+      title: design.main_category ?? "Design Details",
+      description,
+      images: heroImage ? [heroImage] : undefined,
+    },
+  };
 }
 
 export default async function DesignDetailPage({

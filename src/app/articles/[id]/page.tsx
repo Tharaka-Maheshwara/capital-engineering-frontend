@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { defaultDescription, siteName, stripHtmlTags, truncateText } from '@/lib/seo';
 
 // It's a good practice to have this URL in an environment variable
 const API_URL = 'http://localhost:8000/api/v1';
@@ -39,6 +41,53 @@ async function getArticle(id: string): Promise<SingleArticleResponse | null> {
     console.error(`An error occurred while fetching article ${id}:`, error);
     return null;
   }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const articleResponse = await getArticle(resolvedParams.id);
+
+  if (!articleResponse || !articleResponse.data) {
+    return {
+      title: 'Article not found',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const article = articleResponse.data;
+  const description = truncateText(stripHtmlTags(article.description) || defaultDescription, 160);
+  const heroImage = article.image_urls[0] || undefined;
+
+  return {
+    title: article.title,
+    description,
+    alternates: {
+      canonical: `/articles/${article.id}`,
+    },
+    openGraph: {
+      title: `${article.title} | ${siteName}`,
+      description,
+      type: 'article',
+      url: `/articles/${article.id}`,
+      images: heroImage
+        ? [
+            {
+              url: heroImage,
+              alt: article.title,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: heroImage ? 'summary_large_image' : 'summary',
+      title: article.title,
+      description,
+      images: heroImage ? [heroImage] : undefined,
+    },
+  };
 }
 
 // This tells Next.js which dynamic routes to pre-render at build time.
@@ -97,7 +146,7 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
               <img 
                 src={article.image_urls[0]} 
                 alt={article.title}
-                className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"
+                className="w-full h-auto max-h-125 object-cover rounded-lg shadow-lg"
               />
             </div>
           )}

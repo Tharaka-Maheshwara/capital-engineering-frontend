@@ -5,7 +5,10 @@ import UrgentCta from "@/components/common/urgent-cta";
 
 export const metadata = {
   title: "Contact Us",
-  description: "Get in touch with Capital Engineering",
+  description: "Get in touch with Capital Engineering Ceylon for project inquiries and support.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {

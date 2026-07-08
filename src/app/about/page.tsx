@@ -4,6 +4,15 @@ import Link from "next/link";
 
 import FeedbackFormSection from "@/components/common/feedback-form-section";
 
+export const metadata = {
+  title: "About Us",
+  description:
+    "Learn about Capital Engineering Ceylon, our values, team, and track record delivering trusted construction projects.",
+  alternates: {
+    canonical: "/about",
+  },
+};
+
 const coreValues = [
   {
     title: "Quality First",

@@ -1,7 +1,9 @@
 import React from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { buildProjectSlug, extractProjectIdFromSlug } from "@/lib/project-url";
+import { defaultDescription, siteName, stripHtmlTags, truncateText } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -75,6 +77,60 @@ async function getProject(id: string): Promise<ProjectDetail | null> {
     console.error(`Error fetching project ${id}:`, error);
     return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const projectId = extractProjectIdFromSlug(slug) ?? slug;
+  const project = await getProject(projectId);
+
+  if (!project) {
+    return {
+      title: "Project not found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const canonicalSlug = buildProjectSlug(project);
+  const description = truncateText(
+    stripHtmlTags(project.meta_description ?? project.description ?? project.location) ||
+      defaultDescription,
+    160,
+  );
+  const heroImage = project.featured_image_og ?? project.featured_image_thumbnail ?? undefined;
+
+  return {
+    title: project.title,
+    description,
+    alternates: {
+      canonical: `/projects/${canonicalSlug}`,
+    },
+    openGraph: {
+      title: `${project.title} | ${siteName}`,
+      description,
+      type: "article",
+      url: `/projects/${canonicalSlug}`,
+      images: heroImage
+        ? [
+            {
+              url: heroImage,
+              alt: project.featured_image_alt ?? project.title,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: heroImage ? "summary_large_image" : "summary",
+      title: project.title,
+      description,
+      images: heroImage ? [heroImage] : undefined,
+    },
+  };
 }
 
 export default async function ProjectPage({ params }: Props) {

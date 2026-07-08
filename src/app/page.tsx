@@ -7,6 +7,15 @@ import FeaturedProjectSection from "@/components/common/featured-project-section
 import TestimonialsSection from "@/components/common/testimonials-section";
 import CtaSection from "@/components/common/cta-section";
 
+export const metadata = {
+  title: "Home",
+  description:
+    "Capital Engineering Ceylon delivers commercial, residential, and industrial construction projects across Sri Lanka.",
+  alternates: {
+    canonical: "/",
+  },
+};
+
 export default function Home() {
   return (
     <main>

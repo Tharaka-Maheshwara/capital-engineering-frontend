@@ -1,5 +1,14 @@
 import Link from 'next/link';
 
+export const metadata = {
+  title: "Articles",
+  description:
+    "Read construction and engineering articles from Capital Engineering Ceylon.",
+  alternates: {
+    canonical: "/articles",
+  },
+};
+
 // It's a good practice to have this URL in an environment variable
 const API_URL = 'http://localhost:8000/api/v1';
 

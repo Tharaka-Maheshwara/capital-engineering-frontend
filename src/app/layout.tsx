@@ -1,12 +1,56 @@
 import "./globals.css";
 import SiteChrome from "@/components/common/site-chrome";
 import GoogleOAuthProviderShell from "@/components/common/google-oauth-provider";
+import { defaultDescription, defaultKeywords, siteName, siteUrl } from "@/lib/seo";
 
 export const metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description: defaultDescription,
+  keywords: defaultKeywords,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName,
+    title: siteName,
+    description: defaultDescription,
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 512,
+        height: 512,
+        alt: siteName,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: defaultDescription,
+    images: ["/images/logo.png"],
+  },
   icons: {
     icon: "/images/logo.png",
     shortcut: "/images/logo.png",
     apple: "/images/logo.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
