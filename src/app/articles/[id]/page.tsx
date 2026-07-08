@@ -8,8 +8,10 @@ import {
   truncateText,
 } from "@/lib/seo";
 
-// It's a good practice to have this URL in an environment variable
-const API_URL = "http://localhost:8000/api/v1";
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+
+const API_URL = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, "")}/api/v1` : null;
 
 // Based on the ArticleResource from the backend
 type Article = {
@@ -26,6 +28,10 @@ type SingleArticleResponse = {
 };
 
 async function getArticle(id: string): Promise<SingleArticleResponse | null> {
+  if (!API_URL) {
+    return null;
+  }
+
   try {
     const res = await fetch(`${API_URL}/articles/${id}`, {
       next: { revalidate: 3600 }, // Revalidate every hour
@@ -107,6 +113,10 @@ export async function generateMetadata({
 // This tells Next.js which dynamic routes to pre-render at build time.
 // It's optional but good for performance.
 export async function generateStaticParams() {
+  if (!API_URL) {
+    return [];
+  }
+
   try {
     const res = await fetch(`${API_URL}/articles?per_page=20`); // Fetch first 20 articles
     if (!res.ok) return [];

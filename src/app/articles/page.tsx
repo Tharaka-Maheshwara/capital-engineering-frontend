@@ -9,8 +9,10 @@ export const metadata = {
   },
 };
 
-// It's a good practice to have this URL in an environment variable
-const API_URL = "http://localhost:8000/api/v1";
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+
+const API_URL = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, "")}/api/v1` : null;
 
 // Based on the ArticleResource from the backend
 type Article = {
@@ -42,6 +44,10 @@ type PaginatedArticles = {
 };
 
 async function getArticles(): Promise<PaginatedArticles | null> {
+  if (!API_URL) {
+    return null;
+  }
+
   try {
     const res = await fetch(`${API_URL}/articles`, {
       // Revalidate every hour
@@ -57,8 +63,7 @@ async function getArticles(): Promise<PaginatedArticles | null> {
     }
 
     return res.json();
-  } catch (error) {
-    console.error("An error occurred while fetching articles:", error);
+  } catch {
     return null;
   }
 }
