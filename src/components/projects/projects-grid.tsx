@@ -16,7 +16,44 @@ type Project = {
   type?: string | null;
 };
 
-export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+type ProjectCategory = "all" | "commercial" | "residential" | "industrial";
+
+const filterTabs: Array<{ label: string; value: ProjectCategory; href: string }> = [
+  { label: "All Projects", value: "all", href: "/projects" },
+  { label: "Commercial", value: "commercial", href: "/projects?category=commercial" },
+  { label: "Residential", value: "residential", href: "/projects?category=residential" },
+  { label: "Industrial", value: "industrial", href: "/projects?category=industrial" },
+];
+
+function normalizeCategory(value?: string | null): ProjectCategory {
+  if (value === "commercial" || value === "residential" || value === "industrial") {
+    return value;
+  }
+
+  return "all";
+}
+
+function formatProjectType(value?: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+export default function ProjectsGrid({
+  projects,
+  initialCategory,
+}: {
+  projects: Project[];
+  initialCategory?: string;
+}) {
+  const activeCategory = normalizeCategory(initialCategory);
+  const filteredProjects =
+    activeCategory === "all"
+      ? projects
+      : projects.filter((project) => project.type === activeCategory);
+
   if (!projects || projects.length === 0) {
     return (
       <div className="py-12 text-center text-slate-600">No projects found.</div>
@@ -29,19 +66,30 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-5 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold text-white">Projects</h2>
           <nav className="flex gap-3 text-sm text-slate-200">
-            <button className="rounded-full bg-white/20 px-4 py-1.5 text-white">
-              All Projects
-            </button>
-            <button className="px-3 py-1.5 text-slate-100">Commercial</button>
-            <button className="px-3 py-1.5 text-slate-100">Residential</button>
-            <button className="px-3 py-1.5 text-slate-100">Industrial</button>
+            {filterTabs.map((tab) => {
+              const isActive = tab.value === activeCategory;
+
+              return (
+                <Link
+                  key={tab.value}
+                  href={tab.href}
+                  className={
+                    isActive
+                      ? "rounded-full bg-white/20 px-4 py-1.5 text-white"
+                      : "rounded-full px-4 py-1.5 text-slate-100 transition-colors hover:bg-white/10 hover:text-white"
+                  }
+                >
+                  {tab.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => {
+          {filteredProjects.map((p) => {
             const year = p.end_date
               ? new Date(p.end_date).getFullYear()
               : p.start_date
@@ -71,7 +119,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
                   {p.type ? (
                     <div className="absolute left-4 top-4 inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-sky-800 shadow-[0_6px_18px_rgba(15,23,42,0.12)] backdrop-blur-sm">
-                      {p.type.charAt(0).toUpperCase() + p.type.slice(1)}
+                      {formatProjectType(p.type)}
                     </div>
                   ) : null}
 
@@ -170,6 +218,12 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             );
           })}
         </div>
+
+        {filteredProjects.length === 0 ? (
+          <div className="py-12 text-center text-slate-600">
+            No projects found in this category.
+          </div>
+        ) : null}
       </div>
     </section>
   );

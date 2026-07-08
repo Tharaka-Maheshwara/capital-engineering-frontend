@@ -3,7 +3,16 @@ import ProjectsGrid from "@/components/projects/projects-grid";
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
-export default async function ProjectsPage() {
+type ProjectsPageProps = {
+  searchParams?: Promise<{ category?: string | string[] }>;
+};
+
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const category = Array.isArray(resolvedSearchParams?.category)
+    ? resolvedSearchParams?.category[0]
+    : resolvedSearchParams?.category;
+
   let projects: any[] = [];
   try {
     const res = await fetch(`${apiBase}/api/v1/projects?per_page=12`, {
@@ -50,7 +59,7 @@ export default async function ProjectsPage() {
         </div>
       </section>
 
-      <ProjectsGrid projects={projects} />
+      <ProjectsGrid projects={projects} initialCategory={category} />
     </main>
   );
 }
