@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchFeedbackEntries, type FeedbackEntry } from "@/lib/feedback";
 
@@ -101,13 +101,14 @@ export default function TestimonialsSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [customerFeedback, setCustomerFeedback] = useState<FeedbackEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
     const loadFeedback = async () => {
       setIsLoading(true);
 
       try {
-        setCustomerFeedback(await fetchFeedbackEntries(6));
+        setCustomerFeedback(await fetchFeedbackEntries(12));
       } catch {
         setCustomerFeedback([]);
       } finally {
@@ -141,7 +142,34 @@ export default function TestimonialsSection() {
     };
   }, []);
 
-  const visibleCustomerFeedback = customerFeedback.slice(0, 6);
+  const feedbackPageSize = 3;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(customerFeedback.length / feedbackPageSize),
+  );
+  const currentPage = Math.min(carouselIndex, totalPages - 1);
+  const visibleCustomerFeedback = useMemo(
+    () =>
+      customerFeedback.slice(
+        currentPage * feedbackPageSize,
+        currentPage * feedbackPageSize + feedbackPageSize,
+      ),
+    [currentPage, customerFeedback],
+  );
+
+  useEffect(() => {
+    setCarouselIndex((index) => Math.min(index, totalPages - 1));
+  }, [totalPages]);
+
+  function moveCarousel(direction: "previous" | "next") {
+    setCarouselIndex((index) => {
+      if (direction === "previous") {
+        return Math.max(0, index - 1);
+      }
+
+      return Math.min(totalPages - 1, index + 1);
+    });
+  }
 
   return (
     <section
@@ -185,25 +213,41 @@ export default function TestimonialsSection() {
 
           {!isLoading && visibleCustomerFeedback.length > 0 ? (
             <div className="mt-12">
-              <div className="mx-auto max-w-3xl text-center">
-                <h3 className="text-2xl font-bold tracking-[-0.03em] text-slate-900 sm:text-3xl">
-                  Latest Customer Feedback
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-500">
-                  Newly submitted feedback from the About Us page appears here
-                  automatically.
-                </p>
-              </div>
+              <div className="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center">
+                <div className="flex justify-center lg:justify-start">
+                  <button
+                    type="button"
+                    onClick={() => moveCarousel("previous")}
+                    disabled={currentPage === 0}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Show previous feedback"
+                  >
+                    <span className="text-2xl leading-none">&lt;</span>
+                  </button>
+                </div>
 
-              <div className="mt-8 grid gap-6 lg:grid-cols-3">
-                {visibleCustomerFeedback.map((feedback, index) => (
-                  <FeedbackCard
-                    key={feedback.id}
-                    feedback={feedback}
-                    delayMs={index * 120}
-                    isVisible={isVisible}
-                  />
-                ))}
+                <div className="grid gap-6 lg:grid-cols-3">
+                  {visibleCustomerFeedback.map((feedback, index) => (
+                    <FeedbackCard
+                      key={feedback.id}
+                      feedback={feedback}
+                      delayMs={index * 120}
+                      isVisible={isVisible}
+                    />
+                  ))}
+                </div>
+
+                <div className="flex justify-center lg:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => moveCarousel("next")}
+                    disabled={currentPage >= totalPages - 1}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition-transform duration-150 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Show next feedback"
+                  >
+                    <span className="text-2xl leading-none">&gt;</span>
+                  </button>
+                </div>
               </div>
             </div>
           ) : null}
