@@ -11,9 +11,7 @@ import {
 const apiBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
 
-const API_URL = apiBaseUrl
-  ? `${apiBaseUrl.replace(/\/$/, "")}/api/v1`
-  : null;
+const API_URL = apiBaseUrl ? `${apiBaseUrl.replace(/\/$/, "")}/api/v1` : null;
 
 // Based on the ArticleResource from the backend
 type Article = {
