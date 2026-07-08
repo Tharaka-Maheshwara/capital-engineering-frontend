@@ -1,10 +1,15 @@
-import Link from 'next/link';
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { defaultDescription, siteName, stripHtmlTags, truncateText } from '@/lib/seo';
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import {
+  defaultDescription,
+  siteName,
+  stripHtmlTags,
+  truncateText,
+} from "@/lib/seo";
 
 // It's a good practice to have this URL in an environment variable
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = "http://localhost:8000/api/v1";
 
 // Based on the ArticleResource from the backend
 type Article = {
@@ -32,7 +37,9 @@ async function getArticle(id: string): Promise<SingleArticleResponse | null> {
         return null;
       }
       // For other errors, log them
-      console.error(`Failed to fetch article ${id}: ${res.status} ${res.statusText}`);
+      console.error(
+        `Failed to fetch article ${id}: ${res.status} ${res.statusText}`,
+      );
       return null;
     }
 
@@ -43,13 +50,17 @@ async function getArticle(id: string): Promise<SingleArticleResponse | null> {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const resolvedParams = await params;
   const articleResponse = await getArticle(resolvedParams.id);
 
   if (!articleResponse || !articleResponse.data) {
     return {
-      title: 'Article not found',
+      title: "Article not found",
       robots: {
         index: false,
         follow: false,
@@ -58,7 +69,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const article = articleResponse.data;
-  const description = truncateText(stripHtmlTags(article.description) || defaultDescription, 160);
+  const description = truncateText(
+    stripHtmlTags(article.description) || defaultDescription,
+    160,
+  );
   const heroImage = article.image_urls[0] || undefined;
 
   return {
@@ -70,7 +84,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: `${article.title} | ${siteName}`,
       description,
-      type: 'article',
+      type: "article",
       url: `/articles/${article.id}`,
       images: heroImage
         ? [
@@ -82,7 +96,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         : undefined,
     },
     twitter: {
-      card: heroImage ? 'summary_large_image' : 'summary',
+      card: heroImage ? "summary_large_image" : "summary",
       title: article.title,
       description,
       images: heroImage ? [heroImage] : undefined,
@@ -98,22 +112,25 @@ export async function generateStaticParams() {
     if (!res.ok) return [];
 
     const articlesResponse: { data: Article[] } = await res.json();
-    
+
     return articlesResponse.data.map((article) => ({
       id: article.id.toString(),
     }));
   } catch (error) {
-    console.error('Could not generate static params for articles:', error);
+    console.error("Could not generate static params for articles:", error);
     return [];
   }
 }
 
 // 💡 Next.js 15+ වලදී params යනු Promise එකක් බැවින් එහි Type එක Promise<{ id: string }> ලෙස වෙනස් කරන ලදී.
-export default async function SingleArticlePage({ params }: { params: Promise<{ id: string }> }) {
-  
+export default async function SingleArticlePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   // 💡 ප්‍රොජෙක්ට් එක Crash වීම වැළැක්වීමට මුලින්ම params එක await කර unwrap කරගත යුතුය.
   const resolvedParams = await params;
-  
+
   const articleResponse = await getArticle(resolvedParams.id);
 
   if (!articleResponse || !articleResponse.data) {
@@ -126,25 +143,32 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
     <main className="bg-slate-900 text-white min-h-screen">
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          
           {/* Header */}
           <div className="text-center mb-12">
-            <Link href="/articles" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link
+              href="/articles"
+              className="text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
               &larr; Back to Articles
             </Link>
             <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               {article.title}
             </h1>
             <p className="mt-6 text-lg text-slate-400">
-              Published on {new Date(article.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Published on{" "}
+              {new Date(article.created_at).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
           </div>
 
           {/* Featured Image */}
           {article.image_urls[0] && (
             <div className="mb-12">
-              <img 
-                src={article.image_urls[0]} 
+              <img
+                src={article.image_urls[0]}
                 alt={article.title}
                 className="w-full h-auto max-h-125 object-cover rounded-lg shadow-lg"
               />
@@ -152,31 +176,32 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
           )}
 
           {/* Article Content */}
-          <div 
+          <div
             className="prose prose-invert prose-lg max-w-none mx-auto text-slate-300
                        prose-p:leading-relaxed
                        prose-a:text-indigo-400 hover:prose-a:text-indigo-300
                        prose-headings:text-white"
-            dangerouslySetInnerHTML={{ __html: article.description }} 
+            dangerouslySetInnerHTML={{ __html: article.description }}
           />
 
           {/* YouTube Video */}
           {article.youtube_link && (
             <div className="mt-16">
-                <h2 className="text-3xl font-bold text-white text-center mb-8">Watch Video</h2>
-                <div className="aspect-w-16 aspect-h-9">
-                    <iframe 
-                        src={`https://www.youtube.com/embed/${new URL(article.youtube_link).searchParams.get('v')}`}
-                        title="YouTube video player" 
-                        frameBorder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen
-                        className="w-full h-full rounded-lg shadow-lg"
-                    ></iframe>
-                </div>
+              <h2 className="text-3xl font-bold text-white text-center mb-8">
+                Watch Video
+              </h2>
+              <div className="aspect-w-16 aspect-h-9">
+                <iframe
+                  src={`https://www.youtube.com/embed/${new URL(article.youtube_link).searchParams.get("v")}`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full rounded-lg shadow-lg"
+                ></iframe>
+              </div>
             </div>
           )}
-
         </div>
       </div>
     </main>

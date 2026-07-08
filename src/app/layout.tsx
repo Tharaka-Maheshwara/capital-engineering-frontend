@@ -1,7 +1,12 @@
 import "./globals.css";
 import SiteChrome from "@/components/common/site-chrome";
 import GoogleOAuthProviderShell from "@/components/common/google-oauth-provider";
-import { defaultDescription, defaultKeywords, siteName, siteUrl } from "@/lib/seo";
+import {
+  defaultDescription,
+  defaultKeywords,
+  siteName,
+  siteUrl,
+} from "@/lib/seo";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),

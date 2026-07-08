@@ -1,5 +1,6 @@
 export const siteName = "Capital Engineering Ceylon";
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lankacapital.com";
+export const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://lankacapital.com";
 
 export const defaultDescription =
   "Capital Engineering Ceylon delivers commercial, residential, and industrial construction projects with quality, precision, and trusted delivery.";

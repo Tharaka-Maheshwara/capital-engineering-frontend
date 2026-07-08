@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { defaultDescription, siteName, stripHtmlTags, truncateText } from "@/lib/seo";
+import {
+  defaultDescription,
+  siteName,
+  stripHtmlTags,
+  truncateText,
+} from "@/lib/seo";
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
@@ -23,7 +28,9 @@ async function loadDesign(id: string): Promise<DesignDetail | null> {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch design ${id}: ${response.status} ${response.statusText}`);
+      console.error(
+        `Failed to fetch design ${id}: ${response.status} ${response.statusText}`,
+      );
       return null;
     }
 
@@ -63,10 +70,14 @@ export async function generateMetadata({
   }
 
   const description = truncateText(
-    stripHtmlTags(design.description ?? design.main_category ?? "") || defaultDescription,
+    stripHtmlTags(design.description ?? design.main_category ?? "") ||
+      defaultDescription,
     160,
   );
-  const heroImage = Array.isArray(design.image_urls) && design.image_urls.length > 0 ? design.image_urls[0] : undefined;
+  const heroImage =
+    Array.isArray(design.image_urls) && design.image_urls.length > 0
+      ? design.image_urls[0]
+      : undefined;
 
   return {
     title: design.main_category ?? "Design Details",

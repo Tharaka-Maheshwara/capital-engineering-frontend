@@ -39,7 +39,9 @@ export default async function DesignsPage() {
             }))
         : [];
     } else {
-      console.error(`Failed to fetch designs: ${response.status} ${response.statusText}`);
+      console.error(
+        `Failed to fetch designs: ${response.status} ${response.statusText}`,
+      );
     }
   } catch (error) {
     console.error("Error fetching designs:", error);

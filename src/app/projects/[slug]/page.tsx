@@ -3,7 +3,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { buildProjectSlug, extractProjectIdFromSlug } from "@/lib/project-url";
-import { defaultDescription, siteName, stripHtmlTags, truncateText } from "@/lib/seo";
+import {
+  defaultDescription,
+  siteName,
+  stripHtmlTags,
+  truncateText,
+} from "@/lib/seo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -67,7 +72,9 @@ async function getProject(id: string): Promise<ProjectDetail | null> {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch project ${id}: ${response.status} ${response.statusText}`);
+      console.error(
+        `Failed to fetch project ${id}: ${response.status} ${response.statusText}`,
+      );
       return null;
     }
 
@@ -79,9 +86,7 @@ async function getProject(id: string): Promise<ProjectDetail | null> {
   }
 }
 
-export async function generateMetadata({
-  params,
-}: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const projectId = extractProjectIdFromSlug(slug) ?? slug;
   const project = await getProject(projectId);
@@ -98,11 +103,13 @@ export async function generateMetadata({
 
   const canonicalSlug = buildProjectSlug(project);
   const description = truncateText(
-    stripHtmlTags(project.meta_description ?? project.description ?? project.location) ||
-      defaultDescription,
+    stripHtmlTags(
+      project.meta_description ?? project.description ?? project.location,
+    ) || defaultDescription,
     160,
   );
-  const heroImage = project.featured_image_og ?? project.featured_image_thumbnail ?? undefined;
+  const heroImage =
+    project.featured_image_og ?? project.featured_image_thumbnail ?? undefined;
 
   return {
     title: project.title,
@@ -173,7 +180,9 @@ export default async function ProjectPage({ params }: Props) {
             {project.title}
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-            {project.meta_description ?? project.description ?? project.location}
+            {project.meta_description ??
+              project.description ??
+              project.location}
           </p>
         </div>
       </section>
@@ -205,7 +214,6 @@ export default async function ProjectPage({ params }: Props) {
               <div className="absolute left-5 top-5 inline-flex rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-[0_6px_18px_rgba(15,23,42,0.12)] backdrop-blur-sm">
                 {projectType}
               </div>
-
             </div>
 
             <div className="border-t border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,1)_0%,rgba(241,245,249,1)_100%)] p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
@@ -226,8 +234,8 @@ export default async function ProjectPage({ params }: Props) {
 
               <div className="mt-6 space-y-4 text-sm leading-7 text-slate-600">
                 <p>
-                  This project is located in {project.location} and was delivered
-                  for {project.client}.
+                  This project is located in {project.location} and was
+                  delivered for {project.client}.
                 </p>
                 <p>
                   Construction details, image assets, and project metadata below
@@ -281,7 +289,8 @@ export default async function ProjectPage({ params }: Props) {
             <div
               className="prose mt-4 max-w-none prose-headings:tracking-[-0.03em] prose-p:text-slate-600 prose-li:text-slate-600 prose-strong:text-slate-900"
               dangerouslySetInnerHTML={{
-                __html: project.description ?? "No project description available.",
+                __html:
+                  project.description ?? "No project description available.",
               }}
             />
           </section>
