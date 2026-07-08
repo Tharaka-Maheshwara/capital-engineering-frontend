@@ -1,5 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { clearAuthSession, getAuthSession, type AuthSession } from "@/lib/auth";
 
 const navigationItems = [
   { label: "Dashboard", href: "/admin/admin-dashboard", active: true, icon: DashboardIcon },
@@ -76,6 +81,30 @@ const quickActions = [
 ];
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
+
+  useEffect(() => {
+    const updateAuthSession = () => {
+      setAuthSession(getAuthSession());
+    };
+
+    updateAuthSession();
+    window.addEventListener("auth-session-changed", updateAuthSession);
+
+    return () => {
+      window.removeEventListener("auth-session-changed", updateAuthSession);
+    };
+  }, []);
+
+  const displayName = authSession?.user.name.trim() || "Logged User Name";
+
+  const handleLogout = () => {
+    clearAuthSession();
+    setAuthSession(null);
+    router.push("/");
+  };
+
   return (
     <main className="min-h-screen bg-[#f3f5f9] text-slate-900">
       <div className="flex min-h-screen flex-col lg:flex-row">
@@ -149,12 +178,13 @@ export default function AdminDashboardPage() {
                   Dashboard
                 </p>
                 <h1 className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-slate-900 sm:text-[2.15rem]">
-                  Welcome, Admin!
+                  Welcome, {displayName}!
                 </h1>
               </div>
 
               <button
                 type="button"
+                onClick={handleLogout}
                 className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition-transform duration-150 hover:-translate-y-0.5 hover:text-slate-700"
                 aria-label="Logout"
               >
