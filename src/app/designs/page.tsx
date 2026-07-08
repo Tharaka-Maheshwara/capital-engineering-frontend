@@ -1,5 +1,7 @@
 import DesignsGrid from "@/components/designs/designs-grid";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Designs",
   description:
