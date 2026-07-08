@@ -23,6 +23,7 @@ export default function ContactForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((s) => ({ ...s, [key]: value }));
@@ -37,7 +38,7 @@ export default function ContactForm() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch(`${apiBaseUrl}/api/v1/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -53,8 +54,8 @@ export default function ContactForm() {
         message: "",
         honey: "",
       });
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -66,7 +67,7 @@ export default function ContactForm() {
         role="status"
         className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-emerald-100 shadow-[0_16px_30px_rgba(3,15,31,0.18)]"
       >
-        Thanks — your message was sent. We'll be in touch shortly.
+        Thanks — your message was sent. We&apos;ll be in touch shortly.
       </div>
     );
 
