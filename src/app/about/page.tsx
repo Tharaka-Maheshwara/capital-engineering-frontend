@@ -57,18 +57,18 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-[linear-gradient(transparent_95%,rgba(255,255,255,0.06)_96%),linear-gradient(90deg,transparent_95%,rgba(255,255,255,0.06)_96%)] bg-size-[64px_64px] opacity-30" />
         </div>
 
-        <div className="relative flex min-h-[78vh] w-full items-center px-4 py-20 sm:px-6 lg:px-10">
-          <div className="max-w-3xl lg:max-w-4xl ml-40">
+        <div className="relative flex min-h-[60vh] lg:min-h-[78vh] w-full items-center px-4 py-16 sm:px-6 lg:px-10">
+          <div className="max-w-3xl lg:max-w-4xl lg:ml-40 mx-auto lg:mx-0 text-center lg:text-left">
             <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.22em] text-slate-200/80 backdrop-blur-sm">
               About Capital Engineering Ceylon
             </span>
 
-            <h1 className="mt-6 text-5xl font-extrabold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
+            <h1 className="mt-6 text-3xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl md:text-5xl lg:text-7xl">
               Our Story of
               <span className="block text-slate-400">Building Excellence</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200/90 sm:text-xl">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-200/90 sm:text-lg">
               Over 15 years of creating remarkable structures and lasting client
               relationships across the region. From residential builds to
               large-scale infrastructure, we combine precision, reliability, and
@@ -136,14 +136,14 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="absolute -right-3 top-6 rounded-[18px] bg-slate-500 px-5 py-4 text-white shadow-[0_18px_40px_rgba(15,23,42,0.2)] sm:right-3 sm:top-8">
+            <div className="hidden sm:block absolute -right-3 top-6 rounded-[18px] bg-slate-500 px-5 py-4 text-white shadow-[0_18px_40px_rgba(15,23,42,0.2)] sm:right-3 sm:top-8">
               <div className="text-3xl font-extrabold leading-none">98%</div>
               <div className="mt-1 text-sm font-medium text-white/85">
                 Client Satisfaction
               </div>
             </div>
 
-            <div className="absolute -bottom-6 left-4 rounded-[18px] bg-slate-800 px-5 py-4 text-white shadow-[0_18px_40px_rgba(15,23,42,0.2)] sm:left-6">
+            <div className="hidden sm:block absolute -bottom-6 left-4 rounded-[18px] bg-slate-800 px-5 py-4 text-white shadow-[0_18px_40px_rgba(15,23,42,0.2)] sm:left-6">
               <div className="text-3xl font-extrabold leading-none">500+</div>
               <div className="mt-1 text-sm font-medium text-white/75">
                 Projects Completed
@@ -217,7 +217,7 @@ export default function AboutPage() {
 
           <div className="relative mx-auto w-full max-w-136 lg:mx-0 lg:justify-self-end">
             <div className="relative overflow-hidden rounded-[28px] bg-slate-100 shadow-[0_24px_70px_rgba(15,23,42,0.14)]">
-              <div className="relative aspect-[0.95/1] min-h-124">
+              <div className="relative aspect-[0.95/1] min-h-[280px] sm:min-h-[360px] lg:min-h-[496px]">
                 <Image
                   src="/images/slider-4.png"
                   alt="Capital Engineering flagship commercial project"
