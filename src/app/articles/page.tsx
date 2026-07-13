@@ -50,8 +50,8 @@ async function getArticles(): Promise<PaginatedArticles | null> {
 
   try {
     const res = await fetch(`${API_URL}/articles`, {
-      // Revalidate every hour
-      next: { revalidate: 3600 },
+      // Revalidate every 60 seconds
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) {
