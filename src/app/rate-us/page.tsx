@@ -6,6 +6,7 @@ import { getAuthSession, type AuthSession } from "@/lib/auth";
 import { submitFeedback } from "@/lib/feedback";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function StarIcon({ filled }: { filled: boolean }) {
   return (
@@ -25,6 +26,7 @@ function StarIcon({ filled }: { filled: boolean }) {
 }
 
 export default function RateUsPage() {
+  const router = useRouter();
   const [authSession, setAuthSession] = useState<AuthSession | null>(null);
   const [rating, setRating] = useState(5);
   const [message, setMessage] = useState("");
@@ -74,7 +76,11 @@ export default function RateUsPage() {
 
       setMessage("");
       setRating(5);
-      setSuccess("Thanks You For Your Feedback .");
+      setSuccess("Thank you for your feedback! Redirecting...");
+      
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     } catch (submitError) {
       setError(
         submitError instanceof Error
@@ -87,6 +93,26 @@ export default function RateUsPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-16">
       <div className="w-full max-w-xl">
+        {/* Logo and Back Link */}
+        <div className="mb-8 flex flex-col items-center gap-3">
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Capital Engineering Logo"
+              width={72}
+              height={72}
+              className="rounded-[18px] bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)]"
+              priority
+            />
+          </Link>
+          <Link
+            href="/"
+            className="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
+          >
+            ← Back to Home
+          </Link>
+        </div>
+
         <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white shadow-[0_30px_90px_rgba(2,12,27,0.32)]">
           <section className="p-6 sm:p-8 lg:p-10">
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -163,13 +189,21 @@ export default function RateUsPage() {
                 </div>
               ) : null}
 
-              <button
-                type="submit"
-                disabled={!isLoggedIn}
-                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-[#7c8b99] px-5 py-4 text-[0.98rem] font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#6c7b89] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                Submit Feedback
-              </button>
+              <div className="mt-8 flex flex-col-reverse sm:flex-row items-center gap-4">
+                <Link
+                  href="/"
+                  className="inline-flex w-full sm:w-auto items-center justify-center rounded-2xl px-5 py-4 text-[0.98rem] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100 hover:text-slate-700"
+                >
+                  Cancel
+                </Link>
+                <button
+                  type="submit"
+                  disabled={!isLoggedIn}
+                  className="inline-flex w-full items-center justify-center rounded-2xl bg-[#7c8b99] px-5 py-4 text-[0.98rem] font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#6c7b89] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Submit Feedback
+                </button>
+              </div>
             </form>
           </section>
         </div>
