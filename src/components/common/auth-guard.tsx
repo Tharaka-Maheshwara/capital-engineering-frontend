@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getAuthSession } from "@/lib/auth";
-import AuthModal from "./auth-modal";
 
 function LoadingSpinner() {
   return (
@@ -40,7 +39,13 @@ export default function AuthGuard({
     };
   }, [checkAuth]);
 
-  if (status === "loading") {
+  useEffect(() => {
+    if (status === "unauthorized") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading" || status === "unauthorized") {
     return <LoadingSpinner />;
   }
 
@@ -48,6 +53,5 @@ export default function AuthGuard({
     return <>{children}</>;
   }
 
-  // status is "unauthorized"
-  return <AuthModal open={true} onClose={() => router.push("/")} />;
+  return null;
 }
