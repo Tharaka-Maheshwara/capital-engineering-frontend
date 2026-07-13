@@ -1,6 +1,6 @@
 import DesignsGrid from "@/components/designs/designs-grid";
 
-export const dynamic = "force-dynamic";
+
 
 export const metadata = {
   title: "Designs",
@@ -23,7 +23,7 @@ export default async function DesignsPage() {
   let designs: any[] = [];
   try {
     const response = await fetch(`${apiBase}/api/v1/designs?per_page=24`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
       headers: {
         Accept: "application/json",
       },

@@ -27,7 +27,7 @@ export default async function ProjectsPage({
   let projects: any[] = [];
   try {
     const res = await fetch(`${apiBase}/api/v1/projects?per_page=12`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
       headers: {
         Accept: "application/json",
       },
