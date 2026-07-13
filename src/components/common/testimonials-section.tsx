@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-
+import Link from "next/link";
 import { fetchFeedbackEntries, type FeedbackEntry } from "@/lib/feedback";
+import { getAuthSession, type AuthSession } from "@/lib/auth";
 
 function FeedbackStarIcon({ filled }: { filled: boolean }) {
   return (
@@ -102,6 +103,18 @@ export default function TestimonialsSection() {
   const [customerFeedback, setCustomerFeedback] = useState<FeedbackEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
+
+  useEffect(() => {
+    const updateAuthSession = () => {
+      setAuthSession(getAuthSession());
+    };
+    updateAuthSession();
+    window.addEventListener("auth-session-changed", updateAuthSession);
+    return () => {
+      window.removeEventListener("auth-session-changed", updateAuthSession);
+    };
+  }, []);
 
   useEffect(() => {
     const loadFeedback = async () => {
@@ -157,6 +170,11 @@ export default function TestimonialsSection() {
     [currentPage, customerFeedback],
   );
 
+  const totalRatings = customerFeedback.length;
+  const averageRating = totalRatings > 0 
+    ? (customerFeedback.reduce((acc, curr) => acc + curr.rating, 0) / totalRatings).toFixed(1) 
+    : "0.0";
+
   useEffect(() => {
     setCarouselIndex((index) => Math.min(index, totalPages - 1));
   }, [totalPages]);
@@ -211,8 +229,79 @@ export default function TestimonialsSection() {
             </div>
           ) : null}
 
+          {!isLoading && customerFeedback.length > 0 ? (
+            <div className="mt-12 mb-8 rounded-2xl border border-slate-100 bg-white px-8 py-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-5">
+                <div className="text-[2.75rem] font-bold text-[#003b9f] leading-none tracking-tight">
+                  {averageRating}
+                </div>
+                <div>
+                  <div className="flex items-center gap-1 text-[#fbbd0a]">
+                    {Array.from({ length: 5 }, (_, index) => {
+                      const fillPercentage = Math.max(0, Math.min(1, parseFloat(averageRating) - index));
+                      return (
+                        <div key={index} className="relative h-[22px] w-[22px]">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="absolute inset-0 text-slate-200"
+                          >
+                            <path d="M12 3.6l2.9 5.88 6.5.95-4.7 4.58 1.1 6.48L12 18.46l-5.8 3.03 1.1-6.48-4.7-4.58 6.5-.95L12 3.6z" />
+                          </svg>
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="absolute inset-0 text-[#fbbd0a]"
+                            style={{ clipPath: `inset(0 ${100 - fillPercentage * 100}% 0 0)` }}
+                          >
+                            <path d="M12 3.6l2.9 5.88 6.5.95-4.7 4.58 1.1 6.48L12 18.46l-5.8 3.03 1.1-6.48-4.7-4.58 6.5-.95L12 3.6z" />
+                          </svg>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-1 text-[0.8rem] text-slate-400">
+                    Based on {totalRatings} ratings
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                {authSession ? (
+                  <Link
+                    href="/rate-us"
+                    className="inline-flex items-center gap-2.5 rounded-lg bg-[#0044b3] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#00338a]"
+                  >
+                    <span className="h-4 w-4">
+                      <FeedbackStarIcon filled={false} />
+                    </span>
+                    Leave your rating
+                  </Link>
+                ) : (
+                  <Link
+                    href="/auth/login"
+                    className="inline-flex items-center gap-2.5 rounded-lg bg-[#0044b3] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#00338a]"
+                  >
+                    <span className="h-4 w-4">
+                      <FeedbackStarIcon filled={false} />
+                    </span>
+                    Sign in to rate
+                  </Link>
+                )}
+              </div>
+            </div>
+          ) : null}
+
           {!isLoading && visibleCustomerFeedback.length > 0 ? (
-            <div className="mt-12">
+            <div>
               <div className="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center">
                 <div className="flex justify-center lg:justify-start">
                   <button
@@ -257,10 +346,29 @@ export default function TestimonialsSection() {
               <p className="text-lg font-semibold text-slate-900">
                 No customer feedback yet.
               </p>
-              <p className="mt-2 text-sm leading-7 text-slate-500">
-                Logged-in customers can submit the first review from the About
-                Us page.
-              </p>
+              <div className="mt-4">
+                {authSession ? (
+                  <Link
+                    href="/rate-us"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#0044b3] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#00338a]"
+                  >
+                    <span className="h-4 w-4">
+                      <FeedbackStarIcon filled={false} />
+                    </span>
+                    Leave the first rating
+                  </Link>
+                ) : (
+                  <Link
+                    href="/auth/login"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#0044b3] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#00338a]"
+                  >
+                    <span className="h-4 w-4">
+                      <FeedbackStarIcon filled={false} />
+                    </span>
+                    Sign in to rate
+                  </Link>
+                )}
+              </div>
             </div>
           ) : null}
         </div>
