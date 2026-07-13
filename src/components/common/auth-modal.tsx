@@ -47,7 +47,8 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
   const [success, setSuccess] = useState<string | null>(null);
 
   const apiBaseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://capital-engineering-backend.onrender.com";
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
+    "https://capital-engineering-backend.onrender.com";
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
   useEffect(() => {
