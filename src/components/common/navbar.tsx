@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import AuthModal from "@/components/common/auth-modal";
 import { clearAuthSession, getAuthSession, type AuthSession } from "@/lib/auth";
 
 const links = [
@@ -117,8 +116,8 @@ function getUserInitials(authSession: AuthSession | null): string {
 }
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false); // Added for custom modal
   const [activeHash, setActiveHash] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -178,7 +177,6 @@ export default function Navbar() {
     clearAuthSession();
     setAuthSession(null);
     setIsMenuOpen(false);
-    setIsAuthOpen(false);
     setIsLogoutConfirmOpen(false);
   };
 
@@ -262,11 +260,11 @@ export default function Navbar() {
               aria-label={
                 authSession
                   ? `Signed in as ${getUserDisplayName(authSession)}`
-                  : "Open login form"
+                  : "Go to login page"
               }
               onClick={() => {
                 if (!authSession) {
-                  setIsAuthOpen(true);
+                  router.push("/auth/login");
                 }
               }}
               className="hidden ml-auto items-center gap-3 rounded-[14px] bg-slate-400/95 px-4 py-2 text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:flex"
@@ -330,7 +328,7 @@ export default function Navbar() {
               onClick={() => {
                 setIsMenuOpen(false);
                 if (!authSession) {
-                  setIsAuthOpen(true);
+                  router.push("/auth/login");
                 }
               }}
               className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-slate-400/95 px-5 py-3 text-sm font-bold text-slate-50 shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition-transform duration-150 hover:-translate-y-0.5 hover:bg-slate-300/95 lg:hidden"
@@ -356,9 +354,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {isAuthOpen ? (
-        <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      ) : null}
+
 
       {/* --- CUSTOM LOGOUT CONFIRMATION MODAL (NO LOCALHOST WORDING) --- */}
       {isLogoutConfirmOpen ? (

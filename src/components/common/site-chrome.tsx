@@ -8,8 +8,10 @@ import Footer from "@/components/common/footer";
 export default function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isAuthRoute = pathname?.startsWith("/auth");
+  const isRateUsRoute = pathname?.startsWith("/rate-us");
 
-  if (isAdminRoute) {
+  if (isAdminRoute || isAuthRoute || isRateUsRoute) {
     return <>{children}</>;
   }
 

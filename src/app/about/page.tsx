@@ -1,8 +1,7 @@
 import type { ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-import FeedbackFormSection from "@/components/common/feedback-form-section";
+import TestimonialsSection from "@/components/common/testimonials-section";
 
 export const metadata = {
   title: "About Us",
@@ -250,7 +249,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <FeedbackFormSection />
+      <TestimonialsSection />
     </main>
   );
 }
