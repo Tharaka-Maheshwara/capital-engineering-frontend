@@ -39,13 +39,17 @@ export default function ContactForm() {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${apiBaseUrl}/api/v1/contact`, {
+      // මෙතැන `${apiBaseUrl}/v1/contact` ලෙස වෙනස් කළා (/api/api/v1 ගැටලුව විසඳීමට)
+      const res = await fetch(`${apiBaseUrl}/v1/contact`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json" // Backend එකෙන් HTML Error Page වෙනුවට පිරිසිදු JSON එකක්ම ලබා ගැනීමට මෙය අනිවාර්යයයි
+        },
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Submission failed");
+      if (!res.ok) throw new Error(data?.error || data?.message || "Submission failed");
       setSuccess(true);
       setForm({
         name: "",
@@ -135,11 +139,21 @@ export default function ContactForm() {
             value={form.subject}
             onChange={(e) => update("subject", e.target.value)}
           >
-            <option value="">Select type...</option>
-            <option>Residential</option>
-            <option>Commercial</option>
-            <option>Industrial</option>
-            <option>Renovation</option>
+            <option value="" className="bg-[#17324a] text-slate-50">
+              Select type
+            </option>
+            <option value="Residential" className="bg-[#17324a] text-slate-50">
+              Residential 
+            </option>
+            <option value="Commercial" className="bg-[#17324a] text-slate-50">
+              Commercial
+            </option>
+            <option value="Industrial" className="bg-[#17324a] text-slate-50">
+              Industrial
+            </option>
+            <option value="Renovation" className="bg-[#17324a] text-slate-50">
+              Renovation
+            </option>
           </select>
         </div>
 
