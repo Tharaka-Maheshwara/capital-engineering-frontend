@@ -1,24 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { Fragment } from "react";
 
 const navigationItems = [
   { label: "Dashboard", href: "/admin/admin-dashboard", icon: DashboardIcon },
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
   { label: "Articles", href: "/admin/articles", icon: ArticleIcon },
   { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
-  { label: "Feedback", href: "#", icon: FeedbackIcon },
+  
 ];
 
 type AdminSidebarProps = {
   activeHref: string;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
-export default function AdminSidebar({ activeHref }: AdminSidebarProps) {
-  return (
-    <aside className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#0c1d33_0%,#10284a_46%,#0a1627_100%)] text-slate-100 lg:sticky lg:top-0 lg:h-screen lg:w-70 lg:border-r lg:border-white/10">
+export default function AdminSidebar({ activeHref, isOpen, onClose }: AdminSidebarProps) {
+  const sidebarContent = (
+    <aside className="relative flex h-full w-70 flex-col overflow-y-auto bg-[linear-gradient(180deg,#0c1d33_0%,#10284a_46%,#0a1627_100%)] text-slate-100">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(92,153,190,0.18),transparent_18%),radial-gradient(circle_at_50%_80%,rgba(255,255,255,0.06),transparent_22%)]" />
-      <div className="relative flex h-full flex-col px-5 py-6 sm:px-6 lg:px-5 lg:py-7">
+      <div className="relative flex flex-col gap-y-5 px-5 py-6 sm:px-6 lg:px-5 lg:py-7">
         <div className="flex items-center gap-3 rounded-[22px] border border-white/10 bg-white/5 px-4 py-4 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
             <span className="text-lg font-black tracking-[-0.06em]">CE</span>
@@ -33,33 +36,33 @@ export default function AdminSidebar({ activeHref }: AdminSidebarProps) {
           </div>
         </div>
 
-        <nav
-          className="mt-8 flex flex-1 flex-col gap-2"
-          aria-label="Admin navigation"
-        >
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = item.href === activeHref;
+        <nav className="flex-1" aria-label="Admin navigation">
+          <ul role="list" className="flex flex-1 flex-col gap-2">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.href === activeHref;
 
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                aria-current={isActive ? "page" : undefined}
-                className={`group flex items-center gap-3 rounded-[18px] px-4 py-3 text-[1rem] font-medium transition-colors duration-150 ${isActive ? "bg-white/14 text-white shadow-[0_14px_30px_rgba(0,0,0,0.16)]" : "text-slate-200/72 hover:bg-white/7 hover:text-white"}`}
-              >
-                <span
-                  className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${isActive ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}
-                >
-                  <Icon />
-                </span>
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+              return (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`group flex items-center gap-3 rounded-[18px] px-4 py-3 text-[1rem] font-medium transition-colors duration-150 ${isActive ? "bg-white/14 text-white shadow-[0_14px_30px_rgba(0,0,0,0.16)]" : "text-slate-200/72 hover:bg-white/7 hover:text-white"}`}
+                  >
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border ${isActive ? "border-white/10 bg-white/10" : "border-white/5 bg-white/5"}`}
+                    >
+                      <Icon />
+                    </span>
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
 
-        <div className="mt-6 rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
+        <div className="mt-auto rounded-[22px] border border-white/10 bg-white/6 p-4 backdrop-blur-md">
           <div className="text-sm font-semibold text-white">
             Security Status
           </div>
@@ -74,6 +77,36 @@ export default function AdminSidebar({ activeHref }: AdminSidebarProps) {
         </div>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Static sidebar for desktop */}
+      <div className="hidden lg:sticky lg:top-0 lg:h-screen lg:flex lg:w-70 lg:flex-col lg:border-r lg:border-white/10">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile sidebar */}
+      <div
+        className={`fixed inset-0 z-40 flex lg:hidden transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Overlay */}
+        <div
+          className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+            isOpen ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={onClose}
+          aria-hidden="true"
+        />
+        
+        {/* Sidebar */}
+        <div className="relative flex w-full max-w-xs flex-1">
+          {sidebarContent}
+        </div>
+      </div>
+    </>
   );
 }
 

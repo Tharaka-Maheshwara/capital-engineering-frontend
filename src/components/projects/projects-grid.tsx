@@ -83,9 +83,9 @@ export default function ProjectsGrid({
   return (
     <section className="bg-white pb-12 pt-0">
       <div className="mb-8 bg-[#1f3f6f]">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-4 px-4 py-5 sm:flex-row sm:items-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold text-white">Projects</h2>
-          <nav className="flex gap-3 text-sm text-slate-200">
+          <nav className="flex flex-wrap gap-3 text-sm text-slate-200">
             {filterTabs.map((tab) => {
               const isActive = tab.value === activeCategory;
 
@@ -108,7 +108,7 @@ export default function ProjectsGrid({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((p) => {
             const year = p.end_date
               ? new Date(p.end_date).getFullYear()
