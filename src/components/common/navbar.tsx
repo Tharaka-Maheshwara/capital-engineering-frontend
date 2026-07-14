@@ -202,7 +202,7 @@ export default function Navbar() {
             href="tel:+944981500"
             className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-end sm:text-right"
           >
-            Hot Line: +94 4 981 500
+            Hot Line: 011 4 981 500
           </a>
         </div>
       </div>

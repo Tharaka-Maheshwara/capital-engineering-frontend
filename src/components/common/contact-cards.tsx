@@ -96,7 +96,7 @@ export default function ContactCards() {
             iconBg="from-[#6f88a8] to-[#879bb6]"
             title="Hotline"
             subtitle="For urgent queries"
-            primary="+94 4 981 500"
+            primary="011 4 981 500"
             secondary="Available 24/7"
           />
           <Card
