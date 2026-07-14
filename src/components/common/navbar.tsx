@@ -182,7 +182,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div className="border-b border-white/10 bg-slate-950/95">
+      <div className="hidden sm:block border-b border-white/10 bg-slate-950/95">
         <div
           className={`grid w-full grid-cols-1 gap-2 px-4 text-center text-[1rem] text-slate-100 transition-all duration-300 ease-out sm:grid-cols-3 sm:items-center sm:gap-4 sm:px-6 sm:text-[1.08rem] md:text-[1.18rem] lg:px-8 ${isScrolled ? "py-2 sm:min-h-14" : "py-4 sm:min-h-20"}`}
         >
