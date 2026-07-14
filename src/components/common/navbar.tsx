@@ -193,10 +193,10 @@ export default function Navbar() {
       <div className="relative overflow-hidden border-b border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,37,58,0.9),rgba(18,37,58,0.64)),linear-gradient(135deg,transparent_0_76%,rgba(255,255,255,0.05)_76%_78%,transparent_78%_100%),radial-gradient(circle_at_72%_26%,rgba(255,255,255,0.05),transparent_18%)] backdrop-blur-md" />
         <div
-          className={`relative w-full px-4 transition-all duration-300 ease-out sm:px-6 lg:px-8 ${isScrolled ? "py-2.5" : "py-4"}`}
+          className={`relative w-full px-4 transition-all duration-300 ease-out sm:px-6 lg:px-8 ${isScrolled ? "py-2" : "py-3"}`}
         >
           <div
-            className={`flex w-full items-center justify-between gap-3 transition-all duration-300 ease-out lg:gap-8 ${isScrolled ? "min-h-16" : "min-h-23"}`}
+            className={`flex w-full items-center justify-between gap-3 transition-all duration-300 ease-out lg:gap-8 ${isScrolled ? "min-h-12" : "min-h-18"}`}
           >
             <Link
               href="/"
@@ -207,7 +207,7 @@ export default function Navbar() {
                 alt="Capital Engineering Logo"
                 width={74}
                 height={74}
-                className={`flex-none rounded-[14px] object-contain bg-white/5 p-1 shadow-[0_12px_28px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out sm:rounded-[18px] sm:p-1.5 ${isScrolled ? "h-10 w-10 sm:h-14 sm:w-14" : "h-12 w-12 sm:h-18.5 sm:w-18.5"}`}
+                className={`flex-none rounded-[14px] object-contain bg-white/5 p-1 shadow-[0_12px_28px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out sm:rounded-[18px] sm:p-1.5 ${isScrolled ? "h-9 w-9 sm:h-12 sm:w-12" : "h-11 w-11 sm:h-15 sm:w-15"}`}
                 priority
               />
               <span
