@@ -41,7 +41,7 @@ export default function UrgentCta() {
               <span className="inline-flex items-center justify-center rounded-full bg-white/6 p-2">
                 <IconPhoneSmall />
               </span>
-              <span>+94 4 981 500</span>
+              <span>011 4 981 500</span>
               <span aria-hidden className="ml-2">
                 →
               </span>

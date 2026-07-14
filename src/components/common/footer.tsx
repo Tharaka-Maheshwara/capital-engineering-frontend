@@ -139,7 +139,7 @@ export default function Footer(): JSX.Element {
                   <div>
                     <div className="text-lg">+94 777 434 403</div>
                     <div className="text-sm text-slate-400">
-                      Hot Line: +94 4 981 500
+                      Hot Line: 011 4 981 500
                     </div>
                   </div>
                 </li>
