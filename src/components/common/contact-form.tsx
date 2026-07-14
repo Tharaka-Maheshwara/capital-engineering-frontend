@@ -135,11 +135,21 @@ export default function ContactForm() {
             value={form.subject}
             onChange={(e) => update("subject", e.target.value)}
           >
-            <option value="">Select type...</option>
-            <option>Residential</option>
-            <option>Commercial</option>
-            <option>Industrial</option>
-            <option>Renovation</option>
+            <option value="" className="bg-[#17324a] text-slate-50">
+              Select type
+            </option>
+            <option value="Residential" className="bg-[#17324a] text-slate-50">
+              Residential 
+            </option>
+            <option value="Commercial" className="bg-[#17324a] text-slate-50">
+              Commercial
+            </option>
+            <option value="Industrial" className="bg-[#17324a] text-slate-50">
+              Industrial
+            </option>
+            <option value="Renovation" className="bg-[#17324a] text-slate-50">
+              Renovation
+            </option>
           </select>
         </div>
 
