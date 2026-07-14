@@ -11,7 +11,7 @@ const links = [
   { label: "About", href: "/about" },
   { label: "Projects", href: "/projects" },
   { label: "Designs", href: "/designs" },
-  { label: "Price Calculation", href: "/pricing" },
+  { label: "Cost Estimation", href: "/pricing" },
   { label: "Articles", href: "/articles" },
   { label: "Contact", href: "/contact" },
 ];
@@ -40,24 +40,9 @@ function UserIcon() {
 function MenuIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 7h16"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M4 12h16"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M4 17h16"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
+      <path d="M4 7h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M4 12h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -118,7 +103,7 @@ function getUserInitials(authSession: AuthSession | null): string {
 export default function Navbar() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false); // Added for custom modal
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [authSession, setAuthSession] = useState<AuthSession | null>(null);
@@ -167,12 +152,10 @@ export default function Navbar() {
     return pathname === cleanHref || pathname.startsWith(`${cleanHref}/`);
   };
 
-  // Open custom confirmation instead of browser confirm
   const handleLogoutClick = () => {
     setIsLogoutConfirmOpen(true);
   };
 
-  // Execute actual logout action
   const confirmLogout = () => {
     clearAuthSession();
     setAuthSession(null);
@@ -215,20 +198,23 @@ export default function Navbar() {
           <div
             className={`flex w-full items-center justify-between gap-3 transition-all duration-300 ease-out lg:gap-8 ${isScrolled ? "min-h-16" : "min-h-23"}`}
           >
-            <Link href="/" className="inline-flex min-w-0 items-center gap-3">
+            <Link
+              href="/"
+              className="inline-flex min-w-0 flex-1 items-center gap-2 sm:gap-3 lg:flex-none"
+            >
               <Image
                 src="/images/logo.png"
                 alt="Capital Engineering Logo"
                 width={74}
                 height={74}
-                className={`flex-none rounded-[18px] object-contain bg-white/5 p-1.5 shadow-[0_12px_28px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out ${isScrolled ? "h-12 w-12 sm:h-14 sm:w-14" : "h-16 w-16 sm:h-18.5 sm:w-18.5"}`}
+                className={`flex-none rounded-[14px] object-contain bg-white/5 p-1 shadow-[0_12px_28px_rgba(0,0,0,0.24)] transition-all duration-300 ease-out sm:rounded-[18px] sm:p-1.5 ${isScrolled ? "h-10 w-10 sm:h-14 sm:w-14" : "h-12 w-12 sm:h-18.5 sm:w-18.5"}`}
                 priority
               />
               <span
-                className={`hidden min-w-0 flex-col leading-tight transition-all duration-300 ease-out sm:flex ${isScrolled ? "opacity-90" : "opacity-100"}`}
+                className={`flex min-w-0 flex-1 flex-col justify-center leading-tight transition-all duration-300 ease-out ${isScrolled ? "opacity-90" : "opacity-100"}`}
               >
                 <span
-                  className={`truncate font-bold tracking-[-0.03em] text-slate-50 transition-all duration-300 ease-out ${isScrolled ? "text-[1.05rem] lg:text-[1.28rem]" : "text-[1.2rem] lg:text-[1.55rem]"}`}
+                  className={`truncate font-bold tracking-[-0.03em] text-slate-50 transition-all duration-300 ease-out text-[0.72rem] leading-[1.05rem] sm:leading-tight ${isScrolled ? "sm:text-[1.05rem] lg:text-[1.28rem]" : "sm:text-[1.2rem] lg:text-[1.55rem]"}`}
                 >
                   Capital Engineering Ceylon (Pvt) Ltd
                 </span>
@@ -354,26 +340,19 @@ export default function Navbar() {
         </div>
       </div>
 
-
-
-      {/* --- CUSTOM LOGOUT CONFIRMATION MODAL (NO LOCALHOST WORDING) --- */}
       {isLogoutConfirmOpen ? (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          {/* Backdrop Blur Overlay */}
-          <div 
+          <div
             className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
-            onClick={() => setIsLogoutConfirmOpen(false)} 
+            onClick={() => setIsLogoutConfirmOpen(false)}
           />
-          
-          {/* Modal Content Card */}
+
           <div className="relative w-full max-w-md overflow-hidden rounded-[24px] border border-white/10 bg-slate-900 p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <h3 className="text-xl font-bold text-slate-50">
-              Confirm Logout
-            </h3>
+            <h3 className="text-xl font-bold text-slate-50">Confirm Logout</h3>
             <p className="mt-2 text-[1.02rem] text-slate-300">
               Are you sure you want to log out of your account?
             </p>
-            
+
             <div className="mt-6 flex items-center justify-end gap-3">
               <button
                 type="button"
