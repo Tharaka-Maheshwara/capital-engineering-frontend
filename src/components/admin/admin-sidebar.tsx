@@ -8,7 +8,7 @@ const navigationItems = [
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
   { label: "Articles", href: "/admin/articles", icon: ArticleIcon },
   { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
-  { label: "Feedback", href: "#", icon: FeedbackIcon },
+  
 ];
 
 type AdminSidebarProps = {
