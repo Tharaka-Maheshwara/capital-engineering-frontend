@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef, useState } from "react";
 import {
   type EstimatorConfigState,
+  type BudgetTypeId,
   budgetTypes,
   soilOptions,
   designOptions,
@@ -14,6 +16,11 @@ type ConfigurationStepProps = {
   onConfigChange: (nextConfig: EstimatorConfigState) => void;
   onBack: () => void;
   onNext: () => void;
+};
+
+type FieldErrors = {
+  sqft: boolean;
+  budgetType: boolean;
 };
 
 function ArrowRightIcon() {
@@ -40,6 +47,11 @@ export default function ConfigurationStep({
   onBack,
   onNext,
 }: ConfigurationStepProps) {
+  const [errors, setErrors] = useState<FieldErrors>({ sqft: false, budgetType: false });
+
+  const sqftSectionRef = useRef<HTMLDivElement | null>(null);
+  const budgetSectionRef = useRef<HTMLDivElement | null>(null);
+
   const isSqftValid = Number(config.sqft) > 0;
   const isFormComplete = isSqftValid && config.budgetType;
 
@@ -47,6 +59,39 @@ export default function ConfigurationStep({
     // Only allow numeric input
     const clean = val.replace(/[^0-9]/g, "");
     onConfigChange({ ...config, sqft: clean });
+    if (clean && Number(clean) > 0) {
+      setErrors((prev) => ({ ...prev, sqft: false }));
+    }
+  };
+
+  const handleBudgetSelect = (id: BudgetTypeId) => {
+    onConfigChange({ ...config, budgetType: id });
+    setErrors((prev) => ({ ...prev, budgetType: false }));
+  };
+
+  const scrollToRef = (ref: React.RefObject<HTMLDivElement | null>) => {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleNextClick = () => {
+    const nextErrors: FieldErrors = {
+      sqft: !isSqftValid,
+      budgetType: !config.budgetType,
+    };
+
+    if (nextErrors.sqft || nextErrors.budgetType) {
+      setErrors(nextErrors);
+      // Navigate to whichever required field is missing first
+      if (nextErrors.sqft) {
+        scrollToRef(sqftSectionRef);
+      } else if (nextErrors.budgetType) {
+        scrollToRef(budgetSectionRef);
+      }
+      return;
+    }
+
+    setErrors({ sqft: false, budgetType: false });
+    onNext();
   };
 
   return (
@@ -64,7 +109,7 @@ export default function ConfigurationStep({
       <section className="space-y-6">
         <div className="grid gap-6 md:grid-cols-3">
           {/* Square Footage Input */}
-          <div className="md:col-span-1 space-y-2">
+          <div ref={sqftSectionRef} className="md:col-span-1 space-y-2 scroll-mt-24">
             <label className="block text-sm font-semibold uppercase tracking-[0.14em] text-slate-300/80">
               Building Size (Sq.Ft)
             </label>
@@ -74,28 +119,39 @@ export default function ConfigurationStep({
                 value={config.sqft}
                 onChange={(e) => handleSqftChange(e.target.value)}
                 placeholder="e.g. 1500"
-                className="h-12 w-full rounded-[10px] border border-white/10 bg-white/4 pl-4 pr-16 text-[1rem] font-semibold text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#4d87c8] focus:bg-white/6"
+                aria-invalid={errors.sqft}
+                className={`h-12 w-full rounded-[10px] border bg-white/4 pl-4 pr-16 text-[1rem] font-semibold text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#4d87c8] focus:bg-white/6 ${
+                  errors.sqft ? "border-red-500/70" : "border-white/10"
+                }`}
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">
                 sq.ft
               </span>
             </div>
-            <p className="text-xs text-slate-500">Total built-up floor area</p>
+            {errors.sqft ? (
+              <p className="text-xs font-medium text-red-400">Please enter the building size.</p>
+            ) : (
+              <p className="text-xs text-slate-500">Total built-up floor area</p>
+            )}
           </div>
 
           {/* Budget Type Cards */}
-          <div className="md:col-span-2 space-y-2">
+          <div ref={budgetSectionRef} className="md:col-span-2 space-y-2 scroll-mt-24">
             <label className="block text-sm font-semibold uppercase tracking-[0.14em] text-slate-300/80">
               Budget Type
             </label>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div
+              className={`grid gap-3 sm:grid-cols-3 rounded-[16px] transition ${
+                errors.budgetType ? "ring-1 ring-red-500/60 p-1" : ""
+              }`}
+            >
               {budgetTypes.map((type) => {
                 const isSelected = config.budgetType === type.id;
                 return (
                   <button
                     key={type.id}
                     type="button"
-                    onClick={() => onConfigChange({ ...config, budgetType: type.id })}
+                    onClick={() => handleBudgetSelect(type.id)}
                     className={`group rounded-[14px] border p-4 text-left transition duration-150 flex flex-col justify-between min-h-[120px] ${
                       isSelected
                         ? "border-[#5b87c7] bg-[#1d1d1d] shadow-[inset_0_0_0_1px_rgba(91,135,199,0.16)]"
@@ -117,6 +173,9 @@ export default function ConfigurationStep({
                 );
               })}
             </div>
+            {errors.budgetType && (
+              <p className="text-xs font-medium text-red-400">Please select a budget type.</p>
+            )}
           </div>
         </div>
       </section>
@@ -282,9 +341,8 @@ export default function ConfigurationStep({
 
           <button
             type="button"
-            disabled={!isFormComplete}
-            onClick={onNext}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80 transition duration-150 hover:border-white/16 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:border-white/8 disabled:bg-white/2 disabled:text-slate-500"
+            onClick={handleNextClick}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80 transition duration-150 hover:border-white/16 hover:bg-white/5 hover:text-white"
           >
             <span>Next</span>
             <ArrowRightIcon />
