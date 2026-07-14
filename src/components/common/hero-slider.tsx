@@ -187,7 +187,7 @@ export default function HeroSlider() {
                     <a href="/projects" className="hero-btn-primary">
                       View Our Projects
                     </a>
-                    <a href="/#contact" className="hero-btn-secondary">
+                    <a href="/contact" className="hero-btn-secondary">
                       Start Your Project
                     </a>
                   </div>
