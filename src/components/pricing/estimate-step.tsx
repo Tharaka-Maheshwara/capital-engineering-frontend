@@ -482,9 +482,7 @@ export default function EstimateStep({
           ← Adjust Details
         </button>
         <div className="flex flex-col sm:flex-row gap-3">
-          <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80 transition duration-150 hover:bg-[#203f66] hover:text-white hover:border-[#3c76b8]">
-            Free Site Visit & BOQ
-          </button>
+         
           <button
             type="button"
             onClick={handleDownloadPdf}
