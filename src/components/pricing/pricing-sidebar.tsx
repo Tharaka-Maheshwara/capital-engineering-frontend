@@ -4,6 +4,14 @@ type PricingSidebarProps = {
   activeStep: number;
 };
 
+function EstimateIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 21V4.5h14V21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function BuildingIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">

@@ -8,6 +8,7 @@ const navigationItems = [
   { label: "Projects", href: "/admin/projects", icon: FolderIcon },
   { label: "Articles", href: "/admin/articles", icon: ArticleIcon },
   { label: "Designs", href: "/admin/designs", icon: PaletteIcon },
+  { label: "Cost Estimation", href: "/admin/cost-estimations", icon: EstimateIcon },
   
 ];
 
@@ -135,6 +136,12 @@ function ArticleIcon() {
 function FeedbackIcon() {
   return (
     <GlyphIcon path="M5 6h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H10l-5 4v-4H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+  );
+}
+
+function EstimateIcon() {
+  return (
+    <GlyphIcon path="M7 3h10a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm2 4h6M9 10.5h6M9 14h3.5M8.8 17.3 10 18.5l3-3" />
   );
 }
 

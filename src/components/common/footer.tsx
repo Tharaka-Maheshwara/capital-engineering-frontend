@@ -137,7 +137,7 @@ export default function Footer(): JSX.Element {
                 <li className="flex items-start gap-3">
                   <span className="mt-0.5 text-slate-400">📞</span>
                   <div>
-                    <div className="text-lg">+94 777 434 403</div>
+                    <div className="text-lg">+94 770 637 500</div>
                     <div className="text-sm text-slate-400">
                       Hot Line: 011 4 981 500
                     </div>
@@ -148,6 +148,14 @@ export default function Footer(): JSX.Element {
                   <span className="mt-0.5 text-slate-400">✉️</span>
                   <div>
                     <div className="text-lg">info.lankacapital@gmail.com</div>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-slate-400">📍</span>
+                  <div>
+                    <div className="text-lg">No.576/1, Kadawatha,</div>
+                    <div className="text-lg">Colombo, Sri Lanka, 11850</div>
                   </div>
                 </li>
 
