@@ -11,6 +11,7 @@ import {
   roofOptions,
   projectTypes,
 } from "./pricing-types";
+import { submitCostEstimation } from "@/lib/cost-estimation";
 
 type EstimateStepProps = {
   contact: ContactState;
@@ -35,6 +36,10 @@ export default function EstimateStep({
   onBack,
 }: EstimateStepProps) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+
 
   const sqftVal = Number(config.sqft) || 0;
 
@@ -68,6 +73,34 @@ export default function EstimateStep({
   const totalFactorPct = Math.round(
     (activeSoil.factor + activeDesign.factor + activeStory.factor + activeRoof.factor) * 100
   );
+
+  const handleSaveAndDownload = async () => {
+    setIsSubmitting(true);
+    setSubmissionError(null);
+
+    const submissionData = {
+      ...contact,
+      project_type: projectType,
+      sqft: sqftVal,
+      budget_type: config.budgetType,
+      soil: config.soil,
+      design: config.design,
+      stories: config.stories,
+      roof: config.roof,
+      base_cost: baseCost,
+      total_cost: totalCost,
+    };
+
+    try {
+      await submitCostEstimation(submissionData);
+      setIsSubmitted(true);
+      await handleDownloadPdf();
+    } catch (error) {
+      setSubmissionError(error instanceof Error ? error.message : "An unknown error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
@@ -309,6 +342,13 @@ export default function EstimateStep({
     }
   };
 
+  const getButtonText = () => {
+    if (isSubmitting) return "Saving...";
+    if (isSubmitted) return "Saved! Downloading...";
+    if (isGeneratingPdf) return "Generating PDF...";
+    return "Save & Download PDF";
+  };
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
@@ -485,14 +525,22 @@ export default function EstimateStep({
          
           <button
             type="button"
-            onClick={handleDownloadPdf}
-            disabled={isGeneratingPdf}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80 transition duration-150 hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+            onClick={handleSaveAndDownload}
+            disabled={isGeneratingPdf || isSubmitting}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-transparent bg-[#4d87c8] px-6 text-[0.95rem] font-medium text-white transition duration-200 hover:bg-[#5a98e0] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {isGeneratingPdf ? "Generating..." : "Download PDF Report"}
+            {getButtonText()}
           </button>
         </div>
       </div>
+       {submissionError && (
+        <p className="mt-4 text-sm text-red-400 text-center">{submissionError}</p>
+      )}
+      {isSubmitted && !submissionError && (
+        <p className="mt-4 text-sm text-green-400 text-center">
+          Estimate saved successfully! Your PDF is downloading.
+        </p>
+      )}
     </div>
   );
 }

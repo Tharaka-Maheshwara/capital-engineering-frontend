@@ -342,9 +342,9 @@ export default function ConfigurationStep({
           <button
             type="button"
             onClick={handleNextClick}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-6 text-[0.95rem] font-medium text-slate-300/80 transition duration-150 hover:border-white/16 hover:bg-white/5 hover:text-white"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#4d87c8] px-6 text-[0.95rem] font-medium text-white transition duration-200 hover:bg-[#5a98e0] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            <span>Next</span>
+            <span>Generate Cost</span>
             <ArrowRightIcon />
           </button>
         </div>
