@@ -152,6 +152,14 @@ export default function Footer(): JSX.Element {
                 </li>
 
                 <li className="flex items-start gap-3">
+                  <span className="mt-0.5 text-slate-400">📍</span>
+                  <div>
+                    <div className="text-lg">No.576/1, Kadawatha,</div>
+                    <div className="text-lg">Colombo, Sri Lanka, 11850</div>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3">
                   <span className="mt-0.5 text-slate-400">🕒</span>
                   <div className="text-lg text-slate-300">
                     Mon–Fri: 8AM–6PM | Sat: 9AM–4PM
