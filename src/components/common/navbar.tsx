@@ -173,7 +173,7 @@ export default function Navbar() {
             href="tel:+94777434403"
             className="inline-flex items-center justify-center gap-2 whitespace-nowrap sm:justify-self-start sm:text-left"
           >
-            +94 777 434 403
+            +94 770 637 500
           </a>
           <a
             href="mailto:info.lankacapital@gmail.com"

@@ -78,9 +78,9 @@ export default function ContactCards() {
             iconBg="from-slate-900 to-slate-600"
             title="Call Us"
             subtitle="Speak with our team"
-            primary="+94 777 434 403"
+            primary="+94 770 637 500"
             secondary="Mon–Fri, 8AM–6PM"
-          />
+          />   
           <Card
             icon={<IconMail />}
             accent="from-[#20395f] via-[#5b7595] to-[#20395f]"

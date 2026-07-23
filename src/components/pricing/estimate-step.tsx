@@ -97,7 +97,7 @@ export default function EstimateStep({
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9.5);
       doc.text(
-        "info.lankacapital@gmail.com   |   +94 777 434 403   |   Hot Line: 011 4 981 500",
+        "info.lankacapital@gmail.com   |   +94 770 637 500   |   Hot Line: 011 4 981 500",
         marginX,
         56
       );
